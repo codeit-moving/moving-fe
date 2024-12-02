@@ -5,7 +5,7 @@ import { cn } from "@/config/clsx";
 import assets from "@/variables/images";
 
 const chipVariants = cva(
-  "inline-flex items-center justify-center gap-[1px] py-0.5 shadow-[4px_4px_8px_0px_rgba(217,217,217,0.1)] font-semibold rounded-[4px] text-sm",
+  "inline-flex w-fit items-center justify-center gap-[1px] py-0.5 shadow-[4px_4px_8px_0px_rgba(217,217,217,0.1)] font-semibold rounded-[4px] text-sm",
   {
     variants: {
       variant: {
@@ -15,14 +15,14 @@ const chipVariants = cva(
         designatedQuote: "bg-pr-red-100 text-pr-red-200 pl-[3px] pr-1.5",
         pendingConfirm: "bg-[rgba(242,243,248,1)] text-pr-blue-400 px-1.5",
       },
-      isResponsive: {
-        true: "pc:text-lg pc:gap-1 pc: py-1",
-        false: "",
+      size: {
+        fixed: "",
+        responsive: "pc:text-lg pc:gap-1 pc: py-1",
       },
     },
     defaultVariants: {
       variant: "smallMove",
-      isResponsive: false,
+      size: "responsive",
     },
   }
 );
@@ -33,7 +33,7 @@ type ChipWithIconType =
   | "officeMove"
   | "designatedQuote";
 type ChipWithoutIconType = "pendingConfirm";
-type ChipType = ChipWithIconType | ChipWithoutIconType;
+export type ChipType = ChipWithIconType | ChipWithoutIconType;
 
 const icons: Record<ChipWithIconType, string> = {
   smallMove: assets.icons.box,
@@ -56,9 +56,11 @@ interface ChipProps extends VariantProps<typeof chipVariants> {
   isResponsive?: boolean;
 }
 
-const ServiceChip = ({ variant, className, isResponsive }: ChipProps) => {
+const ServiceChip = ({ variant, className, size }: ChipProps) => {
+  const isResponsive = size === "responsive";
+
   return (
-    <div className={cn(chipVariants({ variant, isResponsive }), className)}>
+    <div className={cn(chipVariants({ variant, size }), className)}>
       {variant in icons && (
         <Image
           src={icons[variant as ChipWithIconType]}

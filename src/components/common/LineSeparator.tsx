@@ -8,7 +8,7 @@ interface SeparatorProps {
 const separatorVariants = cva("bg-line-200", {
   variants: {
     direction: {
-      vertical: "w-[4px] h-[100%]",
+      vertical: "w-[1px] h-[100%] min-h-[14px]",
       horizontal: "w-[100%] h-[1px]",
     },
   },

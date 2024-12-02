@@ -5,27 +5,7 @@ import Image from "next/image";
 import FavoriteUi from "./FavoriteUi";
 import LineSeparator from "../LineSeparator";
 import ProfileImage from "./ProfileImage";
-
-interface MoverInfoProps {
-  mover: {
-    nickName: string;
-    career: number;
-    reviewCount: number;
-    ratings: {
-      1: number;
-      2: number;
-      3: number;
-      4: number;
-      5: number;
-      average: number;
-    };
-    confirmCount: number;
-    imgUrl: string | null;
-    isFavorite: boolean;
-    favoriteCount: number;
-  };
-  size?: "fixed" | "responsive";
-}
+import { type BaseMoverData } from "@/types/mover";
 
 const moverExperienceVariants = cva(
   "flex items-center text-sm font-medium text-black-300 gap-2.5",
@@ -43,21 +23,21 @@ const moverExperienceVariants = cva(
 );
 
 const MoverExperience = ({
-  ratings,
-  career,
-  reviewCount,
-  confirmCount,
-  className,
+  data,
   size,
-}: Partial<MoverInfoProps["mover"]> & {
+  className,
+}: {
+  data: BaseMoverData;
   className?: string;
-  size?: MoverInfoProps["size"];
+  size?: "fixed" | "responsive";
 }) => {
+  if (!data) return null;
+
   const isResponsive = size === "responsive";
 
   return (
     <div className={cn(moverExperienceVariants({ size, className }))}>
-      <div className="inline-flex items-center gap-0.5 ">
+      <div className="inline-flex items-center gap-0.5 whitespace-nowrap">
         <Image
           className={cn("w-5 h-5", {
             "pc:w-6 pc:h-6": isResponsive,
@@ -67,17 +47,17 @@ const MoverExperience = ({
           width={20}
           height={20}
         />
-        {ratings?.average?.toFixed(1)}
-        <span className="text-grayscale-300">{`(${reviewCount})`}</span>
+        {data.ratings?.average?.toFixed(1)}
+        <span className="text-grayscale-300">{`(${data.reviewCount})`}</span>
       </div>
       <LineSeparator />
-      <span className="flex items-center gap-1">
+      <span className="flex items-center gap-1 whitespace-nowrap">
         <span className="text-grayscale-300">경력</span>
-        {`${career}년`}
+        {`${data.career}년`}
       </span>
       <LineSeparator />
-      <span className="flex items-center gap-1">
-        {`${confirmCount}건`}
+      <span className="flex items-center gap-1 whitespace-nowrap">
+        {`${data.confirmCount}건`}
         <span className="text-grayscale-300">확정</span>
       </span>
     </div>
@@ -100,29 +80,37 @@ const moverInfoVariants = cva(
 );
 
 const MoverInfo = ({
-  mover,
+  data,
   className,
   size,
-}: MoverInfoProps & { className?: string }) => {
+}: {
+  data: BaseMoverData;
+  className?: string;
+  size?: "fixed" | "responsive";
+}) => {
+  if (!data) return null;
+
   const isResponsive = size === "responsive";
+
   return (
     <div className={cn(moverInfoVariants({ size }), className)}>
-      <ProfileImage imgUrl={mover.imgUrl} />
+      <ProfileImage imgUrl={data.imageUrl} />
       <div
-        className={cn("flex flex-col gap-2", {
+        className={cn("flex flex-col gap-2 w-full", {
           "pc:gap-3": isResponsive,
         })}
       >
-        <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center justify-between">
           <span className="text-lg font-semibold pc:text-2lg">
-            {mover.nickName} 기사님
+            {data.nickname} 기사님
           </span>
           <FavoriteUi
-            isFavorite={mover.isFavorite}
-            favoriteCount={mover.favoriteCount}
+            isFavorite={data.isFavorite}
+            favoriteCount={data.favoriteCount}
           />
         </div>
-        <MoverExperience {...mover} />
+
+        <MoverExperience data={data} size={size} />
       </div>
     </div>
   );
