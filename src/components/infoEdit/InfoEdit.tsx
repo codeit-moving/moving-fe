@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { infoEditSchema, InfoEditFormData } from "@/utils/authValidation";
 import { useRouter } from "next/navigation";
-
+import ConfirmModal from "@/components/common/ConfirmModal";
 interface InfoEditProps {
   isUser: boolean;
   userData: {

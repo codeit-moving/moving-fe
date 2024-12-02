@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import GNB from "@/components/layout/GNB";
 import localFont from "next/font/local";
 import "./globals.css";
-import QuoteGNB from "@/components/layout/QuoteGNB";
+import { cn } from "@/config/clsx";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -11,6 +10,7 @@ const pretendard = localFont({
   variable: "--font-pretendard",
 });
 
+//global로 필요한거 있으면 여기에 넣을께요
 const globalStyles = "text-black-400";
 
 export const metadata: Metadata = {
@@ -28,11 +28,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body
-        className={`${pretendard.variable} font-pretendard antialiased bg-bg-400`}
-      >
-        <GNB />
-        <div className="max-w-[1400px] px-5 mx-auto">{children}</div>
+      <body className={cn(pretendard.variable, "antialiased", globalStyles)}>
+        {children}
       </body>
     </html>
   );
