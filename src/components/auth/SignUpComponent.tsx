@@ -7,7 +7,7 @@ import FormHeader from "@/components/auth/FormHeader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
-import { signUpSchema, AuthFormData } from "@/utils/authValidation";
+import { signUpSchema, SignUpFormData } from "@/utils/authValidation";
 
 interface SignUpComponentProps {
   isUser: boolean;
@@ -36,7 +36,7 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
     trigger,
     formState: { errors, isSubmitting, isValid },
     reset,
-  } = useForm<AuthFormData>({
+  } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     mode: "onChange",
   });
@@ -49,7 +49,7 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
     }
   }, [password, trigger, isConfirmTouched]);
 
-  const onSubmit = async (data: AuthFormData) => {
+  const onSubmit = async (data: SignUpFormData) => {
     try {
       const validationResult = signUpSchema.safeParse(data);
       if (!validationResult.success) {
