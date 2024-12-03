@@ -1,18 +1,59 @@
 import React from "react";
 import Image from "next/image";
+import assets from "@/variables/images";
+import { cva, type VariantProps } from "class-variance-authority";
+import cn from "@/config/clsx";
 import Link from "next/link";
 
-interface ButtonProps {
-  onClick?: () => void;
+// 버튼 스타일 정의
+const buttonVariants = cva(
+  // 기본 클래스
+  "button text-lg font-semibold px-6 py-4",
+  {
+    variants: {
+      variant: {
+        primary: "bg-pr-blue-300 text-gray-50 hover:bg-pr-blue-200",
+        outlined:
+          "bg-transparent text-pr-blue-300 border-[1px] border-pr-blue-300 hover:bg-pr-blue-50",
+        gray: "bg-transparent text-grayscale-300 border-[1px] border-grayscale-200 hover:bg-pr-blue-50",
+      },
+      disabled: {
+        true: "cursor-not-allowed",
+        false: "",
+      },
+      withIcon: {
+        true: "flex items-center justify-center",
+        false: "",
+      },
+    },
+    compoundVariants: [
+      {
+        variant: "primary",
+        disabled: true,
+        className: "bg-gray-100 text-gray-50 hover:bg-gray-100",
+      },
+      {
+        variant: "outlined",
+        disabled: true,
+        className: "text-gray-100 border-gray-100 hover:bg-transparent",
+      },
+    ],
+    defaultVariants: {
+      variant: "primary",
+      disabled: false,
+      withIcon: false,
+    },
+  }
+);
+
+type ButtonVariantProps = Omit<VariantProps<typeof buttonVariants>, "disabled">;
+
+interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    ButtonVariantProps {
   width?: string | number;
   height?: string | number;
   radius?: string | number;
-  children: React.ReactNode;
-  disabled?: boolean;
-  variant?: "primary" | "outlined";
-  type?: "button" | "submit" | "reset";
-  className?: string;
-  withIcon?: boolean;
   href?: string;
 }
 
@@ -26,10 +67,13 @@ interface ButtonProps {
  * // variant 설정
  * <Button variant="primary">Primary Button</Button>
  * <Button variant="outlined">Outlined Button</Button>
+ * <Button variant="gray">Outlined Gray Button</Button>;
+ *
  *
  * // 아이콘이 있는 버튼
  * <Button variant="primary" withIcon>Write Post</Button>
  * <Button variant="outlined" withIcon>New Draft</Button>
+ * <Button variant="gray" withIcon> 기본 정보 수정</Button>
  *
  * // 크기 커스터마이징
  * <Button width="200px" height="50px">Custom Size</Button>
@@ -48,63 +92,50 @@ interface ButtonProps {
  * @param {string} [className] - 추가 스타일링을 위한 클래스명
  * @param {boolean} [withIcon] - 우측에 아이콘 표시 여부
  */
-const Button = ({ ...props }: ButtonProps): JSX.Element => {
-  const {
-    onClick,
-    width = "auto",
-    height = "auto",
-    radius = "16px",
-    children,
-    disabled = false,
-    variant = "primary",
-    type = "button",
-    className = "",
-    withIcon = false,
-    href,
-  } = props;
 
+const Button = ({
+  className = "",
+  onClick,
+  width = "auto",
+  height = "auto",
+  radius = "16px",
+  children,
+  disabled = false,
+  variant = "primary",
+  type = "button",
+  withIcon = false,
+  href,
+  ...rest
+}: ButtonProps): JSX.Element => {
   const formatDimension = (value: string | number) => {
     if (typeof value === "number") return `${value}px`;
     if (typeof value === "string" && !isNaN(Number(value))) return `${value}px`;
     return value;
   };
 
-  const variantClasses = {
-    primary: {
-      default: `bg-pr-blue-300 text-gray-50 text-lg font-semibold p-4 hover:bg-pr-blue-200`,
-      disabled: "bg-gray-100 text-gray-50 cursor-not-allowed",
-    },
-    outlined: {
-      default:
-        "bg-transparent text-pr-blue-300 text-left border border-solid border-pr-blue-300 hover:bg-pr-blue-50",
-      disabled:
-        "bg-transparent text-left text-gray-100 border border-solid border-gray-100 cursor-not-allowed",
-    },
-  };
+  const getStyles = () => {
+    const styles: React.CSSProperties = {
+      borderRadius: formatDimension(radius),
+    };
 
-  const getStyles = () => ({
-    width: formatDimension(width),
-    height: formatDimension(height),
-    borderRadius: formatDimension(radius),
-  });
+    if (width !== "auto") {
+      styles.width = formatDimension(width);
+    }
 
-  const getClassNames = () => {
-    const baseClasses = "button text-lg font-semibold px-6 py-4";
-    const layoutClasses = withIcon ? "flex items-center justify-center" : "";
-    const variantClass =
-      variantClasses[variant][disabled ? "disabled" : "default"];
+    if (height !== "auto") {
+      styles.height = formatDimension(height);
+    }
 
-    return [baseClasses, layoutClasses, variantClass, className]
-      .filter(Boolean)
-      .join(" ");
+    return styles;
   };
 
   const renderIcon = () => {
     if (!withIcon) return null;
-
+    const icon =
+      variant === "gray" ? assets.icons.writingGray : assets.icons.writing;
     return (
       <Image
-        src="/icons/ic_writing.svg"
+        src={icon}
         alt="writing icon"
         width={24}
         height={24}
@@ -118,7 +149,14 @@ const Button = ({ ...props }: ButtonProps): JSX.Element => {
       <Link href={href}>
         <div
           style={getStyles()}
-          className={getClassNames()}
+          className={cn(
+            buttonVariants({
+              variant,
+              disabled,
+              withIcon,
+            }),
+            className
+          )}
           aria-disabled={disabled}
         >
           {children}
@@ -134,7 +172,15 @@ const Button = ({ ...props }: ButtonProps): JSX.Element => {
       disabled={disabled}
       type={type}
       style={getStyles()}
-      className={getClassNames()}
+      className={cn(
+        buttonVariants({
+          variant,
+          disabled,
+          withIcon,
+        }),
+        className
+      )}
+      {...rest}
     >
       {children}
       {renderIcon()}

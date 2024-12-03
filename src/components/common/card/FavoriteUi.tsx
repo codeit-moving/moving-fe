@@ -1,16 +1,12 @@
 import Image from "next/image";
 import assets from "@/variables/images";
 import { formatCount } from "@/utils/utilFunctions";
-
-interface FavoriteUiProps {
-  favoriteCount: number;
-  isFavorite: boolean;
-}
+import { FavoriteFields } from "@/types/mover";
 
 export default function FavoriteUi({
-  favoriteCount,
-  isFavorite,
-}: FavoriteUiProps) {
+  favoriteCount = 0,
+  isFavorite = false,
+}: FavoriteFields) {
   const heartIcon = isFavorite
     ? assets.icons.likeActive
     : assets.icons.likeInactive;

@@ -3,10 +3,14 @@ import ServiceChip, { ChipType } from "../common/card/ServiceChip";
 import { mapServiceType } from "@/utils/utilFunctions";
 import { cva } from "class-variance-authority";
 import CardContainer from "../common/card/CardContainer";
-import { type CardProps, type FullMoverData } from "@/types/mover";
+import {
+  type FavoriteFields,
+  type CardProps,
+  type FullMoverData,
+} from "@/types/mover";
 
 export interface MoverInfoProps extends CardProps {
-  data: FullMoverData;
+  data: FullMoverData & FavoriteFields;
 }
 
 const titleVariants = cva("text-lg font-semibold text-black-300", {

@@ -29,6 +29,7 @@ const assets = {
     writing: "/assets/icons/ic_writing.svg",
     x: "/assets/icons/ic_X.svg",
     xCircle: "/assets/icons/ic_X_circle.svg",
+    writingGray: "/assets/icons/ic_writing_gray.svg",
   },
   images: {
     avatarRed: "/assets/images/img_avatar_red.svg",

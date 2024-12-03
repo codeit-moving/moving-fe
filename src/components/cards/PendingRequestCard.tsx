@@ -4,22 +4,22 @@ import MoverInfo from "../common/card/MoverInfo";
 import ServiceChip, { ChipType } from "../common/card/ServiceChip";
 import CardContainer from "../common/card/CardContainer";
 import { mapServiceType } from "@/utils/utilFunctions";
-import { type CardProps, type BaseMoverData } from "@/types/mover";
+import {
+  type CardProps,
+  type RequestDetails,
+  type FullMoverData,
+  type FavoriteFields,
+  Address,
+} from "@/types/mover";
 import GrayLabel from "../common/card/GrayLabel";
 import Button from "../common/Button";
 import { formatDateWithDay } from "@/utils/utilFunctions";
-interface Address {
-  pickupAddress: string;
-  dropOffAddress: string;
-}
 
-interface RequestDetails {
-  movingDate: string;
-  requestDate: string;
-  cost: number;
-}
-
-interface PendingRequestData extends BaseMoverData, Address, RequestDetails {
+interface PendingRequestData
+  extends FullMoverData,
+    FavoriteFields,
+    RequestDetails,
+    Address {
   service: number;
 }
 

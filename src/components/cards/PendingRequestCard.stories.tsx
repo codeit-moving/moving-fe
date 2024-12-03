@@ -7,6 +7,13 @@ const meta = {
   parameters: {
     layout: "centered",
   },
+  decorators: [
+    (Story) => (
+      <div className="p-4">
+        <Story />
+      </div>
+    ),
+  ],
   tags: ["autodocs"],
 } satisfies Meta<typeof PendingRequestCard>;
 
@@ -32,6 +39,9 @@ const mockData = {
   confirmCount: 12,
   favoriteCount: 22,
   isFavorite: false,
+  introduction: "성실 정확 한 줄 평가",
+  services: [0, 1],
+  regions: [82031, 8202],
   movingDate: "2024-11-30T10:00:00.000Z",
   pickupAddress: "서울특별시 강남구 역삼동 123-456",
   dropOffAddress: "서울특별시 서초구 서초동 789-012",
@@ -43,5 +53,13 @@ export const Default: Story = {
   args: {
     data: mockData,
     size: "responsive",
+  },
+};
+
+export const WithCustomClassName: Story = {
+  args: {
+    data: mockData,
+    size: "responsive",
+    className: "max-w-[800px]",
   },
 };

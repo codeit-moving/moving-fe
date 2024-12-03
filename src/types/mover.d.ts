@@ -13,18 +13,37 @@ export interface BaseMoverData {
   };
   reviewCount: number;
   confirmCount: number;
-  favoriteCount: number;
-  isFavorite: boolean;
-  isDesignated: boolean;
 }
 
+export interface ProfileData {
+  name: string;
+  phoneNumber: string;
+  email: string;
+}
+
+export interface FavoriteFields {
+  favoriteCount: number;
+  isFavorite: boolean;
+}
 export interface FullMoverData extends BaseMoverData {
   introduction: string;
   services: number[];
   regions: number[];
+  isDesignated?: boolean;
 }
 
 export interface CardProps {
   size?: "fixed" | "responsive";
   className?: string;
+}
+
+export interface Address {
+  pickupAddress: string;
+  dropOffAddress: string;
+}
+
+export interface RequestDetails {
+  movingDate: string;
+  requestDate: string;
+  cost: number;
 }

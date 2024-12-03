@@ -1,7 +1,7 @@
 import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import Image from "next/image";
-import { cn } from "@/config/clsx";
+import cn from "@/config/clsx";
 import assets from "@/variables/images";
 
 const chipVariants = cva(
