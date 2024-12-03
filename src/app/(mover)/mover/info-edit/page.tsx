@@ -3,7 +3,7 @@ import InfoEdit from "@/components/infoEdit/InfoEdit";
 const styles = {
   container: `flex flex-col items-center w-full mt-[57px]
     tablet:w-[327px] mx-auto px-0
-    pc:w-[1200px] pc:mt-[26px] pc:px-[24px] pc:py-[32px]`,
+    pc:w-[1400px] pc:mt-[26px] pc:px-[24px] pc:py-[32px]`,
 };
 
 export default function InfoEditPage() {

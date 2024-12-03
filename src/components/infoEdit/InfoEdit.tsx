@@ -4,7 +4,7 @@ import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { infoEditSchema, InfoEditFormData } from "@/utils/authValidation";
 import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -19,7 +19,7 @@ interface InfoEditProps {
 }
 
 const styles = {
-  container: `flex flex-col items-center w-full px-[24px] 
+  container: `relative flex flex-col items-center w-full px-[24px] 
     tablet:px-0`,
   pcContainer: `pc:flex pc:flex-col pc:items-center pc:w-full`,
   pcForm: `pc:flex pc:flex-row pc:gap-[72px]`,
@@ -29,6 +29,8 @@ const styles = {
   buttonContainer: `flex flex-col gap-[8px] mt-[24px] pc:flex-row-reverse pc:gap-[32px] w-full`,
   button: `flex-1 text-center`,
   title: `w-full text-2lg font-bold text-black-400`,
+  overlay: `fixed inset-0 bg-black-100 bg-opacity-50 z-40`,
+  modalWrapper: `absolute top-0 left-0 w-full h-full flex items-center justify-center z-50`,
 };
 
 // FormField 컴포넌트로 반복되는 구조 추출
@@ -68,6 +70,7 @@ const FormField = ({
 
 export default function InfoEdit({ isUser, userData }: InfoEditProps) {
   const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
 
   const {
     register,
@@ -98,10 +101,12 @@ export default function InfoEdit({ isUser, userData }: InfoEditProps) {
     try {
       const hasPasswordChange = data.currentPassword && data.newPassword;
       const userType = isUser ? "유저" : "기사";
+
       if (userData.currentPassword !== data.currentPassword) {
-        alert("현재 비밀번호가 일치하지 않습니다.");
+        setShowModal(true);
         return;
       }
+
       console.log(
         `${userType} 폼 제출:`,
         data.name,
@@ -120,6 +125,19 @@ export default function InfoEdit({ isUser, userData }: InfoEditProps) {
 
   return (
     <div className={styles.container}>
+      {showModal && (
+        <>
+          <div className={styles.overlay} />
+          <div className={styles.modalWrapper}>
+            <ConfirmModal
+              title="비밀번호 오류"
+              description="현재 비밀번호가 일치하지 않습니다."
+              buttonText="확인"
+              onClose={() => setShowModal(false)}
+            />
+          </div>
+        </>
+      )}
       <p className={styles.title}>기본정보 수정</p>
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.pcForm}>
