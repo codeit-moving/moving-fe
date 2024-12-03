@@ -16,38 +16,6 @@ interface ButtonProps {
   href?: string;
 }
 
-/**
- * 범용적으로 사용할 수 있는 Button 컴포넌트
- *
- * @example
- * // 기본 사용법
- * <Button onClick={() => console.log('clicked')}>Click me</Button>
- *
- * // variant 설정
- * <Button variant="primary">Primary Button</Button>
- * <Button variant="outlined">Outlined Button</Button>
- *
- * // 아이콘이 있는 버튼
- * <Button variant="primary" withIcon>Write Post</Button>
- * <Button variant="outlined" withIcon>New Draft</Button>
- *
- * // 크기 커스터마이징
- * <Button width="200px" height="50px">Custom Size</Button>
- *
- * // 비활성화
- * <Button disabled>Disabled Button</Button>
- *
- * @param {Function} onClick - 클릭 이벤트 핸들러
- * @param {string|number} [width] - 버튼의 너비 (px, rem, % 등 단위 포함)
- * @param {string|number} [height] - 버튼의 높이 (px, rem, % 등 단위 포함)
- * @param {string|number} [radius] - 버튼의 모서리 둥글기 (기본값: 16px)
- * @param {React.ReactNode} children - 버튼 내부 콘텐츠
- * @param {boolean} [disabled] - 버튼 비활성화 여부
- * @param {'primary'|'outlined'} [variant] - 버튼 스타일 변형
- * @param {'button'|'submit'|'reset'} [type] - 버튼의 HTML type 속성
- * @param {string} [className] - 추가 스타일링을 위한 클래스명
- * @param {boolean} [withIcon] - 우측에 아이콘 표시 여부
- */
 const Button = ({ ...props }: ButtonProps): JSX.Element => {
   const {
     onClick,
@@ -143,7 +111,3 @@ const Button = ({ ...props }: ButtonProps): JSX.Element => {
 };
 
 export default Button;
-
-/**TODO
- * 1. 전역 폰트 설정
- */
