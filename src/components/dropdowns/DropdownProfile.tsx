@@ -11,6 +11,7 @@ import {
   ProfileImage,
   DropdownUserName,
 } from "../common/Dropdown";
+import { logout } from "@/api/auth";
 
 import { PROFILE_CUSTOMER, PROFILE_MOVER } from "@/variables/dropdown";
 
@@ -30,7 +31,6 @@ export default function DropdownProfile({
   disabled = false,
 }: DropdownProfileProps) {
   const [isOpen, setIsOpen] = useState(false);
-
   const dropdownStyles = {
     base: "relative flex flex-row gap-4 items-center justify-between rounded-full cursor-pointer",
     able: "",
@@ -78,10 +78,10 @@ export default function DropdownProfile({
     "cursor-pointer"
   );
 
-  const handleSignOutClick = () => {
-    // 임시. 로그아웃 함수 호출
-    console.log("로그아웃 함수 호출");
+  const handleSignOutClick = async () => {
+    await logout();
     setIsOpen(false);
+    window.location.href = "/";
   };
 
   const customerItemsWithDivider = [

@@ -7,15 +7,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { infoEditSchema, InfoEditFormData } from "@/utils/authValidation";
 import { useRouter } from "next/navigation";
-import ConfirmModal from "@/components/modals/ConfirmModal";
 import toast from "react-hot-toast";
+import { editUserInfo } from "@/api/user";
+import { UserInfo } from "@/types/auth";
+import NiceModal from "@ebay/nice-modal-react";
+import ConfirmModal from "@/components/modals/ConfirmModal";
+import { passwordCheck } from "@/api/auth";
 
 interface InfoEditProps {
   isUser: boolean;
   userData: {
-    name: string;
-    email: string;
-    phoneNumber: string;
+    user: {
+      name: string;
+      email: string;
+      phoneNumber: string;
+      isOAuth: boolean;
+      id: number;
+    };
   };
 }
 
@@ -30,8 +38,6 @@ const styles = {
   buttonContainer: `flex flex-col gap-[8px] mt-[24px] pc:flex-row-reverse pc:gap-[32px] w-full`,
   button: `flex-1 text-center`,
   title: `w-full text-2lg font-bold text-black-400`,
-  overlay: `fixed inset-0 bg-black-100 bg-opacity-50 z-40`,
-  modalWrapper: `absolute top-0 left-0 w-full h-full flex items-center justify-center z-50`,
 };
 
 const FormField = ({
@@ -68,9 +74,12 @@ const FormField = ({
   </div>
 );
 
+NiceModal.register("confirm-modal", ConfirmModal);
+
 export default function InfoEdit({ isUser, userData }: InfoEditProps) {
   const router = useRouter();
-  const [showModal, setShowModal] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [modalShown, setModalShown] = useState(false);
 
   const {
     register,
@@ -82,14 +91,53 @@ export default function InfoEdit({ isUser, userData }: InfoEditProps) {
     resolver: zodResolver(infoEditSchema),
     mode: "onChange",
     defaultValues: {
-      name: userData.name,
-      email: userData.email,
-      phoneNumber: userData.phoneNumber,
+      name: userData.user.name,
+      email: userData.user.email,
+      phoneNumber: userData.user.phoneNumber,
       currentPassword: "",
       newPassword: "",
       newPasswordConfirm: "",
     },
   });
+
+  React.useEffect(() => {
+    if (!isAuthenticated && !modalShown) {
+      setModalShown(true);
+      const showPasswordConfirm = async () => {
+        try {
+          await NiceModal.show("confirm-modal", {
+            title: "비밀번호 확인",
+            description: "정보 수정을 위해 현재 비밀번호를 입력해주세요.",
+            buttonText: "확인",
+            onConfirm: async (password: string) => {
+              try {
+                await passwordCheck(password);
+                setIsAuthenticated(true);
+                NiceModal.remove("confirm-modal");
+              } catch (error) {
+                toast.error("비밀번호가 일치하지 않습니다.", {
+                  position: "bottom-center",
+                });
+                return false; // 모달 유지
+              }
+            },
+            onCancel: () => {
+              router.back();
+            },
+          });
+        } catch (error) {
+          console.error("Modal error:", error);
+          router.back();
+        }
+      };
+
+      showPasswordConfirm();
+    }
+  }, [isAuthenticated, modalShown]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const values = watch();
 
@@ -98,66 +146,50 @@ export default function InfoEdit({ isUser, userData }: InfoEditProps) {
   };
 
   const onSubmit = async (data: InfoEditFormData) => {
+    const userInfo: UserInfo = {
+      name: data.name,
+      phoneNumber: data.phoneNumber,
+    };
+
+    if (data.newPassword && data.currentPassword) {
+      userInfo.currentPassword = data.currentPassword;
+      userInfo.newPassword = data.newPassword;
+    }
     try {
-      const hasPasswordChange = data.currentPassword && data.newPassword;
-      const userType = isUser ? "유저" : "기사";
+      await editUserInfo(userInfo);
 
-      // if (data.currentPassword && userData.password !== data.currentPassword) {
-      //   setShowModal(true);
-      //   return;
-      // }
-
-      // 현재 비밀번호 확인시 일치하지 않으면 모달 or 토스트메시지 띄우는 오류 로직 작성
-
-      console.log(
-        `${userType} 폼 제출:`,
-        data.name,
-        data.phoneNumber,
-        hasPasswordChange && data.newPassword
-      );
       isUser ? router.push("/find-mover") : router.push("/mover/my-page");
 
       toast.success("기본정보 수정이 완료되었습니다.", {
-        duration: 3000,
         position: "bottom-center",
         icon: "👏",
       });
       reset();
-    } catch (error) {
-      console.error("수정 실패:", error);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.data?.message ||
+        error.response?.data?.message ||
+        "정보 수정에 실패했습니다.";
+
+      toast.error(errorMessage, {
+        position: "bottom-center",
+      });
     }
   };
 
   const hasErrors = Object.keys(errors).length > 0;
 
-  // 버튼 활성화 조건을 확인하는 함수 추가
   const isSubmitDisabled = () => {
-    const hasCurrentPassword = !values.currentPassword;
     const isPasswordChangeValid =
       values.newPassword || values.newPasswordConfirm
         ? values.newPassword && values.newPasswordConfirm
         : true;
 
-    return (
-      hasCurrentPassword || !isPasswordChangeValid || (hasErrors && isDirty)
-    );
+    return !isPasswordChangeValid || (hasErrors && isDirty);
   };
 
   return (
     <div className={styles.container}>
-      {showModal && (
-        <>
-          <div className={styles.overlay} />
-          <div className={styles.modalWrapper}>
-            <ConfirmModal
-              title="비밀번호 오류"
-              description="현재 비밀번호가 일치하지 않습니다."
-              buttonText="확인"
-              onClose={() => setShowModal(false)}
-            />
-          </div>
-        </>
-      )}
       <p className={styles.title}>기본정보 수정</p>
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.pcForm}>
@@ -226,7 +258,9 @@ export default function InfoEdit({ isUser, userData }: InfoEditProps) {
             children="취소"
             variant="outlined"
             className={styles.button}
-            onClick={() => router.push("/")}
+            onClick={() => {
+              isUser ? router.back() : router.push("/mover/my-page");
+            }}
           />
         </div>
       </form>

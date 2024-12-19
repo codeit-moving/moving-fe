@@ -73,8 +73,8 @@ export default function ReviewModal({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col bg-white w-full rounded-t-[32px] pt-[32px] pb-[40px] px-6
-  tablet:rounded-[32px] tablet:w-[375px] pc:w-[608px]"
+      className="flex flex-col bg-white w-full h-[550px] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 rounded-t-[32px] pt-[32px] pb-[40px] px-6
+  tablet:rounded-[32px] tablet:w-[375px] tablet:h-[650px] pc:w-[608px] pc:h-[750px]"
     >
       <div
         className="text-2lg font-bold text-black-400 flex justify-between items-center mb-[26px]

@@ -10,6 +10,8 @@ import React from "react";
 import { signUpSchema, SignUpFormData } from "@/utils/authValidation";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useSignUpStore } from "@/store/signupStore";
+import { validate } from "@/api/auth";
 
 interface SignUpComponentProps {
   isUser: boolean;
@@ -42,14 +44,6 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
     mode: "onChange",
   });
 
-  const password = watch("password");
-
-  React.useEffect(() => {
-    if (password && isConfirmTouched) {
-      trigger("passwordConfirm");
-    }
-  }, [password, trigger, isConfirmTouched]);
-
   const onSubmit = async (data: SignUpFormData) => {
     try {
       const validationResult = signUpSchema.safeParse(data);
@@ -57,31 +51,43 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
         throw new Error("유효성 검사 실패");
       }
 
+      useSignUpStore.getState().setUserData({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        phoneNumber: data.phoneNumber,
+      });
+
+      await validate({
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+      });
+
       if (isUser) {
-        // API 호출 로직
         router.push("/me/profile");
         toast.success("프로필을 등록하여 회원가입을 완성해주세요.", {
-          duration: 3000,
           position: "bottom-center",
           icon: "👤",
         });
       } else {
-        // API 호출 로직
         router.push("/mover/profile");
         toast.success("프로필을 등록하여 회원가입을 완성해주세요.", {
-          duration: 3000,
           position: "bottom-center",
           icon: "👤",
         });
       }
 
-      // API 호출 로직
-      console.log("폼 제출:", data);
-
       // 성공 시 폼 초기화
       reset();
-    } catch (error) {
-      console.error("회원가입 실패:", error);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.data?.message ||
+        error.response?.data?.message ||
+        "다시 시도해주세요.";
+
+      toast.error(errorMessage, {
+        position: "bottom-center",
+      });
     }
   };
 
@@ -133,7 +139,13 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
             비밀번호
           </label>
           <Input
-            {...register("password")}
+            {...register("password", {
+              onChange: () => {
+                if (isConfirmTouched) {
+                  trigger("passwordConfirm");
+                }
+              },
+            })}
             type="password"
             placeholder="비밀번호를 입력해주세요."
             isAuth={true}

@@ -10,6 +10,7 @@ import { loginSchema, LoginFormData } from "@/utils/authValidation";
 import React from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { login } from "@/api/auth";
 
 interface SignUpComponentProps {
   isUser: boolean;
@@ -40,18 +41,23 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
   });
 
   const onSubmit = async (data: LoginFormData) => {
+    const validationResult = loginSchema.safeParse(data);
+    if (!validationResult.success) {
+      throw new Error("유효성 검사 실패");
+    }
     try {
-      const validationResult = loginSchema.safeParse(data);
-      if (!validationResult.success) {
-        throw new Error("유효성 검사 실패");
-      }
-      // API 호출 로직
-      console.log("폼 제출:", data);
+      await login(data);
       reset();
-
       isUser ? router.push("/find-mover") : router.push("/mover/request");
-    } catch (error) {
-      console.error("로그인 실패:", error);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.data?.message ||
+        error.response?.data?.message ||
+        "로그인에 실패했습니다.";
+
+      toast.error(errorMessage, {
+        position: "bottom-center",
+      });
     }
   };
 

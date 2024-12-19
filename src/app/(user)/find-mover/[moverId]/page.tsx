@@ -16,12 +16,11 @@ import Loader from "@/components/common/Loader";
 import MoversReviewList from "@/components/review/MoversReviewList";
 
 const styles = {
-  topContainer:
-    "mb-[24px] tablet:mb-[40px] pc:flex pc:flex-row pc:gap-[90px] pc:item-center pc:justify-center",
+  topContainer: "pc:flex pc:flex-row pc:gap-[90px] pc:justify-center",
   container: "flex flex-col gap-[24px] pc:gap-[40px] pc:max-w-[920px]",
   pcShareContainer:
     "hidden pc:whitespace-nowrap pc:flex pc:flex-col pc:gap-[40px]",
-  shareContainer: "pc:hidden",
+  shareContainer: "flex flex-col gap-[24px] pc:hidden",
   shareText: "text-lg font-semibold text-black-400 pc:text-xl",
   contentContainer: "flex flex-col gap-[16px] pc:gap-[32px]",
   title: "text-lg font-bold text-black-400 pc:text-2xl",
@@ -79,8 +78,8 @@ export default function MoverDetailPage() {
       <div className={styles.topContainer}>
         <div className={styles.container}>
           <MoverInfoCard data={data} />
-          <LineSeparator direction="horizontal" />
           <div className={styles.shareContainer}>
+            <LineSeparator direction="horizontal" />
             <ShareButtons
               variant="mover"
               url={fullUrl}

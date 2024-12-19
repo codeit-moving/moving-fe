@@ -85,3 +85,12 @@ export async function getMoverProfile(): Promise<MoverMyPageResponse> {
   const response = await axiosInstance.get(`${PATH}/my-profile`);
   return response.data;
 }
+
+export const editMoverProfile = async (userData: FormData) => {
+  const response = await axiosInstance.patch(`${PATH}`, userData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};

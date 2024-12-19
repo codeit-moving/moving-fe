@@ -78,7 +78,7 @@ export const infoEditSchema = z
     name: z.string().regex(REGEX.name, ERROR_MESSAGES.name),
     email: z.string().email(ERROR_MESSAGES.email),
     phoneNumber: z.string().regex(REGEX.phone, ERROR_MESSAGES.phone),
-    currentPassword: z.string().regex(REGEX.password, ERROR_MESSAGES.password),
+    currentPassword: z.string().optional().nullable(),
     newPassword: z.string().optional().nullable(),
     newPasswordConfirm: z.string().optional().nullable(),
   })

@@ -14,18 +14,33 @@ import assets from "@/variables/images";
 import { REGION_CODES, REGION_TEXTS } from "@/variables/regions";
 import { SERVICE_CODES, SERVICE_TEXTS } from "@/variables/service";
 import toast from "react-hot-toast";
+import { editCustomerProfile } from "@/api/customer";
+import { useSignUpStore } from "@/store/signupStore";
+import { customerSignup, moverSignup } from "@/api/auth";
+import { editMoverProfile } from "@/api/mover";
 
 interface ProfileProps {
   isUser: boolean;
   isEdit: boolean;
   userData?: {
-    nickname?: string;
-    career?: string;
-    introduction?: string;
-    description?: string;
-    services?: number[];
-    regions?: number[];
-    imageUrl?: string;
+    user: {
+      customer?: {
+        id: number;
+        services: number[];
+        regions: number[];
+        imageUrl: string;
+      };
+      mover?: {
+        id: number;
+        nickname: string;
+        career: string;
+        introduction: string;
+        description: string;
+        services: number[];
+        regions: number[];
+        imageUrl: string;
+      };
+    };
   };
 }
 
@@ -61,11 +76,7 @@ const FormField = ({
 }) => (
   <div className={styles.formItem}>
     <label htmlFor={name} className={styles.formLabel}>
-      {label}
-      {(name === "services" || name === "regions") && (
-        <span className="text-pr-blue-300 text-lg font-semibold">*</span>
-      )}{" "}
-      <span className="text-pr-blue-300 text-lg font-semibold">*</span>
+      {label} <span className="text-pr-blue-300 text-lg font-semibold">*</span>
     </label>
     <Input
       {...register(name)}
@@ -80,6 +91,24 @@ const FormField = ({
 
 export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
   const router = useRouter();
+  const defaultValues = isUser
+    ? {
+        services: userData?.user?.customer?.services ?? [],
+        regions: userData?.user?.customer?.regions ?? [],
+        imageUrl: userData?.user?.customer?.imageUrl ?? "",
+      }
+    : {
+        nickname: userData?.user?.mover?.nickname ?? "",
+        career: userData?.user?.mover?.career
+          ? String(userData?.user?.mover?.career)
+          : "",
+        introduction: userData?.user?.mover?.introduction ?? "",
+        description: userData?.user?.mover?.description ?? "",
+        services: userData?.user?.mover?.services ?? [],
+        regions: userData?.user?.mover?.regions ?? [],
+        imageUrl: userData?.user?.mover?.imageUrl ?? "",
+      };
+
   const {
     register,
     handleSubmit,
@@ -91,20 +120,14 @@ export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema(isUser)),
     mode: "onChange",
-    defaultValues: {
-      nickname: userData?.nickname ?? "",
-      career: userData?.career ?? undefined,
-      introduction: userData?.introduction ?? "",
-      description: userData?.description ?? "",
-      services: userData?.services ?? [],
-      regions: userData?.regions ?? [],
-      imageUrl: userData?.imageUrl ?? "",
-    },
+    defaultValues,
   });
 
   const values = watch();
   const [previewImage, setPreviewImage] = React.useState<string>(
-    userData?.imageUrl || assets.images.imagePlaceholder
+    isUser
+      ? userData?.user?.customer?.imageUrl || assets.images.imagePlaceholder
+      : userData?.user?.mover?.imageUrl || assets.images.imagePlaceholder
   );
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -119,69 +142,110 @@ export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
       : errors[fieldName]?.message;
   };
 
-  const onSubmit = async (data: ProfileFormData) => {
+  const validateForm = (data: ProfileFormData) => {
     if (isUser && (data.regions.length < 1 || data.regions.length > 3)) {
       setError("regions", {
         type: "manual",
         message: "1개 이상 3개 이하로 선택해주세요.",
       });
-      return;
+      return false;
     }
     if (!isUser && (data.regions.length === 0 || data.regions.length > 5)) {
       setError("regions", {
         type: "manual",
         message: "1개 이상 5개 이하로 선택해주세요.",
       });
-      return;
+      return false;
     }
     if (previewImage === assets.images.imagePlaceholder) {
       setError("imageUrl", {
         type: "manual",
         message: "이미지를 선택해주세요.",
       });
-      return;
+      return false;
+    }
+    return true;
+  };
+
+  const createFormData = (values: ProfileFormData) => {
+    const formData = new FormData();
+    formData.append("services", JSON.stringify(values.services));
+    formData.append("regions", JSON.stringify(values.regions));
+
+    if (fileInputRef.current?.files?.[0]) {
+      formData.append("imageUrl", fileInputRef.current.files[0]);
     }
 
+    if (!isUser) {
+      if (values.nickname) formData.append("nickname", values.nickname);
+      if (values.career) formData.append("career", values.career);
+      if (values.introduction)
+        formData.append("introduction", values.introduction);
+      if (values.description)
+        formData.append("description", values.description);
+    }
+
+    if (!isEdit) {
+      const signUpState = useSignUpStore.getState();
+      formData.append("email", signUpState.userEmail);
+      formData.append("password", signUpState.userPassword);
+      formData.append("name", signUpState.userName);
+      formData.append("phoneNumber", signUpState.userPhone);
+      formData.append("isOAuth", "false");
+    }
+
+    return formData;
+  };
+
+  const handleSuccess = (isEdit: boolean) => {
+    const message = isEdit
+      ? "프로필 수정이 완료되었습니다."
+      : "프로필 등록이 완료되었습니다.";
+    const icon = isEdit ? "👏" : "🎉";
+
+    toast.success(message, {
+      position: "bottom-center",
+      icon,
+    });
+
+    reset();
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const onSubmit = async (data: ProfileFormData) => {
+    if (!validateForm(data)) return;
+
     try {
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        if (key === "services" || key === "regions") {
-          formData.append(key, JSON.stringify(value));
-        } else if (value && typeof value === "string" && key !== "imageUrl") {
-          formData.append(key, value);
-        }
-      });
-
-      if (fileInputRef.current?.files?.[0]) {
-        formData.append("imageUrl", fileInputRef.current.files[0]);
-      }
-
-      // 테스트 확인 코드
-      formData.forEach((value, key) => {
-        console.log(`${key}:`, value);
-      });
+      const formData = createFormData(values);
 
       if (isEdit) {
-        console.log(`${isUser ? "사용자" : "기사"} 폼 수정 제출`);
-        isUser ? router.push("/find-mover") : router.push("/mover/my-page");
-        toast.success("프로필 수정이 완료되었습니다.", {
-          duration: 3000,
-          position: "bottom-center",
-          icon: "👏",
-        });
+        if (isUser) {
+          await editCustomerProfile(formData);
+          router.push("/find-mover");
+        } else {
+          await editMoverProfile(formData);
+          router.push("/mover/my-page");
+        }
       } else {
-        console.log(`${isUser ? "사용자" : "기사"} 폼 등록 제출`);
-        isUser ? router.push("/find-mover") : router.push("/mover/request");
-        toast.success("프로필 등록이 완료되었습니다.", {
-          duration: 3000,
-          position: "bottom-center",
-          icon: "🎉",
-        });
+        if (isUser) {
+          await customerSignup(formData);
+          router.push("/auth/login");
+        } else {
+          await moverSignup(formData);
+          router.push("/mover/auth/login");
+        }
       }
-      reset();
-      fileInputRef.current && (fileInputRef.current.value = "");
-    } catch (error) {
-      console.error("수정 실패:", error);
+
+      handleSuccess(isEdit);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.data?.message ||
+        error.response?.data?.message ||
+        "정보 수정에 실패했습니다.";
+
+      toast.error(errorMessage, {
+        position: "bottom-center",
+      });
     }
   };
 
@@ -262,7 +326,7 @@ export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
                 {isEdit && (
                   <Image
                     src={assets.icons.pencil}
-                    className="absolute left-[72px] top-[5px] bg-white border-gray-300 border-solid border-[1.5px] rounded-md p-[3px]"
+                    className="absolute cursor-pointer left-[72px] top-[5px] bg-white border-gray-300 border-solid border-[1.5px] rounded-md p-[3px]"
                     width={22}
                     height={22}
                     alt="pencil"
@@ -293,7 +357,10 @@ export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
                   className={`${styles.formItem} border-none pc:pb-[0px] pc:mb-[0px] hidden pc:flex`}
                 >
                   <label className={styles.formLabel} htmlFor="description">
-                    상세 설명
+                    상세 설명{" "}
+                    <span className="text-pr-blue-300 text-lg font-semibold">
+                      *
+                    </span>
                   </label>
                   <Textarea
                     {...register("description")}
@@ -383,20 +450,24 @@ export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
                 )}
               </label>
               <div className="flex flex-row flex-wrap gap-[8px] w-[277px] mt-2 pc:mt-8 pc:w-[416px]">
-                {Object.values(REGION_CODES).map((code) => (
-                  <CheckboxChip
-                    key={code}
-                    text={REGION_TEXTS[code]}
-                    state={values.regions.includes(code)}
-                    onStateChange={(checked: boolean) => {
-                      let newRegions: number[];
-                      newRegions = checked
-                        ? [...values.regions, code]
-                        : values.regions.filter((region) => region !== code);
-                      setValue("regions", newRegions, { shouldValidate: true });
-                    }}
-                  />
-                ))}
+                {Object.values(REGION_CODES)
+                  .filter((code) => code !== 82)
+                  .map((code) => (
+                    <CheckboxChip
+                      key={code}
+                      text={REGION_TEXTS[code]}
+                      state={values.regions.includes(code)}
+                      onStateChange={(checked: boolean) => {
+                        let newRegions: number[];
+                        newRegions = checked
+                          ? [...values.regions, code]
+                          : values.regions.filter((region) => region !== code);
+                        setValue("regions", newRegions, {
+                          shouldValidate: true,
+                        });
+                      }}
+                    />
+                  ))}
               </div>
               {errors.regions && (
                 <p className={styles.errorMessage}>{errors.regions.message}</p>
@@ -436,7 +507,9 @@ export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
               children="취소"
               variant="outlined"
               className="flex-1 text-center"
-              onClick={() => router.push("/")}
+              onClick={() => {
+                isUser ? router.back() : router.push("/mover/my-page");
+              }}
             />
           )}
         </div>
