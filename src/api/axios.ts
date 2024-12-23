@@ -102,6 +102,23 @@ axiosInstance.interceptors.response.use(
       }
     }
 
+    // response error handle
+    if (error.response) {
+      console.error("error.response", error.response.data);
+      return Promise.reject({
+        message: error.response?.data.message,
+        status: error.response?.status,
+      });
+    }
+
+    //request error handle
+    if (error.request) {
+      console.error("error.request", error.request);
+      return Promise.reject({ message: error.request?.responseText });
+    }
+
+    console.error("error", error.message);
+
     return Promise.reject(error);
   }
 );

@@ -14,6 +14,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useGetMoverDetail } from "@/api/query-hooks/mover";
 import Loader from "@/components/common/Loader";
 import MoversReviewList from "@/components/review/MoversReviewList";
+import { useFavoriteMutation } from "@/api/mutation-hooks/mover";
 
 const styles = {
   topContainer: "pc:flex pc:flex-row pc:gap-[90px] pc:justify-center",
@@ -43,27 +44,22 @@ export default function MoverDetailPage() {
   console.log(fullUrl);
 
   const { data, isPending, isError } = useGetMoverDetail(Number(moverId));
-  const [isDesignated, setIsDesignated] = useState<boolean>(false);
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
+  const { mutate, isPending: isFavoriting } = useFavoriteMutation();
 
   const handleFavorite = async () => {
-    try {
-      setIsFavorite(!isFavorite);
-      // API 호출 로직
-      // await favoriteAPI(moverId);
-    } catch (error) {
-      // 에러 처리
-    }
+    if (!data || isFavoriting) return;
+    mutate({ moverId: Number(moverId), isFavorite: !data.isFavorite });
   };
 
   const handleQuoteRequest = async () => {
     try {
-      setIsDesignated(!isDesignated);
-      // await requestQuote(moverId);
     } catch (error) {
       // 에러 처리
     }
   };
+
+  console.log(data);
 
   if (isPending) {
     return <Loader msg="기사님 상세 정보 불러오는중" />;
@@ -134,11 +130,11 @@ export default function MoverDetailPage() {
         <div className={styles.pcShareContainer}>
           <QuoteButtonGroup
             isPc={true}
-            isFavorite={isFavorite}
-            disabled={isDesignated}
+            isFavorite={data.isFavorite}
+            disabled={data.isDesignated}
             moverNickname={data.nickname}
             buttonText={
-              isDesignated ? "지정 견적 요청 완료" : "지정 견적 요청하기"
+              data.isDesignated ? "지정 견적 요청 완료" : "지정 견적 요청하기"
             }
             onFavoriteClick={handleFavorite}
             onButtonClick={handleQuoteRequest}
@@ -157,11 +153,13 @@ export default function MoverDetailPage() {
         </div>
       </div>
       <QuoteButtonGroup
-        isFavorite={isFavorite}
-        disabled={isDesignated}
+        isFavorite={data.isFavorite}
+        disabled={data.isDesignated}
         onFavoriteClick={handleFavorite}
         onButtonClick={handleQuoteRequest}
-        buttonText={isDesignated ? "지정 견적 요청 완료" : "지정 견적 요청하기"}
+        buttonText={
+          data.isDesignated ? "지정 견적 요청 완료" : "지정 견적 요청하기"
+        }
       />
     </>
   );
