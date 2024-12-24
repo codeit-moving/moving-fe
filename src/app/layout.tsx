@@ -51,7 +51,7 @@ export default function RootLayout({
               <QuoteGNBWrapper />
               {children}
               <Toaster />
-              {isDevelopment() && <ReactQueryDevtoolsClient />}{" "}
+              {isDevelopment() && <ReactQueryDevtoolsClient />}
               {/* Development 환경에서만 렌더링 */}
             </TanstackQueryClientProvider>
           </NiceModalProvider>

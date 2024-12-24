@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 import LineSeparator from "@/components/common/LineSeparator";
 import { SERVICE_TEXTS } from "@/variables/service";
 import { REGION_TEXTS } from "@/variables/regions";
-import { useState } from "react";
 import QuoteButtonGroup from "@/components/common/QuoteButtonGroup";
 import ShareButtons from "@/components/common/ShareButtons";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -15,6 +14,11 @@ import { useGetMoverDetail } from "@/api/query-hooks/mover";
 import Loader from "@/components/common/Loader";
 import MoversReviewList from "@/components/review/MoversReviewList";
 import { useFavoriteMutation } from "@/api/mutation-hooks/mover";
+import NiceModal, { useModal } from "@ebay/nice-modal-react";
+import QuoteRequestModal from "@/components/modals/QuoteRequestModal";
+import { useDesignatedMoverMutation } from "@/api/mutation-hooks/movingRequest";
+import BackDrop from "@/components/modals/BackDrop";
+import { mover } from "@/components/dropdowns/DropdownProfile.stories";
 
 const styles = {
   topContainer: "pc:flex pc:flex-row pc:gap-[90px] pc:justify-center",
@@ -33,6 +37,18 @@ const styles = {
     "flex flex-col items-center justify-center gap-[24px] p-[80px] mb-auto text-lg text-grayscale-400",
 };
 
+const QuoteRequestModal_ = NiceModal.create(() => {
+  const modal = useModal();
+
+  return (
+    <BackDrop>
+      <QuoteRequestModal onClose={() => modal.remove()} />
+    </BackDrop>
+  );
+});
+
+NiceModal.register("QuoteRequestModal", QuoteRequestModal_);
+
 export default function MoverDetailPage() {
   const { moverId } = useParams();
   const pathname = usePathname();
@@ -41,25 +57,13 @@ export default function MoverDetailPage() {
     searchParams.toString() ? `?${searchParams.toString()}` : ""
   }`;
 
+  const moverIdNum = Number(moverId);
+
   console.log(fullUrl);
 
-  const { data, isPending, isError } = useGetMoverDetail(Number(moverId));
-
+  const { data, isPending, isError } = useGetMoverDetail(moverIdNum);
   const { mutate, isPending: isFavoriting } = useFavoriteMutation();
-
-  const handleFavorite = async () => {
-    if (!data || isFavoriting) return;
-    mutate({ moverId: Number(moverId), isFavorite: !data.isFavorite });
-  };
-
-  const handleQuoteRequest = async () => {
-    try {
-    } catch (error) {
-      // 에러 처리
-    }
-  };
-
-  console.log(data);
+  const { mutate: toggleDesignatedMover } = useDesignatedMoverMutation();
 
   if (isPending) {
     return <Loader msg="기사님 상세 정보 불러오는중" />;
@@ -68,6 +72,20 @@ export default function MoverDetailPage() {
   if (isError || !data) {
     return null;
   }
+
+  const handleFavorite = async () => {
+    if (isFavoriting) return;
+    mutate({ moverId: moverIdNum, isFavorite: !data.isFavorite });
+  };
+
+  const handleQuoteRequest = async () => {
+    toggleDesignatedMover({
+      moverId: moverIdNum,
+      isDesignated: data.isDesignated || false,
+    });
+  };
+
+  console.log(data);
 
   return (
     <>
@@ -121,10 +139,7 @@ export default function MoverDetailPage() {
             </div>
           </div>
           <LineSeparator direction="horizontal" />
-          <MoversReviewList
-            totalRating={data.rating}
-            moverId={Number(moverId)}
-          />
+          <MoversReviewList totalRating={data.rating} moverId={moverIdNum} />
         </div>
 
         <div className={styles.pcShareContainer}>
@@ -158,7 +173,7 @@ export default function MoverDetailPage() {
         onFavoriteClick={handleFavorite}
         onButtonClick={handleQuoteRequest}
         buttonText={
-          data.isDesignated ? "지정 견적 요청 완료" : "지정 견적 요청하기"
+          data.isDesignated ? "지정 견적 요청 취소" : "지정 견적 요청하기"
         }
       />
     </>

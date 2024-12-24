@@ -1,4 +1,16 @@
 import { QueryClient, MutationCache } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+
+interface ApiError extends Error {
+  response?: {
+    data: {
+      message: string;
+      data?: {
+        message: string;
+      };
+    };
+  };
+}
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -10,12 +22,20 @@ export const queryClient = new QueryClient({
       retry: 1,
     },
   },
-  // 나중에 모달로 Mutation 에러 처리하기 위해 추가
-  // mutationCache: new MutationCache({
-  //   onError: (error) => {
-  //     console.error('Mutation Error', error.message || 'Unknown Error');
-  //     onModalOpen({ msg: error.message });
-  //   },
+  mutationCache: new MutationCache({
+    onError: (error: unknown) => {
+      const apiError = error as ApiError;
+      const message =
+        apiError.response?.data?.data?.message ||
+        apiError.response?.data?.message;
+
+      if (message) {
+        toast.error(message, {
+          position: "top-center",
+        });
+      }
+    },
+  }),
 });
 
 export default queryClient;
