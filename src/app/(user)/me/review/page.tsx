@@ -55,9 +55,9 @@ export default function MyReviewPage() {
   const searchParams = useSearchParams();
   const currentTab = Number(searchParams.get("tab") || "0");
 
-  const { data: myReviewList, isPending } = useGetMyReviewList();
+  const { data: myReviewList, isPending } = useGetMyReviewList({ pageNum });
   const { data: reviewToWriteList, isPending: isAvailableDataPending } =
-    useGetAvailableReviewList();
+    useGetAvailableReviewList({ pageNum });
 
   const handleWriteReview = (data: ReviewMoverData) => {
     NiceModal.show("ReviewNiceModal", {
@@ -73,6 +73,9 @@ export default function MyReviewPage() {
     return <Loader msg="리뷰 목록을 불러오고 있어요." />;
   }
 
+  console.log("myReviewList", myReviewList);
+  console.log("reviewToWriteList", reviewToWriteList);
+
   const displayData =
     currentTab === 0
       ? reviewToWriteList ?? emptyReviewList
@@ -85,8 +88,8 @@ export default function MyReviewPage() {
   return (
     <>
       <ul className="max-w-[1400px] mx-auto my-[16px] pc:my-[24px] bg-bg-100 grid grid-cols-1 gap-[24px] tablet:gap-[32px] pc:grid-cols-2 pc:gap-x-[24px] pc:gap-y-[48px]">
-        {displayData.list.map((item) =>
-          currentTab === 0 ? (
+        {displayData.list.map((item) => {
+          return currentTab === 0 ? (
             <CreateReviewCard
               data={item}
               key={item.id}
@@ -94,8 +97,8 @@ export default function MyReviewPage() {
             />
           ) : (
             <MyReviewCard data={item as MyReviewCardData} key={item.id} />
-          )
-        )}
+          );
+        })}
       </ul>
       <Pagination
         currentPage={pageNum}

@@ -7,6 +7,8 @@ import {
   GetMovingRequestListByMoverResponseData,
 } from "@/types/api";
 
+const PATH = "/moving-requests";
+
 interface Rating {
   "1": number;
   "2": number;
@@ -66,8 +68,6 @@ interface MovingRequestData {
   region: number;
 }
 
-const PATH = "/moving-requests";
-
 export const movingRequests = {
   create: async (data: MovingRequestData) => {
     try {
@@ -97,7 +97,7 @@ export const fetchMovingRequests = async (
 ): Promise<PendingQuotesResponse> => {
   try {
     const response = await axiosInstance.get<PendingQuotesResponse>(
-      "/moving-requests/by-customer",
+      `${PATH}/by-customer`,
       {
         params: {
           pageSize: pageSize,
@@ -121,7 +121,7 @@ export const fetchQuotesByMovingRequest = async (
 ): Promise<Quote[]> => {
   try {
     const response = await axiosInstance.get<PendingQuotesResponse>(
-      `/moving-request/${id}/quotes`,
+      `${PATH}/${id}/quotes`,
       {
         params: {
           isCompleted: isCompleted.toString(),
@@ -139,6 +139,18 @@ export const fetchQuotesByMovingRequest = async (
     );
   }
 };
+
+// 지정 요청 하기
+export async function createDesignatedMover(moverId: number) {
+  return axiosInstance.post(`${PATH}/${moverId}/designated`);
+}
+
+// 지정 요청 취소하기
+export async function cancelDesignatedMover(moverId: number) {
+  return axiosInstance.delete(`${PATH}/${moverId}/designated`);
+}
+
+export const DATA_COUNT = 5;
 
 export async function getMovingRequestListByMover({
   cookie,
