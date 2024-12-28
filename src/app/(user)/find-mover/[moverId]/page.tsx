@@ -8,8 +8,7 @@ import { SERVICE_TEXTS } from "@/variables/service";
 import { REGION_TEXTS } from "@/variables/regions";
 import QuoteButtonGroup from "@/components/common/QuoteButtonGroup";
 import ShareButtons from "@/components/common/ShareButtons";
-import { usePathname, useSearchParams } from "next/navigation";
-
+import cn from "@/config/cn";
 import { useGetMoverDetail } from "@/api/query-hooks/mover";
 import Loader from "@/components/common/Loader";
 import MoversReviewList from "@/components/review/MoversReviewList";
@@ -18,7 +17,6 @@ import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import QuoteRequestModal from "@/components/modals/QuoteRequestModal";
 import { useDesignatedMoverMutation } from "@/api/mutation-hooks/movingRequest";
 import BackDrop from "@/components/modals/BackDrop";
-import { mover } from "@/components/dropdowns/DropdownProfile.stories";
 
 const styles = {
   topContainer: "pc:flex pc:flex-row pc:gap-[90px] pc:justify-center",
@@ -51,19 +49,13 @@ NiceModal.register("QuoteRequestModal", QuoteRequestModal_);
 
 export default function MoverDetailPage() {
   const { moverId } = useParams();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const fullUrl = `${pathname}${
-    searchParams.toString() ? `?${searchParams.toString()}` : ""
-  }`;
 
   const moverIdNum = Number(moverId);
 
-  console.log(fullUrl);
-
   const { data, isPending, isError } = useGetMoverDetail(moverIdNum);
   const { mutate, isPending: isFavoriting } = useFavoriteMutation();
-  const { mutate: toggleDesignatedMover } = useDesignatedMoverMutation();
+  const { mutate: toggleDesignatedMover, isPending: isDesignating } =
+    useDesignatedMoverMutation();
 
   if (isPending) {
     return <Loader msg="기사님 상세 정보 불러오는중" />;
@@ -81,11 +73,9 @@ export default function MoverDetailPage() {
   const handleQuoteRequest = async () => {
     toggleDesignatedMover({
       moverId: moverIdNum,
-      isDesignated: data.isDesignated || false,
+      isDesignated: data.isDesignated as boolean,
     });
   };
-
-  console.log(data);
 
   return (
     <>
@@ -96,7 +86,6 @@ export default function MoverDetailPage() {
             <LineSeparator direction="horizontal" />
             <ShareButtons
               variant="mover"
-              url={fullUrl}
               moverInfo={{
                 favoriteCount: data.favoriteCount,
                 reviewCount: data.reviewCount,
@@ -146,18 +135,18 @@ export default function MoverDetailPage() {
           <QuoteButtonGroup
             isPc={true}
             isFavorite={data.isFavorite}
-            disabled={data.isDesignated}
+            isDesignated={data.isDesignated as boolean}
             moverNickname={data.nickname}
-            buttonText={
-              data.isDesignated ? "지정 견적 요청 완료" : "지정 견적 요청하기"
-            }
+            buttonText={cn(
+              data.isDesignated ? "지정 견적 요청 취소" : "지정 견적 요청하기",
+              isDesignating && "loading..."
+            )}
             onFavoriteClick={handleFavorite}
             onButtonClick={handleQuoteRequest}
           />
           <LineSeparator direction="horizontal" />
           <ShareButtons
             variant="mover"
-            url={fullUrl}
             moverInfo={{
               favoriteCount: data.favoriteCount,
               reviewCount: data.reviewCount,
@@ -169,12 +158,13 @@ export default function MoverDetailPage() {
       </div>
       <QuoteButtonGroup
         isFavorite={data.isFavorite}
-        disabled={data.isDesignated}
         onFavoriteClick={handleFavorite}
         onButtonClick={handleQuoteRequest}
-        buttonText={
-          data.isDesignated ? "지정 견적 요청 취소" : "지정 견적 요청하기"
-        }
+        isDesignated={data.isDesignated as boolean}
+        buttonText={cn(
+          data.isDesignated ? "지정 견적 요청 취소" : "지정 견적 요청하기",
+          isDesignating && "Loading..."
+        )}
       />
     </>
   );
