@@ -1,16 +1,5 @@
 import { QueryClient, MutationCache } from "@tanstack/react-query";
-import toast from "react-hot-toast";
-
-interface ApiError extends Error {
-  response?: {
-    data: {
-      message: string;
-      data?: {
-        message: string;
-      };
-    };
-  };
-}
+import NiceModal from "@ebay/nice-modal-react";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,16 +12,20 @@ export const queryClient = new QueryClient({
     },
   },
   mutationCache: new MutationCache({
-    onError: (error: unknown) => {
-      const apiError = error as ApiError;
-      const message =
-        apiError.response?.data?.data?.message ||
-        apiError.response?.data?.message;
+    onError: (error: any) => {
+      const errorMessage = error.message;
+      console.log("mutationCache error : ", error);
 
-      if (message) {
-        toast.error(message, {
-          position: "top-center",
+      //422 일반 요청 없이 지정견적 요청시
+      if (error.status === 422) {
+        NiceModal.show("AlertModal", {
+          msg: errorMessage,
+          title: "지정 견적 요청하기",
+          buttonText: "지정 견적 요청",
         });
+      }
+      if (error.status !== 422 && errorMessage) {
+        NiceModal.show("AlertModal", { msg: errorMessage });
       }
     },
   }),

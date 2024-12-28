@@ -3,7 +3,7 @@ import Button from "../common/Button";
 import assets from "@/variables/images";
 
 const styles = {
-  container: `bg-white w-fit h-[208px] rounded-[24px] px-[16px] py-[24px]
+  container: `bg-white w-fit h-[208px] rounded-[24px] px-[16px] py-[24px] min-w-[293spx]
   pc:w-[608px] pc:h-[278px] pc:px-[24px] pc:py-[32px]`,
   title: `relative flex justify-between`,
   titleText: `text-2lg font-bold text-black-400 mb-[30px]
@@ -12,16 +12,25 @@ const styles = {
   description: "text-2lg font-medium text-black-300 mb-[24px] pc:mb-[40px]",
 };
 
-interface AlertModalProps {
+export interface AlertModalProps {
   onClose: () => void;
+  onButtonClick?: () => void;
+  buttonText?: string;
+  title?: string;
   msg: string;
 }
 
-export const AlertModal = ({ onClose, msg }: AlertModalProps) => {
+export const AlertModal = ({
+  onClose,
+  title = "오류가 발생했습니다.",
+  buttonText = "확인",
+  onButtonClick,
+  msg,
+}: AlertModalProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.title}>
-        <p className={styles.titleText}>오류가 발생했습니다.</p>
+        <p className={styles.titleText}>{title}</p>
         <Image
           src={assets.icons.x}
           alt="close"
@@ -33,8 +42,8 @@ export const AlertModal = ({ onClose, msg }: AlertModalProps) => {
       </div>
       <p className={styles.description}>{msg}</p>
       <Button
-        onClick={onClose}
-        children="확인"
+        onClick={onButtonClick || onClose}
+        children={buttonText}
         variant="primary"
         width="100%"
         height="54px"
