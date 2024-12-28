@@ -8,6 +8,14 @@ interface DesignatedMover {
   isDesignated: boolean;
 }
 
+interface DesignatedResponse {
+  data: {
+    message: string;
+    designateRemain: number;
+  };
+  status: number;
+}
+
 export function useDesignatedMoverMutation() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -18,12 +26,14 @@ export function useDesignatedMoverMutation() {
       return apiFunction(moverId);
     },
     onError: (error: any) => {
-      if (error.response.status === 422) {
-        NiceModal.show("QuoteRequestModal");
-      }
+      console.log("지정 견적 요청하기 에러 : ", error);
     },
-    onSuccess: (_, { moverId }) => {
+    onSuccess: (response: DesignatedResponse, { moverId }) => {
       queryClient.invalidateQueries({ queryKey: moverKey.detail(moverId) });
+      NiceModal.show("AlertModal", {
+        msg: `남은 지정요청 횟수: ${response.data.designateRemain}`,
+        title: response.data.message,
+      });
     },
   });
 }

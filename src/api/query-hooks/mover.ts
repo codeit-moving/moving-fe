@@ -45,7 +45,11 @@ export const useGetMoverList = ({
 export const useGetFavoriteMoverList = () => {
   return useInfiniteQuery({
     queryKey: moverKey.favorite(),
-    queryFn: ({ pageParam = null }) =>
+    queryFn: ({
+      pageParam,
+    }: {
+      pageParam: string | number | null | undefined;
+    }) =>
       getMoverList({
         isFavorite: true,
         limit: 10,
