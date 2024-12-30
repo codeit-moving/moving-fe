@@ -1,4 +1,37 @@
 import { axiosInstance } from "./axios";
+import axios from "axios";
+
+interface RequestQuotesResponse {
+  id: number;
+  list: {
+    id: number;
+    cost: number;
+    comment: string;
+    service: number;
+    isConfirmed: boolean;
+    mover: {
+      id: number;
+      imageUrl: string | null;
+      nickname: string;
+      career: number;
+      isDesignated: boolean;
+      isFavorite: boolean;
+      reviewCount: number;
+      favoriteCount: number;
+      confirmCount: number;
+      rating: {
+        "1": number;
+        "2": number;
+        "3": number;
+        "4": number;
+        "5": number;
+        average: number;
+        totalCount: number;
+        totalSum: number;
+      };
+    };
+  }[];
+}
 
 interface Rating {
   "1": number;
@@ -28,13 +61,22 @@ interface Mover {
 }
 
 interface MovingRequest {
+  id: number;
   service: number;
-  movingDate: string;
+  movingDate: string; // ISO Date String
   pickupAddress: string;
   dropOffAddress: string;
-  requestDate: string;
+  name: string;
+  requestDate: string; // ISO Date String
   isConfirmed: boolean;
-  status: string;
+}
+
+interface CustomerMovingRequestsResponse {
+  currentPage: number;
+  pageSize: number;
+  totalPage: number;
+  totalCount: number;
+  list: MovingRequest[];
 }
 
 interface Quote {
@@ -54,7 +96,7 @@ interface PendingQuotesResponse {
 export const fetchPendingQuotes = async (): Promise<PendingQuotesResponse> => {
   try {
     const response = await axiosInstance.get<PendingQuotesResponse>(
-      "/moving-request/pending-quotes"
+      "/moving-requests/pending-quotes"
     );
     return response.data;
   } catch (error) {
@@ -65,4 +107,56 @@ export const fetchPendingQuotes = async (): Promise<PendingQuotesResponse> => {
   }
 };
 
-export type { PendingQuotesResponse, Quote, Mover, MovingRequest, Rating };
+export const fetchCustomerMovingRequests =
+  async (): Promise<CustomerMovingRequestsResponse> => {
+    try {
+      const response = await axiosInstance.get<CustomerMovingRequestsResponse>(
+        `/moving-requests/by-customer`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching customer moving requests:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        throw new Error("No matching moving requests found");
+      }
+
+      throw new Error(
+        `Failed to fetch customer moving requests: ${errorMessage}`
+      );
+    }
+  };
+
+export const fetchRequestQuotes = async (
+  requestId: number,
+  isCompleted: boolean
+): Promise<RequestQuotesResponse> => {
+  try {
+    const response = await axiosInstance.get<RequestQuotesResponse>(
+      `/moving-requests/${requestId}/quotes?isCompleted=${isCompleted}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching request quotes:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
+
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      throw new Error("No quotes found for this request");
+    }
+
+    throw new Error(`Failed to fetch request quotes: ${errorMessage}`);
+  }
+};
+
+export type {
+  PendingQuotesResponse,
+  Quote,
+  Mover,
+  MovingRequest,
+  Rating,
+  CustomerMovingRequestsResponse,
+  RequestQuotesResponse,
+};

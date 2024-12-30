@@ -1,11 +1,14 @@
 "use client";
 
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatField from "@/components/common/ChatField";
 import DatePicker from "@/components/request/DatePicker";
 import StepSelectionField from "./StepSelectionFiled";
 import AddressSelectionField from "./AddressSelectionField";
+import { movingRequests } from "@/api/request";
 import { useQuoteProgress } from "@/context/QuoteProgressContext";
 import { REGION_CODES, REGION_TEXTS } from "@/variables/regions";
 
@@ -90,7 +93,7 @@ const transformDataForPost = (data: {
   addresses: Address;
 }) => ({
   service: data.type === "소형이사" ? 1 : data.type === "가정이사" ? 2 : 3,
-  movingDate: data.date?.toISOString(),
+  movingDate: data.date ? data.date.toISOString() : new Date().toISOString(),
   pickupAddress: data.addresses.from,
   dropOffAddress: data.addresses.to,
   region: getRegionCode(data.addresses.from),
@@ -98,6 +101,7 @@ const transformDataForPost = (data: {
 
 // Main Component
 const EstimateRequest: React.FC = () => {
+  const router = useRouter();
   const [type, setType] = useState<string>("");
   const [date, setDate] = useState<Date | null>(null);
   const [addresses, setAddresses] = useState<Address>({ from: "", to: "" });
@@ -145,10 +149,20 @@ const EstimateRequest: React.FC = () => {
     setAddresses({ from: fromAddr, to: toAddr });
   };
 
-  const handleSubmit = () => {
-    console.log(transformDataForPost({ type, date, addresses }));
+  const handleSubmit = async () => {
+    try {
+      const postData = transformDataForPost({ type, date, addresses });
+      await movingRequests.create(postData);
+      toast.success("이사 요청이 완료되었습니다!");
+    } catch (error) {
+      if (error instanceof Error && error.message === "ACTIVE_REQUEST_EXISTS") {
+        toast.error("이미 진행 중인 이사 요청이 있습니다.");
+      } else {
+        toast.error("요청 처리 중 문제가 발생했습니다.");
+        console.error("Moving request error:", error);
+      }
+    }
   };
-
   const handleEdit = (editStep: number) => {
     setStep(editStep);
     const stepMessages = {
