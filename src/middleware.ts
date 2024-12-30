@@ -9,6 +9,12 @@ const authRoutes = [
   "/mover/auth/register",
   "/me/profile",
   "/mover/profile",
+  "/oauth/kakao",
+  "/oauth/kakao/callback",
+  "/oauth/google",
+  "/oauth/google/callback",
+  "/oauth/naver",
+  "/oauth/naver/callback",
 ];
 
 // 보호된 라우트 (로그인 필요)
@@ -61,5 +67,7 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|oauth/*/callback).*)",
+  ],
 };

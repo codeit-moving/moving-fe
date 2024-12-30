@@ -21,3 +21,13 @@ export interface SentQuoteData extends QuoteDetailsData {
   isConfirmed: boolean;
   cost: number;
 }
+
+export interface ConfirmedQuoteResponse {
+  message: string;
+  data: {
+    id: number;
+    movingRequest: number;
+    quoteId: number;
+    moverId: number;
+  };
+}

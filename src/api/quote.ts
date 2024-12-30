@@ -7,7 +7,11 @@ import {
   type GetQuoteApiResponseData,
   type CursorParams,
 } from "@/types/api";
-import { type SentQuoteData, type QuoteDetailsData } from "@/types/quote";
+import {
+  type SentQuoteData,
+  type QuoteDetailsData,
+  type ConfirmedQuoteResponse,
+} from "@/types/quote";
 
 const PATH = "/quotes";
 
@@ -209,5 +213,13 @@ export async function rejectMovingRequest({
       comment,
     }
   );
+
+  return response.data;
+}
+
+export async function confirmQuote(
+  quoteId: number
+): Promise<ConfirmedQuoteResponse> {
+  const response = await axiosInstance.post(`/confirmed-quotes/${quoteId}`);
   return response.data;
 }

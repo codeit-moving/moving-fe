@@ -20,6 +20,10 @@ const publicPaths = [
   "/mover/auth/register",
   "/me/profile",
   "/mover/profile",
+  "/find-mover",
+  "/oauth/kakao",
+  "/oauth/google",
+  "/oauth/naver",
 ];
 
 const commonPaths = ["/find-mover"];
@@ -37,7 +41,7 @@ export default function RoleGuard({
   useEffect(() => {
     const checkUserRole = async () => {
       // public 경로인 경우 바로 접근 허용
-      if (publicPaths.includes(pathname)) {
+      if (publicPaths.some((path) => pathname.startsWith(path))) {
         setIsAuthorized(true);
         setIsLoading(false);
         return;
