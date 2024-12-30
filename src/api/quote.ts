@@ -24,7 +24,7 @@ interface GetQuoteProps {
 
 /**
  * 1. Endpoint: `GET /quotes/:id`
- * 2. Description: 견적 상세 조회
+ * 2. Description: (일반)견적 상세 조회
  * 3. Request : access-token 쿠키 전달
  * 4. link : https://bubble-city-3ac.notion.site/API-14d9702f08878032932ee08ab2c19fb0#:~:text=favorite%2Dlist%20(%20GET%20)-,quotes%20%5B%ED%83%81%EC%9A%B0%ED%98%84%5D,-/%3Aid%20(%20GET%20)
  */
