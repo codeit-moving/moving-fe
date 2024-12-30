@@ -8,6 +8,10 @@ const styles = {
 };
 
 export default function SnsComponent() {
+  const handleClickSns = (sns: string) => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/oauth/${sns}`;
+  };
+
   return (
     <>
       <p className={styles.linkDescription}>SNS 계정으로 간편 가입하기</p>
@@ -18,9 +22,7 @@ export default function SnsComponent() {
           width={54}
           height={54}
           className={styles.sns}
-          onClick={() => {
-            console.log("google");
-          }}
+          onClick={() => handleClickSns("google")}
         />
         <Image
           src={assets.images.logoKakao}
@@ -28,9 +30,7 @@ export default function SnsComponent() {
           width={54}
           height={54}
           className={styles.sns}
-          onClick={() => {
-            console.log("kakao");
-          }}
+          onClick={() => handleClickSns("kakao")}
         />
         <Image
           src={assets.images.logoNaver}
@@ -38,9 +38,7 @@ export default function SnsComponent() {
           width={54}
           height={54}
           className={styles.sns}
-          onClick={() => {
-            console.log("naver");
-          }}
+          onClick={() => handleClickSns("naver")}
         />
       </div>
     </>

@@ -11,9 +11,9 @@ export const formatCount = (count: number) => {
 
 //ServiceChip 용
 export const mapServiceType = (services: number[]) => {
-  return services.map(
-    (service) => SERVICE_CODES[service as keyof typeof SERVICE_CODES]
-  );
+  return services
+    .filter((service) => service >= 1 && service <= 3)
+    .map((service) => SERVICE_CODES[service as keyof typeof SERVICE_CODES]);
 };
 
 //형식: 2024.07.01

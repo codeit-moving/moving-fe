@@ -18,7 +18,7 @@ const Main = ({ grayBgPaths, children }: MainProps) => {
 
   return (
     <>
-      <main className={cn(styles.padding, isGreyBg && "bg-bg-100")}>
+      <main className={cn(styles.padding, isGreyBg && "bg-bg-100 h-[100vh]")}>
         {children}
       </main>
     </>
