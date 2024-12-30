@@ -159,7 +159,7 @@ const GNB = () => {
             </div>
           ) : (
             <Link
-              href="auth/login"
+              href="/auth/login"
               className="block mt-8 mb-6 px-6 py-3 bg-pr-blue-300 text-white rounded-lg font-medium hover:bg-primary/90 text-center"
             >
               로그인
