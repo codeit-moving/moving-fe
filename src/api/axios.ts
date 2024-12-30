@@ -1,4 +1,5 @@
 import axios from "axios";
+import { NextApiRequest } from "next";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_MOCKING === "enabled"
@@ -20,12 +21,17 @@ export const axiosCSRInstance = axios.create({
 
 // SSR 전용 인스턴스
 export const axiosSSRInstance = axios.create({
-  // 임시. 테스트 코드(개인 be 주소 적용용)
   baseURL:
     process.env.NEXT_PUBLIC_API_URL || "https://moving-be-1.onrender.com",
   withCredentials: true,
   ...commonConfig,
 });
+
+export const setSSRHeaders = (req: NextApiRequest) => {
+  if (req?.headers?.cookie) {
+    axiosSSRInstance.defaults.headers.common["Cookie"] = req.headers.cookie;
+  }
+};
 
 // SSR/CSR 환경에 따라 자동 인스턴스 선택택
 export const axiosInstance =
@@ -73,11 +79,3 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// 임시. 테스트 코드
-export const axiosInstance2 = axios.create({
-  baseURL: "https://moving-be-1.onrender.com",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});

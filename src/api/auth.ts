@@ -32,7 +32,7 @@ export const moverSignup = async (
 
 export const login = async (userData: UserLogin) => {
   const response = await axiosInstance.post(`${PATH}/signin`, userData);
-  return { status: response.status, userDate: response.data };
+  return { status: response.status };
 };
 
 export const logout = async () => {

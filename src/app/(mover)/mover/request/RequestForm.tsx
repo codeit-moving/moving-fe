@@ -43,7 +43,7 @@ interface RequestQuoteData extends QuoteDetailsData {
 }
 
 interface RequestFormProps {
-  initialData: GetMovingRequestListByMoverResponseData;
+  initialData?: GetMovingRequestListByMoverResponseData;
 }
 
 export default function RequestForm({ initialData }: RequestFormProps) {

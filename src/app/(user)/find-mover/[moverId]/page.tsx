@@ -8,7 +8,6 @@ import { SERVICE_TEXTS } from "@/variables/service";
 import { REGION_TEXTS } from "@/variables/regions";
 import { useState } from "react";
 import QuoteButtonGroup from "@/components/common/QuoteButtonGroup";
-// import QuoteRequestModal from "@/components/modals/QuoteRequestModal";
 import ShareButtons from "@/components/common/ShareButtons";
 import { usePathname, useSearchParams } from "next/navigation";
 

@@ -172,3 +172,22 @@ export async function getSentQuoteDetail({
   const response = await axiosInstance.get(`${PATH}/mover/${quoteId}`);
   return response.data;
 }
+
+interface CreateQuoteProps {
+  cost: number;
+  comment: number;
+  movingRequestId: number;
+}
+
+export async function createQuote({
+  cost,
+  comment,
+  movingRequestId,
+}: CreateQuoteProps) {
+  const response = await axiosInstance.post(`${PATH}/quotes`, {
+    cost,
+    comment,
+    movingRequestId,
+  });
+  return response.data;
+}

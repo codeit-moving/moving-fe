@@ -19,10 +19,14 @@ export const useGetMoverList = ({
 }) => {
   return useInfiniteQuery({
     queryKey: moverKey.list(),
-    queryFn: ({ pageParam }: { pageParam?: number | null }) =>
+    queryFn: ({
+      pageParam,
+    }: {
+      pageParam: string | number | null | undefined;
+    }) =>
       getMoverList({
         limit: 10,
-        nextCursorId: pageParam,
+        nextCursorId: pageParam ?? null,
         service,
         region,
         keyword,
@@ -45,6 +49,7 @@ export const useGetFavoriteMoverList = () => {
       getMoverList({
         isFavorite: true,
         limit: 10,
+        nextCursorId: null,
       }),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialPageParam: null,

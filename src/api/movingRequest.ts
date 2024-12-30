@@ -1,4 +1,4 @@
-import { axiosInstance, axiosInstance2 } from "./axios";
+import { axiosInstance } from "./axios";
 
 import {
   GetMovingRequestListByMoverParamData,
@@ -110,8 +110,6 @@ export type { PendingQuotesResponse, Quote, Mover, MovingRequest, Rating };
 
 const PATH = "/moving-requests";
 
-export const DATA_COUNT = 5;
-
 export async function getMovingRequestListByMover({
   smallMove,
   houseMove,
@@ -151,31 +149,18 @@ export async function getMovingRequestListByMover({
   const query = `${serviceQuery}${sortQuery}${designateQuery}${keywordQuery}${limitQuery}${cursorQuery}&isQuoted=false&isPastRequest=false`;
 
   try {
-    // 임시. 테스트 코드
-    console.log("Base URL:", axiosInstance2.defaults.baseURL);
-    console.log("Full URL:", `${PATH}/by-mover?${query}`);
+    const response = await axiosInstance.get(`${PATH}/by-mover?${query}`);
 
-    const response = await fetch(
-      `https://moving-be-1.onrender.com/moving-requests/my-mover?${query}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      }
-    );
-
-    if (!response.ok) {
+    if (response.status !== 200) {
       console.error("Fetch API 호출 오류:", response.statusText);
       throw new Error("API 요청 실패");
     }
 
-    const data = await response.json();
+    // const data = await response.json();
     console.log("query : ", query);
-    console.log("data : ", data);
+    console.log("response.data : ", response.data);
 
-    return data;
+    return response.data;
   } catch (err: any) {
     console.error("Fetch API 호출 오류:", err.message);
     return {

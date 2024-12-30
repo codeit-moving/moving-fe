@@ -7,7 +7,7 @@ import { RatingData } from "@/types/mover";
 const PATH = "/movers";
 
 interface GetMoverListParams {
-  nextCursorId: string | number | null;
+  nextCursorId?: string | number | null;
   order?: string;
   limit?: number;
   keyword?: string;
@@ -35,7 +35,7 @@ export interface MoverData {
 }
 
 export interface GetMoverListResponseData {
-  nextCursor: string | number | null;
+  nextCursor?: string | number | null;
   hasNext: false;
   list: MoverData[];
 }

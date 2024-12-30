@@ -10,7 +10,7 @@ import LoadingDots from "@/components/LoadingDots";
 import DropdownRegion from "@/components/dropdowns/DropdownRegion";
 import DropdownService from "@/components/dropdowns/DropdownService";
 import DropdownSortMovingRequest from "@/components/dropdowns/DropdownSortMovingRequest";
-import { MoverData, GetMoverListResponseData } from "@/api/mover";
+import { GetMoverListResponseData } from "@/api/mover";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import { getMoverList } from "@/api/mover";
 import ScrollIndicator from "@/components/ScrollIndicator";
@@ -167,7 +167,7 @@ export default function MoverListWithFilters({
       number | null
     >({
       queryKey: ["moverList", formState],
-      queryFn: ({ pageParam = "" }) =>
+      queryFn: ({ pageParam = null }) =>
         getMoverList({
           service: formState.currentServiceFilter,
           region: formState.currentRegionFilter,
@@ -229,7 +229,7 @@ export default function MoverListWithFilters({
       pc:mt-[32px] pc:gap-[48px]`,
   };
 
-  // 테스트 - 아직 수정 안ㄷ괴
+  // 임시. 테스트 - 아직 수정 안됨
   console.log("==================== data ====================");
   console.log(data);
 
