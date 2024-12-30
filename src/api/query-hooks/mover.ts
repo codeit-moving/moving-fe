@@ -53,7 +53,7 @@ export const useGetFavoriteMoverList = () => {
       getMoverList({
         isFavorite: true,
         limit: 10,
-        nextCursorId: null,
+        nextCursorId: pageParam,
       }),
     getNextPageParam: (lastPage) => {
       if (!lastPage.nextCursor) {

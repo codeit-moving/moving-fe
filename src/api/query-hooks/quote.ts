@@ -13,13 +13,10 @@ export function useGetManagedQuoteList({ tab }: { tab: number }) {
 
   return useInfiniteQuery({
     queryKey: queryKey(),
-    queryFn: ({
-      pageParam,
-    }: {
-      pageParam: string | number | null | undefined;
-    }) =>
+    queryFn: ({ pageParam }: { pageParam: number | null | undefined }) =>
       getApiFunction({
         limit: 10,
+        nextCursorId: pageParam,
       }),
     getNextPageParam: (lastPage) => {
       if (!lastPage.nextCursor) {
