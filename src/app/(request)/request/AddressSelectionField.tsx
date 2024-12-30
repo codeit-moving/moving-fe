@@ -16,12 +16,17 @@ export default function AddressSelectionField({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentType, setCurrentType] = useState<"from" | "to">("from");
   const [addresses, setAddresses] = useState({ from: "", to: "" });
+  const [detailAddress, setDetailAddress] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState("");
 
   const handleComplete = (data: any) => {
     const fullAddress = data.address;
     const extraAddress = data.buildingName ? ` (${data.buildingName})` : "";
-    const finalAddress = fullAddress + extraAddress;
+    setSelectedAddress(fullAddress + extraAddress);
+  };
 
+  const handleDetailAddressSubmit = () => {
+    const finalAddress = `${selectedAddress} ${detailAddress}`;
     setAddresses((prev) => ({
       ...prev,
       [currentType]: finalAddress,
@@ -31,6 +36,8 @@ export default function AddressSelectionField({
       currentType === "to" ? finalAddress : addresses.to
     );
     setIsModalOpen(false);
+    setDetailAddress("");
+    setSelectedAddress("");
   };
 
   return (
@@ -81,14 +88,36 @@ export default function AddressSelectionField({
           <div className="bg-white px-8 py-6 rounded-[32px] w-full max-w-lg">
             <h3 className="text-2xl font-semibold mb-10 flex justify-between">
               <div>
-                {currentType === "from" ? "출발지" : "도착지"} 를 선택해주세요
+                {currentType === "from" ? "출발지" : "도착지"}를 선택해주세요
               </div>
-
               <button onClick={() => setIsModalOpen(false)}>
                 <X width={24} height={24} />
               </button>
             </h3>
             <DaumPostcode onComplete={handleComplete} autoClose={false} />
+            {selectedAddress && (
+              <div className="mt-4 space-y-4">
+                <input
+                  type="text"
+                  value={selectedAddress}
+                  readOnly
+                  className="w-full p-4 border-[1px] rounded-lg outline-none bg-gray-100"
+                />
+                <input
+                  type="text"
+                  value={detailAddress}
+                  onChange={(e) => setDetailAddress(e.target.value)}
+                  placeholder="상세주소를 입력해주세요"
+                  className="w-full p-4 rounded-lg border-[1px] outline-none"
+                />
+                <button
+                  onClick={handleDetailAddressSubmit}
+                  className="w-full p-4 bg-pr-blue-300 hover:bg-pr-blue-200 text-white rounded-lg"
+                >
+                  주소 선택 완료
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

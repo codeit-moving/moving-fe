@@ -84,7 +84,7 @@ export const movingRequestHandlers = [
   }),
 
   // 유져 대기 견적서 (status: PENDING)
-  http.get("/api/moving-request/pending-quotes", () => {
+  http.get("/api/moving-requests/pending-quotes", () => {
     const filteredQuotes = MOVING_REQUESTS_WITH_STATUS.list.filter(
       (quote) => quote.movingRequest.status === "PENDING"
     );
