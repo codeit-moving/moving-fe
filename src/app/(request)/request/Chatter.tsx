@@ -8,7 +8,7 @@ import ChatField from "@/components/common/ChatField";
 import DatePicker from "@/components/request/DatePicker";
 import StepSelectionField from "./StepSelectionFiled";
 import AddressSelectionField from "./AddressSelectionField";
-import { movingRequests } from "@/api/request";
+import { movingRequests } from "@/api/movingRequest";
 import { useQuoteProgress } from "@/context/QuoteProgressContext";
 import { REGION_CODES, REGION_TEXTS } from "@/variables/regions";
 

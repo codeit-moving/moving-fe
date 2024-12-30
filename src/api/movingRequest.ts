@@ -56,6 +56,38 @@ interface PendingQuotesResponse {
   list: Quote[];
 }
 
+interface MovingRequestData {
+  service: number;
+  movingDate: string;
+  pickupAddress: string;
+  dropOffAddress: string;
+  region: number;
+}
+
+const PATH = "/moving-requests";
+
+export const movingRequests = {
+  create: async (data: MovingRequestData) => {
+    try {
+      const response = await axiosInstance.post(`${PATH}`, data);
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.data?.message;
+
+      if (errorMessage === "활성중인 이사요청이 있습니다.") {
+        throw new Error("ACTIVE_REQUEST_EXISTS");
+      }
+
+      // 다른 에러는 로깅하고 전파
+      console.error("Error creating moving request:", {
+        error: error.response?.data || error.message,
+        requestData: data,
+      });
+      throw error;
+    }
+  },
+};
+
 // 고객의 이사 요청 목록 조회 함수
 export const fetchMovingRequests = async (
   pageSize: number = 5,
@@ -105,10 +137,6 @@ export const fetchQuotesByMovingRequest = async (
     );
   }
 };
-
-export type { PendingQuotesResponse, Quote, Mover, MovingRequest, Rating };
-
-const PATH = "/moving-requests";
 
 export async function getMovingRequestListByMover({
   smallMove,
@@ -172,3 +200,5 @@ export async function getMovingRequestListByMover({
     };
   }
 }
+
+export type { PendingQuotesResponse, Quote, Mover, MovingRequest, Rating };
