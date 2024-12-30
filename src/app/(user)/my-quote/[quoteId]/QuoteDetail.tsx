@@ -64,7 +64,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
   };
 
   const quoteInfoData = {
-    requestDate: data.movingRequest.createAt,
+    requestDate: data.movingRequest.requestDate,
     service: data.movingRequest.service,
     movingDate: data.movingRequest.movingDate,
     pickupAddress: data.movingRequest.pickupAddress,
