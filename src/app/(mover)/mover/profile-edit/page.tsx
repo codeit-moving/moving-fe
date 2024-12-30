@@ -15,7 +15,12 @@ export default function ProfileEditPage() {
 
   return (
     <div className="flex flex-col items-center w-full">
-      <Profile isUser={false} isEdit={true} userData={userData} />
+      <Profile
+        isUser={false}
+        isEdit={true}
+        userData={userData}
+        isOAuth={false}
+      />
     </div>
   );
 }
