@@ -6,7 +6,7 @@ import LineSeparator from "@/components/common/LineSeparator";
 import {
   fetchCustomerMovingRequests,
   fetchRequestQuotes,
-} from "@/api/PendingQuotes";
+} from "@/api/pendingQuote";
 import ReceivedQuoteCard from "@/components/cards/ReceivedQuoteCard";
 import cn from "@/config/cn";
 import {

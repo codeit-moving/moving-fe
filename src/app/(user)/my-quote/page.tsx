@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import PendingRequestCard from "@/components/cards/PendingRequestCard";
-import { fetchPendingQuotes } from "@/api/PendingQuotes";
+import { fetchPendingQuotes } from "@/api/pendingQuote";
 import ExpiredRequests from "./expiredRequests";
 import { confirmQuote } from "@/api/quote";
 
