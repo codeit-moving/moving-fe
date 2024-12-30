@@ -28,7 +28,7 @@ function getRandomAddress() {
 }
 
 function generateRandomResponse(quoteId: number): GetQuoteApiResponseData {
-  const baseDate = new Date(2025, 1, 1);
+  const baseDate = new Date(2025, 1, 10);
   const randomOffset = Math.floor(Math.random() * 30);
 
   const rating = {
@@ -175,19 +175,39 @@ export async function getSentQuoteDetail({
 
 interface CreateQuoteProps {
   cost: number;
-  comment: number;
+  comment: string;
   movingRequestId: number;
 }
 
+// 견적서 생성
 export async function createQuote({
   cost,
   comment,
   movingRequestId,
 }: CreateQuoteProps) {
-  const response = await axiosInstance.post(`${PATH}/quotes`, {
+  const response = await axiosInstance.post(`${PATH}`, {
     cost,
     comment,
     movingRequestId,
   });
+  return response.data;
+}
+
+interface RejectMovingRequestProps {
+  comment: string;
+  movingRequestId: number;
+}
+
+// 견적 반려(BE에서 QUOTE로 반려 정보 관리)
+export async function rejectMovingRequest({
+  comment,
+  movingRequestId,
+}: RejectMovingRequestProps) {
+  const response = await axiosInstance.post(
+    `${PATH}/mover/${movingRequestId}/reject`,
+    {
+      comment,
+    }
+  );
   return response.data;
 }
