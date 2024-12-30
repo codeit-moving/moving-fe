@@ -1,5 +1,6 @@
 import axios from "axios";
 import { NextApiRequest } from "next";
+import Swal from "sweetalert2";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_MOCKING === "enabled"
@@ -51,11 +52,38 @@ let isRefreshing = false;
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
+    // redirect 데이터가 data 객체 안에 있는 경우를 처리
+    if (error.response?.data?.data?.redirect === true) {
+      try {
+        const result = await Swal.fire({
+          title: "프로필 등록",
+          text: error.response?.data?.data?.message || "프로필을 등록해주세요.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "확인",
+          confirmButtonColor: "#3085d6",
+          cancelButtonText: "취소",
+        });
+
+        if (result.isConfirmed && error.response?.data?.data?.redirectUrl) {
+          window.location.href = error.response.data.data.redirectUrl;
+          return Promise.reject(error);
+        }
+      } catch (swalError) {
+        console.log("[Axios] Swal 에러:", swalError);
+      }
+    }
+
+    // 403 토큰 관련 에러 처리
     if (error.response?.status === 403) {
       const errorMessage = error.response?.data?.message;
+      const isAuthEndpoint =
+        error.config.url?.includes("/auth/refresh") ||
+        error.config.url?.includes("/users");
+
       if (
-        errorMessage === "Token missing" ||
-        errorMessage === "Invalid token"
+        !isAuthEndpoint &&
+        (errorMessage === "Token missing" || errorMessage === "Invalid token")
       ) {
         if (!isRefreshing) {
           isRefreshing = true;
@@ -66,16 +94,14 @@ axiosInstance.interceptors.response.use(
           } catch (refreshError) {
             isRefreshing = false;
             if (typeof window !== "undefined") {
-              // CSR 환경에서만 리디렉션
               window.location.href = "/auth/login";
             }
             return Promise.reject(error);
           }
-        } else {
-          return Promise.reject(error);
         }
       }
     }
+
     return Promise.reject(error);
   }
 );

@@ -13,6 +13,8 @@ import { UserInfo } from "@/types/auth";
 import NiceModal from "@ebay/nice-modal-react";
 import ConfirmModal from "@/components/modals/ConfirmModal";
 import { passwordCheck } from "@/api/auth";
+import { useQueryClient } from "@tanstack/react-query";
+import { moverKey } from "@/api/queryKeys";
 
 interface InfoEditProps {
   isUser: boolean;
@@ -80,7 +82,7 @@ export default function InfoEdit({ isUser, userData }: InfoEditProps) {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [modalShown, setModalShown] = useState(false);
-
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -158,7 +160,12 @@ export default function InfoEdit({ isUser, userData }: InfoEditProps) {
     try {
       await editUserInfo(userInfo);
 
-      isUser ? router.push("/find-mover") : router.push("/mover/my-page");
+      isUser
+        ? router.push("/find-mover")
+        : await queryClient.invalidateQueries({
+            queryKey: moverKey.myPage(),
+          });
+      router.push("/mover/my-page");
 
       toast.success("기본정보 수정이 완료되었습니다.", {
         position: "top-center",

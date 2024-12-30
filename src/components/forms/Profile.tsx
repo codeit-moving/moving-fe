@@ -18,6 +18,8 @@ import { editCustomerProfile } from "@/api/customer";
 import { useSignUpStore } from "@/store/signupStore";
 import { customerSignup, moverSignup } from "@/api/auth";
 import { editMoverProfile } from "@/api/mover";
+import { useQueryClient } from "@tanstack/react-query";
+import { moverKey } from "@/api/queryKeys";
 
 interface ProfileProps {
   isUser: boolean;
@@ -91,6 +93,7 @@ const FormField = ({
 
 export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const defaultValues = isUser
     ? {
         services: userData?.user?.customer?.services ?? [],
@@ -224,6 +227,9 @@ export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
           router.push("/find-mover");
         } else {
           await editMoverProfile(formData);
+          await queryClient.invalidateQueries({
+            queryKey: moverKey.myPage(),
+          });
           router.push("/mover/my-page");
         }
       } else {
@@ -410,14 +416,14 @@ export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
                           : values.services.filter(
                               (service) => service !== code
                             );
-                        if (newServices.length == 3) {
+                        if (newServices.length == 4) {
                           if (!newServices.includes(99)) {
                             newServices.push(99);
                           }
                         }
                         if (
                           newServices.includes(99) &&
-                          newServices.length < 4
+                          newServices.length < 5
                         ) {
                           newServices = newServices.filter(
                             (service) => service !== 99

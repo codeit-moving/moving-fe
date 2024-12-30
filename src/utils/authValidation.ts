@@ -31,7 +31,7 @@ const LIMITS = {
 const REGEX = {
   name: new RegExp(`^[가-힣]{${LIMITS.NAME.MIN},${LIMITS.NAME.MAX}}$`),
   password: /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{5,}$/,
-  phone: new RegExp(`^\\d{${LIMITS.PHONE.MIN},${LIMITS.PHONE.MAX}}$`),
+  phone: /^010-\d{4}-\d{4}$/,
   nickname: new RegExp(
     `^[가-힣]{${LIMITS.NICKNAME.MIN},${LIMITS.NICKNAME.MAX}}$`
   ),
@@ -41,7 +41,7 @@ const REGEX = {
 const ERROR_MESSAGES = {
   name: `이름은 ${LIMITS.NAME.MIN}~${LIMITS.NAME.MAX}자의 한글만 입력 가능합니다.`,
   email: "올바른 이메일 형식이 아닙니다.",
-  phone: `전화번호는 ${LIMITS.PHONE.MIN}~${LIMITS.PHONE.MAX}자의 숫자만 입력 가능합니다.`,
+  phone: "전화번호는 010-XXXX-XXXX 형식으로 입력해주세요.",
   password: `비밀번호는 특수문자, 숫자, 영문자를 포함하여 ${LIMITS.PASSWORD.MIN}자 이상이어야 합니다.`,
   passwordConfirm: "비밀번호가 일치하지 않습니다.",
   nickname: `별명은 ${LIMITS.NICKNAME.MIN}~${LIMITS.NICKNAME.MAX}자의 한글만 입력 가능합니다.`,
