@@ -12,7 +12,7 @@ const MIN_COMMENT_LENGTH = 10;
 interface CreateQuoteModalProps {
   onClose?: () => void;
   onSubmit?: (data: {
-    requestId: number;
+    movingRequestId: number;
     cost: number;
     comment: string;
   }) => void;
@@ -68,7 +68,7 @@ export default function CreateQuoteModal({
     typeof comment === "string";
 
   const handleCallApi = () => {
-    onSubmit({ requestId, cost: Number(quote), comment });
+    onSubmit({ movingRequestId: requestId, cost: Number(quote), comment });
     onClose();
   };
 
