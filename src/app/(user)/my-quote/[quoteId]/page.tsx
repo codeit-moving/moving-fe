@@ -1,13 +1,8 @@
-import QuoteDetail from "./QuoteDetail";
+import { cookies } from "next/headers";
 
+import QuoteDetail from "./QuoteDetail";
 import { getQuote } from "@/api/quote";
 import { GetQuoteApiResponseData } from "@/types/api";
-
-async function fetchQuoteData(
-  quoteId: number
-): Promise<GetQuoteApiResponseData> {
-  return getQuote(quoteId);
-}
 
 export interface MyQuotesDetailPageProps {
   params: {
@@ -20,7 +15,10 @@ export default async function MyQuotesDetailPage({
 }: MyQuotesDetailPageProps) {
   const { quoteId } = await params;
 
-  const data = await fetchQuoteData(Number(quoteId));
+  const cookieStore = await cookies();
+  const cookie = `accessToken=${cookieStore.get("accessToken")?.value}`;
+
+  const data = await getQuote({ cookie, quoteId: Number(quoteId) });
 
   const styles = {
     constainer: `flex flex-col items-center w-full`,
