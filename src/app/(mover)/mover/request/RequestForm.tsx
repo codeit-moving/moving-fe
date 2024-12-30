@@ -43,7 +43,7 @@ interface RequestQuoteData extends QuoteDetailsData {
 }
 
 interface RequestFormProps {
-  initialData?: GetMovingRequestListByMoverResponseData;
+  initialData: GetMovingRequestListByMoverResponseData;
 }
 
 export default function RequestForm({ initialData }: RequestFormProps) {
@@ -103,6 +103,11 @@ export default function RequestForm({ initialData }: RequestFormProps) {
         return isNaN(cursor) ? null : cursor;
       },
       initialPageParam: null,
+      initialData: {
+        pages: [initialData],
+        pageParams: [null],
+      },
+      staleTime: 0,
     });
 
   const styles = {

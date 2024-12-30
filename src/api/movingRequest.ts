@@ -1,3 +1,5 @@
+import { AxiosRequestConfig } from "axios";
+
 import { axiosInstance } from "./axios";
 
 import {
@@ -111,6 +113,7 @@ export type { PendingQuotesResponse, Quote, Mover, MovingRequest, Rating };
 const PATH = "/moving-requests";
 
 export async function getMovingRequestListByMover({
+  cookie,
   smallMove,
   houseMove,
   officeMove,
@@ -120,49 +123,40 @@ export async function getMovingRequestListByMover({
   limit,
   cursor,
 }: GetMovingRequestListByMoverParamData): Promise<GetMovingRequestListByMoverResponseData> {
-  const serviceQuery = `smallMove=${smallMove}&houseMove=${houseMove}&officeMove=${officeMove}`;
-  const sortQuery = `&orderBy=${orderBy}`;
-  let designateQuery = ``;
+  const headers: AxiosRequestConfig["headers"] = cookie
+    ? { Cookie: cookie }
+    : undefined;
 
-  if (isDesignated !== null) {
-    designateQuery = `&isDesignated=${isDesignated}`;
-  }
-
-  let keywordQuery = ``;
-
-  if (keyword !== null && keyword?.trim().length !== 0) {
-    keywordQuery = `&keyword=${keyword}`;
-  }
-
-  let limitQuery = ``;
-
-  if (limit) {
-    limitQuery = `&limit=${limit}`;
-  }
-
-  let cursorQuery = ``;
-
-  if (cursor !== "" && cursor) {
-    cursorQuery = `&cursor=${cursor}`;
-  }
-
-  const query = `${serviceQuery}${sortQuery}${designateQuery}${keywordQuery}${limitQuery}${cursorQuery}&isQuoted=false&isPastRequest=false`;
+  const params: Record<string, any> = {
+    smallMove,
+    houseMove,
+    officeMove,
+    orderBy,
+    ...(isDesignated !== null && { isDesignated }),
+    ...(keyword?.trim() && { keyword }),
+    ...(limit && { limit }),
+    ...(cursor && { cursor }),
+    isQuoted: false,
+    isPastRequest: false,
+  };
 
   try {
-    const response = await axiosInstance.get(`${PATH}/by-mover?${query}`);
+    const response = await axiosInstance.get(`${PATH}/by-mover`, {
+      params,
+      ...(headers && { headers }),
+    });
 
     if (response.status !== 200) {
-      console.error("Fetch API 호출 오류:", response.statusText);
+      console.error(
+        "getMovingRequestListByMover API 호출 오류:",
+        response.statusText
+      );
       throw new Error("API 요청 실패");
     }
 
-    // const data = await response.json();
-    console.log("query : ", query);
-    console.log("response.data : ", response.data);
-
     return response.data;
   } catch (err: any) {
-    console.error("Fetch API 호출 오류:", err.message);
+    console.error("getMovingRequestListByMover API 호출 오류:", err.message);
     return {
       list: [],
       serviceCounts: { smallMove: 0, houseMove: 0, officeMove: 0 },

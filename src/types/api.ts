@@ -56,6 +56,7 @@ export interface GetMovingRequestListByMoverResponseData {
 }
 
 export interface GetMovingRequestListByMoverParamData {
+  cookie?: string;
   smallMove: boolean;
   houseMove: boolean;
   officeMove: boolean;
