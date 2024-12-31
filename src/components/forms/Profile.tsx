@@ -20,8 +20,11 @@ import { customerSignup, moverSignup } from "@/api/auth";
 import { editMoverProfile } from "@/api/mover";
 import { useQueryClient } from "@tanstack/react-query";
 import { moverKey } from "@/api/queryKeys";
+import { customerProfile } from "@/api/customer";
+import { moverProfile } from "@/api/mover";
 
 interface ProfileProps {
+  isOAuth: boolean;
   isUser: boolean;
   isEdit: boolean;
   userData?: {
@@ -91,7 +94,12 @@ const FormField = ({
   </div>
 );
 
-export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
+export default function Profile({
+  isUser,
+  isEdit,
+  userData,
+  isOAuth,
+}: ProfileProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const defaultValues = isUser
@@ -188,7 +196,7 @@ export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
         formData.append("description", values.description);
     }
 
-    if (!isEdit) {
+    if (!isEdit && !isOAuth) {
       const signUpState = useSignUpStore.getState();
       formData.append("email", signUpState.userEmail);
       formData.append("password", signUpState.userPassword);
@@ -233,12 +241,18 @@ export default function Profile({ isUser, isEdit, userData }: ProfileProps) {
           router.push("/mover/my-page");
         }
       } else {
-        if (isUser) {
+        if (isUser && !isOAuth) {
           await customerSignup(formData);
           router.push("/auth/login");
-        } else {
+        } else if (!isUser && !isOAuth) {
           await moverSignup(formData);
           router.push("/mover/auth/login");
+        } else if (isUser && isOAuth) {
+          await customerProfile(formData);
+          router.push("/find-mover");
+        } else if (!isUser && isOAuth) {
+          await moverProfile(formData);
+          router.push("/find-mover");
         }
       }
 

@@ -143,6 +143,15 @@ export const editMoverProfile = async (userData: FormData) => {
   return response.data;
 };
 
+export const moverProfile = async (formData: FormData) => {
+  const response = await axiosInstance.post(`${PATH}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
 // 기사님 찜하기
 export async function createFavoriteMover(moverId: number): Promise<any> {
   const response = await axiosInstance.post(`${PATH}/${moverId}/favorite`);

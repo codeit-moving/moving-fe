@@ -7,11 +7,8 @@ import cn from "@/config/cn";
 import Loader from "@/components/common/Loader";
 import Message from "@/components/common/Message";
 import { useGetFavoriteMoverList } from "@/api/query-hooks/mover";
-import { CursorResponse } from "@/types/api";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-
-type FavoriteMoverResponse = CursorResponse<FavoriteMoverData>;
 
 export default function FavoriteMoverPage() {
   const { ref, inView } = useInView();
@@ -48,7 +45,7 @@ export default function FavoriteMoverPage() {
       >
         {isEmpty && <Message msg="찜한 기사님 목록이 비어 있어요." />}
 
-        {pages.map((page: FavoriteMoverResponse) =>
+        {pages.map((page) =>
           page.list.map((mover: FavoriteMoverData) => {
             return (
               <FavoriteMoverCard data={mover} key={`favorite-${mover.id}`} />

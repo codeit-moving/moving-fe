@@ -7,8 +7,6 @@ const authRoutes = [
   "/auth/register",
   "/mover/auth/login",
   "/mover/auth/register",
-  "/me/profile",
-  "/mover/profile",
   "/oauth/kakao",
   "/oauth/kakao/callback",
   "/oauth/google",
@@ -39,16 +37,77 @@ export default async function middleware(request: NextRequest) {
     cookieHeader?.includes("accessToken") ||
     cookieHeader?.includes("refreshToken");
 
+  // OAuth 콜백 처리 추가
+  if (pathname.startsWith("/oauth") && pathname.includes("/callback")) {
+    const searchParams = request.nextUrl.searchParams;
+    const code = searchParams.get("code");
+    const state = searchParams.get("state");
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}${pathname}?code=${code}&state=${state}`,
+        {
+          credentials: "include",
+          redirect: "manual",
+        }
+      );
+
+      // 백엔드에서 보낸 쿠키 처리
+      const cookies = response.headers.getSetCookie();
+
+      // 객체일 경우 JSON 처리
+      const responseData = await response.json();
+
+      // 회원가입
+      if (responseData.data?.redirect === true && response.status === 302) {
+        const redirectUrl = new URL(responseData.data.redirectUrl, request.url);
+        redirectUrl.searchParams.set("oauth", "true");
+        const res = NextResponse.redirect(redirectUrl);
+        cookies.forEach((cookie) => {
+          res.headers.append("Set-Cookie", cookie);
+        });
+        return res;
+      }
+
+      // 리다이렉트 응답인 경우 (로그인)
+      if (response.status === 302 || response.status === 301) {
+        const redirectUrl = response.headers.get("location");
+        const res = NextResponse.redirect(
+          new URL(redirectUrl || "/", request.url)
+        );
+
+        // 쿠키 설정
+        cookies.forEach((cookie) => {
+          res.headers.append("Set-Cookie", cookie);
+        });
+
+        return res;
+      }
+
+      const res = NextResponse.redirect(new URL("/", request.url));
+      cookies.forEach((cookie) => {
+        res.headers.append("Set-Cookie", cookie);
+      });
+      return res;
+    } catch (error) {
+      console.error("OAuth 콜백 처리 에러:", error);
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("Host", process.env.NEXT_PUBLIC_API_URL || "");
+
   // 이미 로그인된 사용자의 인증 페이지 접근 제한
   if (authRoutes.includes(pathname) && hasTokens) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // mover 페이지 접근 시 (register와 profile 페이지는 제외)
+  // mover 페이지 접근 시 (register, profile, login 페이지는 제외)
   if (
     pathname.startsWith("/mover") &&
     !pathname.startsWith("/mover/auth/register") &&
-    pathname !== "/mover/profile" &&
+    !pathname.startsWith("/mover/profile") &&
     !pathname.startsWith("/mover/auth/login")
   ) {
     if (!hasTokens) {
@@ -63,11 +122,13 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|oauth/*/callback).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
