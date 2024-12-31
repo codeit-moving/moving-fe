@@ -19,26 +19,19 @@ import Loader from "@/components/common/Loader";
 
 interface ReviewModal_Props {
   data: ReviewMoverData;
-  onSubmit: () => void;
 }
 
-const ReviewNiceModal_ = NiceModal.create(
-  ({ data, onSubmit }: ReviewModal_Props) => {
-    const modal = useModal();
+const ReviewNiceModal_ = NiceModal.create(({ data }: ReviewModal_Props) => {
+  const modal = useModal();
 
-    return (
-      <div className="bg-[#141414] bg-opacity-50 fixed inset-0 flex flex-col items-center justify-end tablet:justify-center pc:justify-center">
-        <div className="flex flex-col items-center justify-center mx-auto bg-transparent w-full">
-          <ReviewModal
-            onClose={() => modal.remove()}
-            onSubmit={onSubmit}
-            data={data}
-          />
-        </div>
+  return (
+    <div className="bg-[#141414] bg-opacity-50 fixed inset-0 flex flex-col items-center justify-end tablet:justify-center pc:justify-center">
+      <div className="flex flex-col items-center justify-center mx-auto bg-transparent w-full">
+        <ReviewModal onClose={() => modal.remove()} data={data} />
       </div>
-    );
-  }
-);
+    </div>
+  );
+});
 
 NiceModal.register("ReviewNiceModal", ReviewNiceModal_);
 
@@ -62,10 +55,6 @@ export default function MyReviewPage() {
   const handleWriteReview = (data: ReviewMoverData) => {
     NiceModal.show("ReviewNiceModal", {
       data: data,
-      onSubmit: () => {
-        console.log("Review submitted");
-        //api 호출 로직 추가해야됨
-      },
     });
   };
 
@@ -87,19 +76,22 @@ export default function MyReviewPage() {
 
   return (
     <>
-      <ul className="max-w-[1400px] mx-auto my-[16px] pc:my-[24px] bg-bg-100 grid grid-cols-1 gap-[24px] tablet:gap-[32px] pc:grid-cols-2 pc:gap-x-[24px] pc:gap-y-[48px]">
+      {/* <ul className="max-w-[1400px] mx-auto my-[16px] pc:my-[24px] bg-bg-100 grid grid-cols-1 gap-[24px] tablet:gap-[32px] pc:grid-cols-2 pc:gap-x-[24px] pc:gap-y-[48px]">
         {displayData.list.map((item) => {
           return currentTab === 0 ? (
             <CreateReviewCard
-              data={item}
-              key={item.id}
+              data={item as ReviewMoverData}
+              key={`createReview-${item.confirmedQuoteId}`}
               onPrimaryClick={() => handleWriteReview(item as ReviewMoverData)}
             />
           ) : (
-            <MyReviewCard data={item as MyReviewCardData} key={item.id} />
+            <MyReviewCard
+              data={item as MyReviewCardData}
+              key={`reviewed-${item.id}`}
+            />
           );
         })}
-      </ul>
+      </ul> */}
       <Pagination
         currentPage={pageNum}
         totalPages={displayData.totalPages}

@@ -9,6 +9,7 @@ import StarRating from "../common/StarRating";
 import LineSeparator from "../common/LineSeparator";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useReviewMutation } from "@/api/mutation-hooks/review";
 
 const styles = {
   lineSeparator: "my-[20px] pc:my-[32px]",
@@ -17,19 +18,16 @@ const styles = {
 
 interface ReviewModalProps {
   onClose: () => void;
-  onSubmit: () => void;
   data: ReviewMoverData;
 }
 
-export default function ReviewModal({
-  onClose,
-  onSubmit,
-  data,
-}: ReviewModalProps) {
+export default function ReviewModal({ onClose, data }: ReviewModalProps) {
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+
+  const { mutate } = useReviewMutation();
 
   const isValid = rating > 0 && review.length >= 10;
 
@@ -67,12 +65,21 @@ export default function ReviewModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit();
+    // const formData = new FormData();
+
+    // formData.append("confirmedQuoteId", data.confirmedQuoteId);
+    // formData.append("rating", data.rating);
+    // formData.append("content", data.content);
+
+    // data.images.forEach((image) => {
+    //   formData.append("images", image);
+    // });
+
+    // mutate(formData);
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
       className="flex flex-col bg-white w-full h-[550px] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 rounded-t-[32px] pt-[32px] pb-[40px] px-6
   tablet:rounded-[32px] tablet:w-[375px] tablet:h-[650px] pc:w-[608px] pc:h-[750px]"
     >
@@ -150,7 +157,7 @@ export default function ReviewModal({
       />
       <Button
         variant="primary"
-        onClick={onSubmit}
+        onClick={handleSubmit}
         type="submit"
         disabled={!isValid}
         className="mt-[26px] pc:mt-[40px]"
