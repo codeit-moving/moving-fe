@@ -29,12 +29,6 @@ const styles = {
 
 export default function MyQuoteDetailPage() {
   const { quoteId } = useParams();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const fullUrl = `${pathname}${
-    searchParams.toString() ? `?${searchParams.toString()}` : ""
-  }`;
-
   const { data, isPending } = useGetSentQuoteDetail(Number(quoteId));
 
   if (isPending) {
@@ -54,7 +48,6 @@ export default function MyQuoteDetailPage() {
           <div className={styles.shareContainer}>
             <ShareButtons
               variant="quote"
-              url={fullUrl}
               quoteInfo={{
                 cost: data.cost,
                 dropOffAddress: data.dropOffAddress,
@@ -85,7 +78,6 @@ export default function MyQuoteDetailPage() {
         <div className={styles.pcShareContainer}>
           <ShareButtons
             variant="quote"
-            url={fullUrl}
             quoteInfo={{
               cost: data.cost,
               dropOffAddress: data.dropOffAddress,

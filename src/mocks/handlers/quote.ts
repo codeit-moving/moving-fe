@@ -6,13 +6,13 @@ import {
 } from "../data/quote";
 
 export const quoteHandlers = [
-  http.get("/api/quotes/mover", () => {
+  http.get("/mock/quotes/mover", () => {
     return HttpResponse.json(SENT_QUOTE_LIST);
   }),
-  http.get("/api/quotes/mover/rejected", () => {
+  http.get("/mock/quotes/mover/rejected", () => {
     return HttpResponse.json(REJECTED_QUOTE_LIST);
   }),
-  http.get("/api/quotes/mover/:quoteId", ({ params }) => {
+  http.get("/mock/quotes/mover/:quoteId", ({ params }) => {
     const { quoteId } = params;
     const quote = SENT_QUOTE_DETAIL;
 

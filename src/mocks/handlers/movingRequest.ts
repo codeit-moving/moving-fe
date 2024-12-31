@@ -3,7 +3,7 @@ import { PAST_REQUESTS, MOVING_REQUESTED_QUOTES } from "../data/movingQuotes"; /
 import { MOVING_REQUESTS_WITH_STATUS } from "../data/pendingQuotes";
 export const movingRequestHandlers = [
   // 1. 고객의 과거 이사 요청 목록 조회 (받았던 견적)
-  http.get("/api/moving-requests/by-customer", ({ request }) => {
+  http.get("/mock/moving-requests/by-customer", ({ request }) => {
     const url = new URL(request.url);
     const pageSize = parseInt(url.searchParams.get("pageSize") || "5", 10);
     const pageNum = parseInt(url.searchParams.get("pageNum") || "1", 10);
@@ -36,7 +36,7 @@ export const movingRequestHandlers = [
   }),
 
   // 2. 특정 이사 요청 ID에 대한 견적서 목록 조회
-  http.get("/api/moving-request/:id/quotes", ({ params, request: req }) => {
+  http.get("/mock/moving-request/:id/quotes", ({ params, request: req }) => {
     const { id } = params;
     const url = new URL(req.url);
     const isCompleted = url.searchParams.get("isCompleted") === "true";
@@ -49,7 +49,7 @@ export const movingRequestHandlers = [
     if (!request) {
       return HttpResponse.json(
         {
-          path: `/api/moving-request/${id}/quotes`,
+          path: `/mock/moving-request/${id}/quotes`,
           method: "GET",
           message: "Not Found",
           data: { message: "견적서 목록이 없습니다." },
@@ -67,7 +67,7 @@ export const movingRequestHandlers = [
     if (filteredQuotes.length === 0) {
       return HttpResponse.json(
         {
-          path: `/api/moving-request/${id}/quotes`,
+          path: `/mock/moving-request/${id}/quotes`,
           method: "GET",
           message: "Not Found",
           data: { message: "견적서 목록이 없습니다." },
@@ -84,7 +84,7 @@ export const movingRequestHandlers = [
   }),
 
   // 유져 대기 견적서 (status: PENDING)
-  http.get("/api/moving-requests/pending-quotes", () => {
+  http.get("/mock/moving-request/pending-quotes", () => {
     const filteredQuotes = MOVING_REQUESTS_WITH_STATUS.list.filter(
       (quote) => quote.movingRequest.status === "PENDING"
     );

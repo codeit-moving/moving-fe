@@ -4,6 +4,8 @@ import Image from "next/image";
 import assets from "@/variables/images";
 import toast from "react-hot-toast";
 import { formatDateWithDay } from "@/utils/utilFunctions";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useMemo } from "react";
 
 declare global {
   interface Window {
@@ -27,7 +29,6 @@ interface QuoteInfo {
 
 interface ShareButtonsProps {
   variant: "mover" | "quote";
-  url: string;
   moverInfo?: MoverInfo;
   quoteInfo?: QuoteInfo;
 }
@@ -37,12 +38,22 @@ const TEMPLATE_IDS = {
   quote: 115261,
 } as const;
 
-const ShareButtons = ({
-  variant,
-  url,
-  moverInfo,
-  quoteInfo,
-}: ShareButtonsProps) => {
+const ShareButtons = ({ variant, moverInfo, quoteInfo }: ShareButtonsProps) => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const fullUrl = useMemo(() => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const query = searchParams.toString();
+    return `${origin}${pathname}${query ? `?${query}` : ""}`;
+  }, [pathname, searchParams]);
+
+  console.log("fullUrl", fullUrl);
+
+  const heading =
+    variant === "mover"
+      ? "나만 알기엔 아쉬운 기사님인가요?"
+      : "견적서 공유하기";
+
   useEffect(() => {
     const scriptId = "kakao-sdk";
     if (!document.getElementById(scriptId)) {
@@ -64,20 +75,17 @@ const ShareButtons = ({
     }
   }, []);
 
-  const heading =
-    variant === "mover"
-      ? "나만 알기엔 아쉬운 기사님인가요?"
-      : "견적서 공유하기";
-
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(fullUrl);
+
       toast.success("링크가 복사되었습니다.");
     } catch (err) {
       console.error("Failed to copy:", err);
       toast.error("링크 복사에 실패했습니다.");
     }
   };
+
   const handleKakaoShare = () => {
     if (!window.Kakao?.Share) {
       console.error("Kakao SDK not loaded");
@@ -91,7 +99,7 @@ const ShareButtons = ({
             review: String(moverInfo?.reviewCount),
             description: moverInfo?.description || "",
             name: moverInfo?.nickname || "아무개",
-            REGI_WEB_DOMAIN: url,
+            REGI_WEB_DOMAIN: fullUrl,
           }
         : {
             cost: String(`${quoteInfo?.cost.toLocaleString()}원` || ""),
@@ -100,7 +108,7 @@ const ShareButtons = ({
               ? formatDateWithDay(quoteInfo.movingDate)
               : "",
             pickup: quoteInfo?.pickupAddress || "",
-            REGI_WEB_DOMAIN: url,
+            REGI_WEB_DOMAIN: fullUrl,
           };
 
     try {
@@ -115,7 +123,7 @@ const ShareButtons = ({
 
   const handleFacebookShare = () => {
     const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-      url
+      fullUrl
     )}`;
     window.open(shareUrl, "_blank");
   };

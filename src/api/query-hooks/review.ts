@@ -7,17 +7,17 @@ import {
 import { reviewKey } from "../queryKeys";
 import { OffsetParams } from "@/types/api";
 
-export const useGetMyReviewList = () => {
+export const useGetMyReviewList = ({ pageNum }: OffsetParams) => {
   return useQuery({
     queryKey: reviewKey.me(),
-    queryFn: () => getMyReviewList(),
+    queryFn: () => getMyReviewList({ pageNum }),
   });
 };
 
-export const useGetAvailableReviewList = () => {
+export const useGetAvailableReviewList = ({ pageNum }: OffsetParams) => {
   return useQuery({
     queryKey: reviewKey.available(),
-    queryFn: () => getAvailableReviewList(),
+    queryFn: () => getAvailableReviewList({ pageNum }),
   });
 };
 

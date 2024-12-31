@@ -142,3 +142,15 @@ export const editMoverProfile = async (userData: FormData) => {
   });
   return response.data;
 };
+
+// 기사님 찜하기
+export async function createFavoriteMover(moverId: number): Promise<any> {
+  const response = await axiosInstance.post(`${PATH}/${moverId}/favorite`);
+  return response.data;
+}
+
+// 기사님 찜하기 취소
+export async function deleteFavoriteMover(moverId: number): Promise<any> {
+  const response = await axiosInstance.delete(`${PATH}/${moverId}/favorite`);
+  return response.data;
+}

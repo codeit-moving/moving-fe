@@ -13,8 +13,17 @@ export function useGetManagedQuoteList({ tab }: { tab: number }) {
 
   return useInfiniteQuery({
     queryKey: queryKey(),
-    queryFn: () => getApiFunction({ limit: 8 }),
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    queryFn: ({ pageParam }: { pageParam: number | null | undefined }) =>
+      getApiFunction({
+        limit: 10,
+        nextCursorId: pageParam,
+      }),
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.nextCursor) {
+        return undefined;
+      }
+      return lastPage.nextCursor;
+    },
     initialPageParam: null,
   });
 }

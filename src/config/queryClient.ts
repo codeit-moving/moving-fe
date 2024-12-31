@@ -1,4 +1,5 @@
 import { QueryClient, MutationCache } from "@tanstack/react-query";
+import NiceModal from "@ebay/nice-modal-react";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -10,12 +11,24 @@ export const queryClient = new QueryClient({
       retry: 1,
     },
   },
-  // 나중에 모달로 Mutation 에러 처리하기 위해 추가
-  // mutationCache: new MutationCache({
-  //   onError: (error) => {
-  //     console.error('Mutation Error', error.message || 'Unknown Error');
-  //     onModalOpen({ msg: error.message });
-  //   },
+  mutationCache: new MutationCache({
+    onError: (error: any) => {
+      const errorMessage = error.message;
+      console.log("mutationCache error : ", error);
+
+      //422 일반 요청 없이 지정견적 요청시
+      if (error.status === 422) {
+        NiceModal.show("AlertModal", {
+          msg: errorMessage,
+          title: "지정 견적 요청하기",
+          buttonText: "지정 견적 요청",
+        });
+      }
+      if (error.status !== 422 && errorMessage) {
+        NiceModal.show("AlertModal", { msg: errorMessage });
+      }
+    },
+  }),
 });
 
 export default queryClient;

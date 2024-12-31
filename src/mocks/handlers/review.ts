@@ -6,15 +6,15 @@ import {
 } from "../data/review";
 
 export const reviewHandlers = [
-  http.get("/api/reviews/mover/:moverId", ({ params }) => {
+  http.get("/mock/reviews/mover/:moverId", ({ params }) => {
     const { moverId } = params;
     return HttpResponse.json(MOVERS_REVIEW_LIST);
   }),
-  http.get("/api/reviews/me", () => {
+  http.get("/mock/reviews/me", () => {
     return HttpResponse.json(MY_REVIEW_LIST);
   }),
 
-  http.get("/api/reviews/available", () => {
+  http.get("/mock/reviews/available", () => {
     return HttpResponse.json(AVAILABLE_REVIEW_LIST);
   }),
 ];

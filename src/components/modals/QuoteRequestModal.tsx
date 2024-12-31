@@ -3,9 +3,17 @@
 import assets from "@/variables/images";
 import Button from "@/components/common/Button";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
-export default function QuoteRequestModal() {
-  const handleClick = () => console.log("일반 견적 요청 하기");
+export default function QuoteRequestModal({
+  onClose,
+}: {
+  onClose: () => void;
+}) {
+  const router = useRouter();
+  const handleClick = () => {
+    router.push("/request");
+  };
 
   const styles = {
     container: `bg-white w-fit h-[208px] rounded-[24px] px-[16px] py-[24px]
@@ -26,6 +34,7 @@ export default function QuoteRequestModal() {
           width={24}
           height={24}
           className={styles.close}
+          onClick={onClose}
         />
       </div>
       <p className={styles.description}>일반 견적 요청을 먼저 진행해 주세요.</p>
