@@ -50,7 +50,9 @@ export default function FavoriteMoverPage() {
 
         {pages.map((page: FavoriteMoverResponse) =>
           page.list.map((mover: FavoriteMoverData) => {
-            return <FavoriteMoverCard data={mover} key={mover.id} />;
+            return (
+              <FavoriteMoverCard data={mover} key={`favorite-${mover.id}`} />
+            );
           })
         )}
       </ul>

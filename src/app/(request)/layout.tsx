@@ -18,15 +18,17 @@ export default function QuoteRequestLayout({
 }) {
   return (
     <QuoteProgressProvider>
-      {/* ProgressBar 영역 */}
-      <div className="flex flex-col max-w-[1400px] font-semibold px-5 py-8 mx-auto gap-6 sticky">
-        견적 요청
-        <ProgressBar />
+      {/* ProgressBar 영역 - sticky 적용 */}
+      <div className="sticky top-0 z-50 bg-white">
+        <div className="flex flex-col max-w-[1400px] font-semibold px-5 py-8 mx-auto gap-6">
+          견적 요청
+          <ProgressBar />
+        </div>
       </div>
 
       {/* 전체 배경색이 적용되는 영역 */}
       <div className="bg-bg-200 min-h-screen w-full">
-        <div className="max-w-[1400px] px-5 mx-auto">{children}</div>
+        <div className="max-w-[1400px] px-5 mx-auto pt-4">{children}</div>
       </div>
     </QuoteProgressProvider>
   );

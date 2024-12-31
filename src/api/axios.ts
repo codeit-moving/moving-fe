@@ -2,6 +2,15 @@ import axios from "axios";
 import { NextApiRequest } from "next";
 import Swal from "sweetalert2";
 
+interface AxiosResponseError {
+  path: string;
+  method: string;
+  message: string;
+
+  date: string;
+  status?: number;
+}
+
 const API_URL =
   process.env.NEXT_PUBLIC_API_MOCKING === "enabled"
     ? "/mock" // mocking URL
@@ -102,6 +111,33 @@ axiosInstance.interceptors.response.use(
       }
     }
 
+    // response error handle
+    if (error.response) {
+      console.error("API response error", error.response.data);
+
+      //여기서 error 정리
+      const apiError: AxiosResponseError = {
+        path: error.response.data.path,
+        method: error.response.data.method,
+        message: error.response.data.data.message,
+        date: error.response.data.date,
+        status: error.response.status,
+      };
+
+      return Promise.reject(apiError);
+    }
+
+    //request error handle
+    if (error.request) {
+      console.error("Request Error:", error.request);
+      return Promise.reject({
+        message: error.request?.responseText || "Network Error",
+      });
+    }
+    console.error("error", error.message);
+
     return Promise.reject(error);
   }
 );
+
+export default axiosInstance;

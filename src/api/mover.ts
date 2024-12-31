@@ -1,3 +1,5 @@
+import { AxiosRequestConfig } from "axios";
+
 import { type MoverDetails } from "@/components/cards/MoverInfoCard";
 import { axiosInstance } from "./axios";
 import { BaseMoverData } from "@/types/mover";
@@ -7,6 +9,7 @@ import { RatingData } from "@/types/mover";
 const PATH = "/movers";
 
 interface GetMoverListParams {
+  cookie?: string;
   nextCursorId?: string | number | null;
   order?: string;
   limit?: number;
@@ -41,6 +44,7 @@ export interface GetMoverListResponseData {
 }
 
 export const getMoverList = async ({
+  cookie,
   nextCursorId,
   order,
   limit,
@@ -49,18 +53,26 @@ export const getMoverList = async ({
   service,
   isFavorite = false,
 }: GetMoverListParams): Promise<GetMoverListResponseData> => {
+  console.log("getMoverList");
+  const headers: AxiosRequestConfig["headers"] = cookie
+    ? { Cookie: cookie }
+    : undefined;
+
   const params = {
     ...(nextCursorId && { nextCursorId: nextCursorId }),
     ...(order && { order: order }),
     ...(limit && { limit: limit }),
-    ...(keyword && { keyword: keyword }),
+    ...(keyword?.trim() && { keyword }),
     ...(region && { region: region }),
     ...(service && { service: service }),
     ...(isFavorite && { isFavorite: isFavorite }),
   };
 
   try {
-    const response = await axiosInstance.get(PATH, { params });
+    const response = await axiosInstance.get(PATH, {
+      params,
+      ...(headers && { headers }),
+    });
     return response.data;
   } catch (err) {
     console.error(err);
@@ -139,3 +151,15 @@ export const moverProfile = async (formData: FormData) => {
   });
   return response.data;
 };
+
+// 기사님 찜하기
+export async function createFavoriteMover(moverId: number): Promise<any> {
+  const response = await axiosInstance.post(`${PATH}/${moverId}/favorite`);
+  return response.data;
+}
+
+// 기사님 찜하기 취소
+export async function deleteFavoriteMover(moverId: number): Promise<any> {
+  const response = await axiosInstance.delete(`${PATH}/${moverId}/favorite`);
+  return response.data;
+}

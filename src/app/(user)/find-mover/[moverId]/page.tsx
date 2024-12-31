@@ -6,14 +6,17 @@ import { useParams } from "next/navigation";
 import LineSeparator from "@/components/common/LineSeparator";
 import { SERVICE_TEXTS } from "@/variables/service";
 import { REGION_TEXTS } from "@/variables/regions";
-import { useState } from "react";
 import QuoteButtonGroup from "@/components/common/QuoteButtonGroup";
 import ShareButtons from "@/components/common/ShareButtons";
-import { usePathname, useSearchParams } from "next/navigation";
-
+import cn from "@/config/cn";
 import { useGetMoverDetail } from "@/api/query-hooks/mover";
 import Loader from "@/components/common/Loader";
 import MoversReviewList from "@/components/review/MoversReviewList";
+import { useFavoriteMutation } from "@/api/mutation-hooks/mover";
+import NiceModal, { useModal } from "@ebay/nice-modal-react";
+import QuoteRequestModal from "@/components/modals/QuoteRequestModal";
+import { useDesignatedMoverMutation } from "@/api/mutation-hooks/movingRequest";
+import BackDrop from "@/components/modals/BackDrop";
 
 const styles = {
   topContainer: "pc:flex pc:flex-row pc:gap-[90px] pc:justify-center",
@@ -32,38 +35,27 @@ const styles = {
     "flex flex-col items-center justify-center gap-[24px] p-[80px] mb-auto text-lg text-grayscale-400",
 };
 
+const QuoteRequestModal_ = NiceModal.create(() => {
+  const modal = useModal();
+
+  return (
+    <BackDrop>
+      <QuoteRequestModal onClose={() => modal.remove()} />
+    </BackDrop>
+  );
+});
+
+NiceModal.register("QuoteRequestModal", QuoteRequestModal_);
+
 export default function MoverDetailPage() {
   const { moverId } = useParams();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const fullUrl = `${pathname}${
-    searchParams.toString() ? `?${searchParams.toString()}` : ""
-  }`;
 
-  console.log(fullUrl);
+  const moverIdNum = Number(moverId);
 
-  const { data, isPending, isError } = useGetMoverDetail(Number(moverId));
-  const [isDesignated, setIsDesignated] = useState<boolean>(false);
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
-
-  const handleFavorite = async () => {
-    try {
-      setIsFavorite(!isFavorite);
-      // API 호출 로직
-      // await favoriteAPI(moverId);
-    } catch (error) {
-      // 에러 처리
-    }
-  };
-
-  const handleQuoteRequest = async () => {
-    try {
-      setIsDesignated(!isDesignated);
-      // await requestQuote(moverId);
-    } catch (error) {
-      // 에러 처리
-    }
-  };
+  const { data, isPending, isError } = useGetMoverDetail(moverIdNum);
+  const { mutate, isPending: isFavoriting } = useFavoriteMutation();
+  const { mutate: toggleDesignatedMover, isPending: isDesignating } =
+    useDesignatedMoverMutation();
 
   if (isPending) {
     return <Loader msg="기사님 상세 정보 불러오는중" />;
@@ -72,6 +64,18 @@ export default function MoverDetailPage() {
   if (isError || !data) {
     return null;
   }
+
+  const handleFavorite = async () => {
+    if (isFavoriting) return;
+    mutate({ moverId: moverIdNum, isFavorite: !data.isFavorite });
+  };
+
+  const handleQuoteRequest = async () => {
+    toggleDesignatedMover({
+      moverId: moverIdNum,
+      isDesignated: data.isDesignated as boolean,
+    });
+  };
 
   return (
     <>
@@ -82,7 +86,6 @@ export default function MoverDetailPage() {
             <LineSeparator direction="horizontal" />
             <ShareButtons
               variant="mover"
-              url={fullUrl}
               moverInfo={{
                 favoriteCount: data.favoriteCount,
                 reviewCount: data.reviewCount,
@@ -125,28 +128,25 @@ export default function MoverDetailPage() {
             </div>
           </div>
           <LineSeparator direction="horizontal" />
-          <MoversReviewList
-            totalRating={data.rating}
-            moverId={Number(moverId)}
-          />
+          <MoversReviewList totalRating={data.rating} moverId={moverIdNum} />
         </div>
 
         <div className={styles.pcShareContainer}>
           <QuoteButtonGroup
             isPc={true}
-            isFavorite={isFavorite}
-            disabled={isDesignated}
+            isFavorite={data.isFavorite}
+            isDesignated={data.isDesignated as boolean}
             moverNickname={data.nickname}
-            buttonText={
-              isDesignated ? "지정 견적 요청 완료" : "지정 견적 요청하기"
-            }
+            buttonText={cn(
+              data.isDesignated ? "지정 견적 요청 취소" : "지정 견적 요청하기",
+              isDesignating && "loading..."
+            )}
             onFavoriteClick={handleFavorite}
             onButtonClick={handleQuoteRequest}
           />
           <LineSeparator direction="horizontal" />
           <ShareButtons
             variant="mover"
-            url={fullUrl}
             moverInfo={{
               favoriteCount: data.favoriteCount,
               reviewCount: data.reviewCount,
@@ -157,11 +157,14 @@ export default function MoverDetailPage() {
         </div>
       </div>
       <QuoteButtonGroup
-        isFavorite={isFavorite}
-        disabled={isDesignated}
+        isFavorite={data.isFavorite}
         onFavoriteClick={handleFavorite}
         onButtonClick={handleQuoteRequest}
-        buttonText={isDesignated ? "지정 견적 요청 완료" : "지정 견적 요청하기"}
+        isDesignated={data.isDesignated as boolean}
+        buttonText={cn(
+          data.isDesignated ? "지정 견적 요청 취소" : "지정 견적 요청하기",
+          isDesignating && "Loading..."
+        )}
       />
     </>
   );

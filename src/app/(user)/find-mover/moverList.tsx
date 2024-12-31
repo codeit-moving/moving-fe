@@ -189,6 +189,7 @@ export default function MoverListWithFilters({
         pages: [initialData],
         pageParams: [null],
       },
+      staleTime: 0,
     });
 
   const styles = {
@@ -228,10 +229,6 @@ export default function MoverListWithFilters({
       tablet:gap-[32px] tablet:mt-4 
       pc:mt-[32px] pc:gap-[48px]`,
   };
-
-  // 임시. 테스트 - 아직 수정 안됨
-  console.log("==================== data ====================");
-  console.log(data);
 
   const moverInfos = data?.pages
     ?.flatMap((page) => page.list)
