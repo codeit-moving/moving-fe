@@ -62,9 +62,6 @@ export default function MyReviewPage() {
     return <Loader msg="리뷰 목록을 불러오고 있어요." />;
   }
 
-  console.log("myReviewList", myReviewList);
-  console.log("reviewToWriteList", reviewToWriteList);
-
   const displayData =
     currentTab === 0
       ? reviewToWriteList ?? emptyReviewList
@@ -76,22 +73,22 @@ export default function MyReviewPage() {
 
   return (
     <>
-      {/* <ul className="max-w-[1400px] mx-auto my-[16px] pc:my-[24px] bg-bg-100 grid grid-cols-1 gap-[24px] tablet:gap-[32px] pc:grid-cols-2 pc:gap-x-[24px] pc:gap-y-[48px]">
+      <ul className="max-w-[1400px] mx-auto my-[16px] pc:my-[24px] bg-bg-100 grid grid-cols-1 gap-[24px] tablet:gap-[32px] pc:grid-cols-2 pc:gap-x-[24px] pc:gap-y-[48px]">
         {displayData.list.map((item) => {
           return currentTab === 0 ? (
             <CreateReviewCard
               data={item as ReviewMoverData}
-              key={`createReview-${item.confirmedQuoteId}`}
+              key={`createReview-${item.nickname}`}
               onPrimaryClick={() => handleWriteReview(item as ReviewMoverData)}
             />
           ) : (
             <MyReviewCard
               data={item as MyReviewCardData}
-              key={`reviewed-${item.id}`}
+              key={`reviewed-${item.nickname}`}
             />
           );
         })}
-      </ul> */}
+      </ul>
       <Pagination
         currentPage={pageNum}
         totalPages={displayData.totalPages}

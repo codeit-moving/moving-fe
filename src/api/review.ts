@@ -52,8 +52,18 @@ interface CreateReviewResponse {
 
 //리뷰 작성 하기
 export const createReview = async (
-  formData: CreateReviewData
+  reviewData: CreateReviewData
 ): Promise<CreateReviewResponse> => {
+  const formData = new FormData();
+
+  formData.append("confirmedQuoteId", String(reviewData.confirmedQuoteId));
+  formData.append("rating", String(reviewData.rating));
+  formData.append("content", reviewData.content);
+
+  reviewData.images?.forEach((image) => {
+    formData.append("imageUrl", image);
+  });
+
   const response = await axiosInstance.post(`${PATH}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });

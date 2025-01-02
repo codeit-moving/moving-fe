@@ -10,6 +10,7 @@ import LineSeparator from "../common/LineSeparator";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useReviewMutation } from "@/api/mutation-hooks/review";
+import { CreateReviewData } from "@/types/review";
 
 const styles = {
   lineSeparator: "my-[20px] pc:my-[32px]",
@@ -65,17 +66,13 @@ export default function ReviewModal({ onClose, data }: ReviewModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // const formData = new FormData();
-
-    // formData.append("confirmedQuoteId", data.confirmedQuoteId);
-    // formData.append("rating", data.rating);
-    // formData.append("content", data.content);
-
-    // data.images.forEach((image) => {
-    //   formData.append("images", image);
-    // });
-
-    // mutate(formData);
+    const reviewData: CreateReviewData = {
+      confirmedQuoteId: data.confirmedQuoteId,
+      rating: rating,
+      content: review,
+      images: images,
+    };
+    mutate(reviewData);
   };
 
   return (
