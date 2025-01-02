@@ -203,11 +203,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
         </div>
         <div className={styles.sidebar}>
           <QuoteButtonGroup {...buttonGroupProps} isPc={true} />
-          <ShareButtons
-            url={currentUrl}
-            variant="quote"
-            quoteInfo={quoteInfo}
-          />
+          <ShareButtons variant="quote" quoteInfo={quoteInfo} />
         </div>
       </div>
       <QuoteButtonGroup {...buttonGroupProps} isPc={false} />
