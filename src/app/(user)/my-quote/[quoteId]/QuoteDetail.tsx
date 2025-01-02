@@ -9,7 +9,7 @@ import LineSeparator from "@/components/common/LineSeparator";
 import QuoteDetailInfo from "@/components/request/QuoteDetailInfo";
 import QuoteButtonGroup from "@/components/common/QuoteButtonGroup";
 import { setMoverFavorite } from "@/api/mover";
-import { finalizeQuote } from "@/api/quote";
+import { confirmQuote } from "@/api/quote";
 import { ShareBox } from "@/components/temp";
 import ShareButtons from "@/components/common/ShareButtons";
 
@@ -64,7 +64,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
   };
 
   const quoteInfoData = {
-    requestDate: data.movingRequest.createdAt,
+    requestDate: data.movingRequest.requestDate,
     service: data.movingRequest.service,
     movingDate: data.movingRequest.movingDate,
     pickupAddress: data.movingRequest.pickupAddress,
@@ -129,7 +129,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
   };
 
   const handleConfirmQuoteButtonClick = () => {
-    finalizeQuote(data.id)
+    confirmQuote(data.id)
       .then((res) => {
         if (!isCompeleted) {
           setIsCompeleted(true);
@@ -141,7 +141,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
       })
       .catch((err) => {
         // 에러 처리
-        console.error("Failed finalizeQuote", err);
+        console.error("Failed confirmQuote", err);
       });
   };
 

@@ -10,3 +10,12 @@ export const editCustomerProfile = async (formData: FormData) => {
   });
   return response.data;
 };
+
+export const customerProfile = async (formData: FormData) => {
+  const response = await axiosInstance.post(`${PATH}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};

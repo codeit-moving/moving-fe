@@ -196,7 +196,7 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
         )}
       </p>
       <div className={styles.snsContainer}>
-        <SnsComponent />
+        <SnsComponent isUser={isUser} />
       </div>
     </div>
   );

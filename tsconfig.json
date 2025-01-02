@@ -28,7 +28,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/utils/generateImgSrc.js"
+    "src/utils/generateImgSrc.js",
+    "next.config.js"
   ],
   "exclude": ["node_modules"]
 }

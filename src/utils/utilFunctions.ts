@@ -17,10 +17,10 @@ export const mapServiceType = (services: number[]) => {
 };
 
 //형식: 2024.07.01
-export const formatDate = (dateString: string): string => {
+export const formatDate = (date: string | Date): string => {
   try {
-    const date = parseISO(dateString);
-    return format(date, "yyyy.MM.dd", { locale: ko });
+    const dateObj = typeof date === "string" ? new Date(date) : date;
+    return format(dateObj, "yyyy.MM.dd", { locale: ko });
   } catch (error) {
     console.error("Invalid date format:", error);
     return "날짜 오류";

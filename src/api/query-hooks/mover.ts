@@ -45,13 +45,22 @@ export const useGetMoverList = ({
 export const useGetFavoriteMoverList = () => {
   return useInfiniteQuery({
     queryKey: moverKey.favorite(),
-    queryFn: () =>
+    queryFn: ({
+      pageParam,
+    }: {
+      pageParam: string | number | null | undefined;
+    }) =>
       getMoverList({
         isFavorite: true,
         limit: 10,
-        nextCursorId: null,
+        nextCursorId: pageParam,
       }),
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.nextCursor) {
+        return undefined;
+      }
+      return lastPage.nextCursor;
+    },
     initialPageParam: null,
   });
 };

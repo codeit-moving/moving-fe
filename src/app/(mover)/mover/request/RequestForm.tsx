@@ -18,6 +18,7 @@ import { RejectRequetNiceModal } from "./RejectRequetNiceModal";
 import { CreateQuoteNiceModal } from "./CreateQuoteNiceModal";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import { isAllTrue } from "@/utils/utilFunctions";
+import { createQuote, rejectMovingRequest } from "@/api/quote";
 
 import assets from "@/variables/images";
 import { type QuoteDetailsData } from "@/types/mover";
@@ -43,7 +44,7 @@ interface RequestQuoteData extends QuoteDetailsData {
 }
 
 interface RequestFormProps {
-  initialData?: GetMovingRequestListByMoverResponseData;
+  initialData: GetMovingRequestListByMoverResponseData;
 }
 
 export default function RequestForm({ initialData }: RequestFormProps) {
@@ -103,6 +104,11 @@ export default function RequestForm({ initialData }: RequestFormProps) {
         return isNaN(cursor) ? null : cursor;
       },
       initialPageParam: null,
+      initialData: {
+        pages: [initialData],
+        pageParams: [null],
+      },
+      staleTime: 0,
     });
 
   const styles = {
@@ -211,31 +217,48 @@ export default function RequestForm({ initialData }: RequestFormProps) {
     });
   };
 
-  const submitQuote = (quoteDate: {
-    requestId: number;
+  const submitQuote = async (quoteDate: {
+    movingRequestId: number;
     cost: number;
     comment: string;
   }) => {
-    // 견적서 보내기 API 호출출
     console.log(
       "견적서 보내기 API 호출 > id : ",
-      quoteDate.requestId,
+      quoteDate.movingRequestId,
       " cost : ",
       quoteDate.cost,
       " comment : ",
       quoteDate.comment
     );
+
+    try {
+      const response = await createQuote(quoteDate);
+      console.log("response : ", response);
+    } catch (err) {
+      // 에러/실패패 처리
+    }
+
     return;
   };
 
-  const rejectRequest = (quoteDate: { requestId: number; comment: string }) => {
-    // 이사 요청 반려 API 호출출
+  const rejectRequest = async (quoteDate: {
+    movingRequestId: number;
+    comment: string;
+  }) => {
     console.log(
       "이사 요청 반려 API 호출 > id : ",
-      quoteDate.requestId,
+      quoteDate.movingRequestId,
       " comment : ",
       quoteDate.comment
     );
+
+    try {
+      const response = await rejectMovingRequest(quoteDate);
+      console.log("response : ", response);
+    } catch (err) {
+      // 에러/실패패 처리
+    }
+
     return;
   };
 

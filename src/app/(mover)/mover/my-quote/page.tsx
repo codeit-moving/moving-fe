@@ -14,14 +14,10 @@ import { useInView } from "react-intersection-observer";
 interface QuoteCardListProps {
   pages: CursorResponse<SentQuoteData | QuoteDetailsData>[];
   currentTab: number;
-  onButtonClick: (id: number) => void;
 }
 
-const QuoteCardList = ({
-  pages,
-  currentTab,
-  onButtonClick,
-}: QuoteCardListProps) => {
+const QuoteCardList = ({ pages, currentTab }: QuoteCardListProps) => {
+  const router = useRouter();
   return (
     <ul className="max-w-[1400px] mx-auto bg-bg-100 grid grid-cols-1 gap-[24px] mt-[24px] pc:grid-cols-2 tablet:gap-[32px] tablet:mt-[32px] pc:gap-x-[24px] pc:gap-y-[48px] pc:mt-[40px]">
       {pages.map((page) =>
@@ -30,7 +26,7 @@ const QuoteCardList = ({
             <SentQuoteCard
               key={item.id}
               data={item as SentQuoteData}
-              onButtonClick={() => onButtonClick(item.id)}
+              onButtonClick={() => router.push(`/mover/my-quote/${item.id}`)}
               classNameQuoteDetails="pc:flex-col pc:gap-2 pc:items-start"
             />
           ) : (
@@ -47,7 +43,6 @@ const QuoteCardList = ({
 };
 
 export default function MyQuotePage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const currentTab = Number(searchParams.get("tab") || "0");
 
@@ -69,10 +64,6 @@ export default function MyQuotePage() {
     }
   }, [isFetching, inView, hasNextPage, fetchNextPage]);
 
-  const handleButtonClick = (quoteId: number) => {
-    router.push(`/mover/my-quote/${quoteId}`);
-  };
-
   if (isPending) {
     return <Loader msg="견적을 불러오는 중입니다." />;
   }
@@ -90,19 +81,15 @@ export default function MyQuotePage() {
 
   return (
     <>
-      <QuoteCardList
-        pages={pages}
-        currentTab={currentTab}
-        onButtonClick={handleButtonClick}
-      />
+      <QuoteCardList pages={pages} currentTab={currentTab} />
 
-      <div ref={ref}>
+      <div ref={ref} className="mt-6">
         {isFetchingNextPage ? (
-          <Loader msg="찜한 기사님 목록 불러오는중" />
+          <Loader msg="견적 목록 불러오는중" />
         ) : hasNextPage ? (
           <Loader msg="새 목록 불러오는 중" />
         ) : (
-          <Message msg="더 불러올 기사님이 없습니다." />
+          <Message msg="더 불러올 목록이 없습니다." />
         )}
       </div>
     </>

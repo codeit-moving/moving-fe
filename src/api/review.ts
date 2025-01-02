@@ -7,18 +7,24 @@ import { type CustomerReviewData } from "@/components/review/CustomerReview";
 const PATH = "/reviews";
 
 // 내가 작성한 리뷰 부를 api
-export const getMyReviewList = async (): Promise<
-  OffsetResponse<MyReviewCardData>
-> => {
-  const response = await axiosInstance.get(`${PATH}/me`);
+export const getMyReviewList = async ({
+  pageNum = 1,
+  pageSize = 5,
+}: OffsetParams): Promise<OffsetResponse<MyReviewCardData>> => {
+  const response = await axiosInstance.get(`${PATH}/me`, {
+    params: { pageNum, pageSize },
+  });
   return response.data;
 };
 
 // 작성 가능한 리뷰 부를 api
-export const getAvailableReviewList = async (): Promise<
-  OffsetResponse<ReviewMoverData>
-> => {
-  const response = await axiosInstance.get(`${PATH}/available`);
+export const getAvailableReviewList = async ({
+  pageNum = 1,
+  pageSize = 5,
+}: OffsetParams): Promise<OffsetResponse<ReviewMoverData>> => {
+  const response = await axiosInstance.get(`${PATH}/available`, {
+    params: { pageNum, pageSize },
+  });
   return response.data;
 };
 
