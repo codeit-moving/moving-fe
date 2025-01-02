@@ -41,10 +41,10 @@ export default function RejectRequetModal({
   requestId,
   serviceType,
   isDesignatedQuote,
-  startAddress = "",
-  endAddress = "",
-  moveDate = "",
-  customerName = "",
+  startAddress,
+  endAddress,
+  moveDate,
+  customerName,
 }: RejectRequetModalProps) {
   const service: "smallMove" | "homeMove" | "officeMove" =
     serviceType === 2
