@@ -152,6 +152,7 @@ export async function rejectMovingRequest({
       comment,
     }
   );
+
   return response.data;
 }
 
