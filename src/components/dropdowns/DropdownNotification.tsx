@@ -1,25 +1,40 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   InfiniteData,
   useInfiniteQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import Loader from "../common/Loader";
 import clsx from "clsx";
 
 import { Dropdown, DropdownItem, DropdownBell } from "../common/Dropdown";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import Loader from "../common/Loader";
 import {
   GetNotificationListData,
   getNotificationList,
   readNotification,
 } from "@/api/notification";
-
 import { NOTIFICATION_DEFAULT_PAGE_SIZE } from "@/variables/notification";
 import assets from "@/variables/images";
+
+function HighlightedText({ text }: { text: string }) {
+  const parseText = (text: string) => {
+    const parts = text.split(",");
+    return parts.map((part, index) => {
+      const isHighlight = index % 2 === 1;
+      return (
+        <span key={index} className={isHighlight ? "text-pr-blue-300" : ""}>
+          {part}
+        </span>
+      );
+    });
+  };
+
+  return <p className="text-base">{parseText(text)}</p>;
+}
 
 type DropdownNotificationProps = {
   onSelect: (id: number) => void;
@@ -33,6 +48,57 @@ export default function DropdownNotification({
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
 
+  const styles = {
+    dropdown: {
+      trigger: clsx("relative w-6 h-6 rounded-full cursor-pointer", {
+        "cursor-not-allowed": disabled,
+      }),
+      badge: clsx(
+        "absolute -top-1 -right-1",
+        "flex items-center justify-center",
+        "min-w-[16px] h-[16px]",
+        "rounded-full bg-red-500",
+        "text-[10px] text-white font-bold",
+        "pc:min-w-[18px] pc:h-[18px] pc:text-[11px]"
+      ),
+      container: clsx(
+        "absolute flex flex-col items-center",
+        "p-4 py-2.5 top-[37px] right-[-100px] w-[312px]",
+        "border-solid border-[1px] border-line-100 rounded-2xl",
+        "bg-white",
+        "tablet:top-[39px] tablet:right-[-56px]",
+        "pc:top-[54px] pc:w-[359px] pc:right-0"
+      ),
+    },
+    notification: {
+      header: clsx(
+        "flex flex-row justify-between items-center",
+        "pl-4 pr-[15px] w-full h-[54px]",
+        "text-lg text-black-400 font-bold",
+        "pc:pl-6 pc:text-2lg"
+      ),
+      list: clsx(
+        "overflow-y-auto",
+        "max-h-[400px]",
+        "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+      ),
+      item: clsx(
+        "box-border flex flex-col items-left",
+        "px-6 py-3",
+        "w-full",
+        "border-solid border-t border-line-100",
+        "text-lg text-black-400 font-medium",
+        "hover:bg-pr-blue-50",
+        "cursor-pointer",
+        "pc:py-4"
+      ),
+      readItem: "bg-bg-300 hover:bg-bg-300",
+      time: "text-sm text-gray-300 font-medium",
+      loading: "flex justify-center items-center h-8",
+      scrollTrigger: "h-10 bg-transparent",
+    },
+  };
+
   const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery<
     GetNotificationListData,
     Error,
@@ -42,15 +108,16 @@ export default function DropdownNotification({
   >({
     queryKey: ["notifications"],
     queryFn: ({ pageParam = null }) =>
-      getNotificationList({
-        lastCursorId: pageParam,
-      }),
-    getNextPageParam: (data) => {
-      if (data.lastCursorId === "" || data.lastCursorId === null) {
+      getNotificationList({ lastCursorId: pageParam }),
+    getNextPageParam: (lastPage) => {
+      if (
+        !lastPage.notifications?.length ||
+        lastPage.lastCursorId === "" ||
+        lastPage.lastCursorId === null
+      ) {
         return null;
       }
-
-      const cursor = Number(data.lastCursorId);
+      const cursor = Number(lastPage.lastCursorId);
       return isNaN(cursor) ? null : cursor;
     },
     initialPageParam: null,
@@ -58,86 +125,18 @@ export default function DropdownNotification({
 
   const loadMoreRef = useInfiniteScroll({
     callback: () => {
-      if (hasNextPage) fetchNextPage();
+      if (hasNextPage && !isFetching) fetchNextPage();
     },
-    options: { threshold: 0.5 },
+    options: {
+      threshold: 0.5,
+    },
   });
-
-  const dropdownStyles = {
-    base: "relative w-6 h-6 rounded-full cursor-pointer",
-    able: "",
-    open: "",
-    disabled: "cursor-not-allowed",
-  };
-
-  const dropdownTriggerClass = clsx(dropdownStyles.base, {
-    [dropdownStyles.able]: !disabled,
-    [dropdownStyles.open]: isOpen,
-    [dropdownStyles.disabled]: disabled,
-  });
-
-  const badgeClass = clsx(
-    "absolute -top-1 -right-1",
-    "flex items-center justify-center",
-    "min-w-[16px] h-[16px]",
-    "rounded-full bg-red-500",
-    "text-[10px] text-white font-bold",
-    "pc:min-w-[18px] pc:h-[18px] pc:text-[11px]"
-  );
-
-  const dropdownListClass = clsx(
-    "absolute flex flex-col items-center \
-    p-4 py-2.5 top-[37px] right-[-100px] w-[312px] \
-    border-solid border-[1px] border-line-100 rounded-2xl \
-    bg-white \
-    tablet:top-[39px] tablet:right-[-56px] \
-    pc:top-[54px] pc:w-[359px] pc:right-0"
-  );
-
-  const dropdownItemClass = clsx(
-    "box-border flex flex-col items-left \
-    px-6 py-3 \
-    w-full \
-    border-solid border-t border-line-100 \
-    text-lg text-black-400 font-medium \
-    hover:bg-pr-blue-50 \
-    cursor-pointer \
-    pc:py-4"
-  );
-
-  const notificationClass = clsx(
-    "flex flex-row justify-between items-center",
-    "pl-4 pr-[15px] w-full h-[54px]",
-    "text-lg text-black-400 font-bold",
-    "pc:pl-6 pc:text-2lg"
-  );
-
-  const readNotificationClass = clsx("bg-bg-300 hover:bg-bg-300");
-
-  const timeClass = clsx("text-sm text-gray-300 font-medium");
-
-  const HighlightedText = ({ text }: { text: string }) => {
-    const parseText = (text: string) => {
-      const parts = text.split(",");
-      return parts.map((part, index) => {
-        const isHighlight = index % 2 === 1;
-        return (
-          <span key={index} className={isHighlight ? "text-pr-blue-300" : ""}>
-            {part}
-          </span>
-        );
-      });
-    };
-
-    return <p className="text-base">{parseText(text)}</p>;
-  };
 
   const handleReadNotification = async (id: number) => {
     queryClient.setQueryData<InfiniteData<GetNotificationListData>>(
       ["notifications"],
       (oldData) => {
         if (!oldData) return oldData;
-
         return {
           ...oldData,
           pages: oldData.pages.map((page) => ({
@@ -160,7 +159,6 @@ export default function DropdownNotification({
         ["notifications"],
         (oldData) => {
           if (!oldData) return oldData;
-
           return {
             ...oldData,
             pages: oldData.pages.map((page) => ({
@@ -180,44 +178,17 @@ export default function DropdownNotification({
 
   const notifications = data?.pages.flatMap((page) => page.notifications) ?? [];
   const unreadCount = notifications.filter((item) => !item.isRead).length;
-  const items = notifications.map((item) => {
-    const children = <HighlightedText text={item.content} />;
-
-    return {
-      id: item.id,
-      children,
-      time: item.timeGap,
-      isRead: item.isRead,
-      onClick: () => {
-        handleReadNotification(item.id);
-      },
-    };
-  });
-
-  const handleCloseList = () => {
-    setIsOpen(false);
-  };
-
-  const styles = {
-    dropdownList: clsx(
-      "overflow-y-auto",
-      "max-h-[400px]",
-      "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
-    ),
-    loadingContainer: "flex justify-center items-center h-8",
-    scrollTrigger: "h-10 bg-transparent",
-  };
 
   return (
     <Dropdown
       trigger={
         <div className="relative">
           <DropdownBell
-            className={dropdownTriggerClass}
+            className={styles.dropdown.trigger}
             isEmpty={unreadCount < 1}
           />
           {unreadCount > 0 && (
-            <div className={badgeClass}>
+            <div className={styles.dropdown.badge}>
               {unreadCount > NOTIFICATION_DEFAULT_PAGE_SIZE
                 ? `${NOTIFICATION_DEFAULT_PAGE_SIZE}+`
                 : unreadCount}
@@ -228,10 +199,10 @@ export default function DropdownNotification({
       isOpen={isOpen}
       onToggle={() => setIsOpen((prev) => !prev)}
     >
-      <div className={dropdownListClass}>
-        <div className={notificationClass}>
+      <div className={styles.dropdown.container}>
+        <div className={styles.notification.header}>
           <div>알림</div>
-          <div onClick={handleCloseList}>
+          <div onClick={() => setIsOpen(false)}>
             <Image
               src={assets.icons.x}
               alt="알림 닫기"
@@ -240,27 +211,30 @@ export default function DropdownNotification({
             />
           </div>
         </div>
-        <div className={styles.dropdownList}>
-          {items.map((item, index) => (
+        <div className={styles.notification.list}>
+          {notifications.map((item, index) => (
             <DropdownItem
               key={item.id}
               className={clsx(
-                dropdownItemClass,
+                styles.notification.item,
                 index === 0 && "border-t-0",
-                item.isRead && readNotificationClass
+                item.isRead && styles.notification.readItem
               )}
-              onClick={item.onClick}
+              onClick={() => handleReadNotification(item.id)}
             >
-              {item.children}
-              <div className={timeClass}>{item.time}</div>
+              <HighlightedText text={item.content} />
+              <div className={styles.notification.time}>{item.timeGap}</div>
             </DropdownItem>
           ))}
           {isFetching && (
-            <div className={styles.loadingContainer}>
+            <div className={styles.notification.loading}>
               <Loader />
             </div>
           )}
-          <div ref={loadMoreRef} className={styles.scrollTrigger} />
+          <div
+            ref={loadMoreRef}
+            className={styles.notification.scrollTrigger}
+          />
         </div>
       </div>
     </Dropdown>
