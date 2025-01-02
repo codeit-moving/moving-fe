@@ -1,6 +1,6 @@
 import axios from "axios";
 import { NextApiRequest } from "next";
-import NiceModal from "@ebay/nice-modal-react";
+import Swal from "sweetalert2";
 
 interface AxiosResponseError {
   path: string;
@@ -63,14 +63,20 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     // redirect 데이터가 data 객체 안에 있는 경우를 처리
     if (error.response?.data?.data?.redirect === true) {
-      NiceModal.show("AlertModal", {
-        msg: error.response?.data?.data?.message,
+      const result = await Swal.fire({
         title: "프로필 등록",
-        buttonText: "확인",
-        onButtonClick: () => {
-          window.location.href = error.response.data.data.redirectUrl;
-        },
+        text: error.response?.data?.data?.message || "프로필을 등록해주세요.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "확인",
+        confirmButtonColor: "#3085d6",
+        cancelButtonText: "취소",
       });
+
+      if (result.isConfirmed && error.response?.data?.data?.redirectUrl) {
+        window.location.href = error.response.data.data.redirectUrl;
+        return Promise.reject(error);
+      }
     }
 
     // 403 토큰 관련 에러 처리
