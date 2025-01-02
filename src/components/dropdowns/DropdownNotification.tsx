@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import clsx from "clsx";
 
 import {
@@ -10,7 +10,10 @@ import {
   DropdownItem,
   DropdownBell,
 } from "../common/Dropdown";
+import { getNotificationList, readNotification } from "@/api/notification";
 
+import { type Notification } from "@/api/notification";
+import { NOTIFICATION_DEFAULT_PAGE_SIZE } from "@/variables/notification";
 import assets from "@/variables/images";
 
 type DropdownNotificationProps = {
@@ -23,6 +26,7 @@ export default function DropdownNotification({
   disabled = false,
 }: DropdownNotificationProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [notificationList, setNotificationList] = useState<Notification[]>([]);
 
   const dropdownStyles = {
     base: "relative w-6 h-6 rounded-full cursor-pointer",
@@ -64,20 +68,68 @@ export default function DropdownNotification({
     "pc:pl-6 pc:text-2lg"
   );
 
+  const readNotificationClass = clsx("bg-bg-300 hover:bg-bg-300");
+
   const timeClass = clsx("text-sm text-gray-300 font-medium");
 
-  // 임시. API 호출이나 PROPS로 알림 리스트 확인
-  const notifications = [
-    { id: 1, message: "알림1", time: "1시간 전" },
-    { id: 2, message: "알림2", time: "2시간 전" },
-  ];
+  const HighlightedText = ({ text }: { text: string }) => {
+    const parseText = (text: string) => {
+      const parts = text.split(",");
+      return parts.map((part, index) => {
+        const isHighlight = index % 2 === 1;
+        return (
+          <span key={index} className={isHighlight ? "text-pr-blue-300" : ""}>
+            {part}
+          </span>
+        );
+      });
+    };
 
-  const items = notifications.map((item) => {
+    return <p className="text-base">{parseText(text)}</p>;
+  };
+
+  const fetchNotifications = async () => {
+    const data = await getNotificationList();
+    setNotificationList(data.notifications);
+  };
+
+  const handleReadNotification = async (id: number) => {
+    // 즉시 UI 업데이트
+    setNotificationList((prev) =>
+      prev.map((notification) =>
+        notification.id === id
+          ? { ...notification, isRead: true }
+          : notification
+      )
+    );
+
+    // API 호출은 백그라운드에서 실행
+    try {
+      await readNotification(id);
+    } catch (error) {
+      // API 호출이 실패하면 상태를 원래대로 되돌림
+      setNotificationList((prev) =>
+        prev.map((notification) =>
+          notification.id === id
+            ? { ...notification, isRead: false }
+            : notification
+        )
+      );
+      console.error("알림 읽기 실패:", error);
+    }
+  };
+
+  const items = notificationList.map((item) => {
+    const children = <HighlightedText text={item.content} />;
+
     return {
       id: item.id,
-      message: item.message,
-      time: item.time,
-      onClick: () => onSelect(item.id), // 임시. 알림 API 호출로 교체 예정
+      children,
+      time: item.timeGap,
+      isRead: item.isRead,
+      onClick: () => {
+        handleReadNotification(item.id);
+      },
     };
   });
 
@@ -95,14 +147,22 @@ export default function DropdownNotification({
     ...items.map((item, index) => (
       <DropdownItem
         key={item.id}
-        className={clsx(dropdownItemClass, index === 0 && "border-t-0")}
+        className={clsx(
+          dropdownItemClass,
+          index === 0 && "border-t-0",
+          item.isRead && readNotificationClass
+        )}
         onClick={item.onClick}
       >
-        {item.message}
+        {item.children}
         <div className={timeClass}>{item.time}</div>
       </DropdownItem>
     )),
   ];
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
   return (
     <Dropdown
