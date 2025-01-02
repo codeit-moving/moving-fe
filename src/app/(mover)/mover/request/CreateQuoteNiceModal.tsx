@@ -10,7 +10,11 @@ interface CreateQuoteModalProps {
   startAddress: string;
   endAddress: string;
   moveDate: string;
-  onSubmit: (quoteDate: { cost?: number; comment: string }) => void;
+  onSubmit: (quoteDate: {
+    movingRequestId: number;
+    cost?: number;
+    comment: string;
+  }) => void;
 }
 
 export function CreateQuoteModalComponent({

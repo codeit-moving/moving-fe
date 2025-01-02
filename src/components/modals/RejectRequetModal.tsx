@@ -10,7 +10,7 @@ import { MIN_QUOTE_COMMENT_LENGTH } from "@/variables/quote";
 
 interface RejectRequetModalProps {
   onClose?: () => void;
-  onSubmit?: (data: { requestId: number; comment: string }) => void;
+  onSubmit?: (data: { movingRequestId: number; comment: string }) => void;
   requestId: number;
   serviceType: number;
   isDesignatedQuote: boolean;
@@ -59,7 +59,7 @@ export default function RejectRequetModal({
     comment.length >= MIN_QUOTE_COMMENT_LENGTH && typeof comment === "string";
 
   const handleCallApi = () => {
-    onSubmit({ requestId, comment });
+    onSubmit({ movingRequestId: requestId, comment });
     onClose();
   };
 

@@ -8,7 +8,7 @@ export interface MovingRequestBaseData {
 }
 
 export interface MovingRequesteDataWithCreated extends MovingRequestBaseData {
-  createdAt: string;
+  requestDate: string;
 }
 
 export interface MovingRequestDataWithComplete
