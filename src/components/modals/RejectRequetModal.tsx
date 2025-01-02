@@ -41,10 +41,10 @@ export default function RejectRequetModal({
   requestId,
   serviceType,
   isDesignatedQuote,
-  startAddress = "서울특별시 강남구 테헤란로 14길 6 남도빌딩",
-  endAddress = "서울특별시 강남구 테헤란로 14길 6 남도빌딩",
-  moveDate = "2024. 01. 01(목)",
-  customerName = "김코드",
+  startAddress = "",
+  endAddress = "",
+  moveDate = "",
+  customerName = "",
 }: RejectRequetModalProps) {
   const service: "smallMove" | "homeMove" | "officeMove" =
     serviceType === 2

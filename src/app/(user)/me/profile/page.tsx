@@ -1,3 +1,5 @@
+"use client";
+
 import Profile from "@/components/forms/Profile";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
