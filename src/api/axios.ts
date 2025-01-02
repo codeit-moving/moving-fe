@@ -1,6 +1,6 @@
 import axios from "axios";
 import { NextApiRequest } from "next";
-import Swal from "sweetalert2";
+import NiceModal from "@ebay/nice-modal-react";
 
 interface AxiosResponseError {
   path: string;
@@ -63,24 +63,14 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     // redirect 데이터가 data 객체 안에 있는 경우를 처리
     if (error.response?.data?.data?.redirect === true) {
-      try {
-        const result = await Swal.fire({
-          title: "프로필 등록",
-          text: error.response?.data?.data?.message || "프로필을 등록해주세요.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "확인",
-          confirmButtonColor: "#3085d6",
-          cancelButtonText: "취소",
-        });
-
-        if (result.isConfirmed && error.response?.data?.data?.redirectUrl) {
+      NiceModal.show("AlertModal", {
+        msg: error.response?.data?.data?.message,
+        title: "프로필 등록",
+        buttonText: "확인",
+        onButtonClick: () => {
           window.location.href = error.response.data.data.redirectUrl;
-          return Promise.reject(error);
-        }
-      } catch (swalError) {
-        console.log("[Axios] Swal 에러:", swalError);
-      }
+        },
+      });
     }
 
     // 403 토큰 관련 에러 처리
@@ -113,9 +103,6 @@ axiosInstance.interceptors.response.use(
 
     // response error handle
     if (error.response) {
-      console.error("API response error", error.response.data);
-
-      //여기서 error 정리
       const apiError: AxiosResponseError = {
         path: error.response.data.path,
         method: error.response.data.method,
