@@ -80,60 +80,99 @@ const MovingIcon = () => (
     />
   </div>
 );
+const StatusBadge = ({
+  movingDate,
+  isConfirmed,
+}: {
+  movingDate: string;
+  isConfirmed: boolean;
+}) => {
+  const now = new Date();
+  const moveDate = new Date(movingDate);
+  const isFuture = moveDate > now;
 
-const StatusBadge = ({ isConfirmed }: { isConfirmed: boolean }) => (
-  <div className="gap-1 rounded-xl py-1 px-2 text-pr-blue-300 items-center flex flex-row bg-pr-blue-100">
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 36 36"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+  const getStatusText = () => {
+    if (isFuture) return "진행예정 요청";
+    if (isConfirmed) return "확정된 요청";
+    return "만료된 요청";
+  };
+
+  // 진행예정일 때는 녹색 계열 사용
+  const colorClasses = isFuture
+    ? "text-emerald-600 bg-emerald-50"
+    : "text-pr-blue-300 bg-pr-blue-100";
+
+  return (
+    <div
+      className={`gap-1 rounded-xl py-1 px-2 items-center flex flex-row ${colorClasses}`}
     >
-      <path
-        d="M7 26L7.15928 25.6525C7.9634 23.898 8.45024 22.015 8.59724 20.0907L9.12162 13.226C9.47615 8.58495 13.3454 5 18 5V5C22.6546 5 26.5239 8.58495 26.8784 13.226L27.4028 20.0907C27.5498 22.015 28.0366 23.898 28.8407 25.6525L29 26"
-        stroke="#1B92FF"
-        strokeWidth="2"
-      />
-      <path
-        d="M29 26H7L9 21L10 11L12.5 6.5L18 5L23 6.5L26 11L27 21L29 26Z"
-        fill="#1B92FF"
-      />
-      <path
-        d="M7 26L29 26"
-        stroke="#1B92FF"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M21 29C21 30.6569 19.6569 32 18 32C16.3431 32 15 30.6569 15 29"
-        stroke="#1B92FF"
-        strokeWidth="2"
-      />
-    </svg>
-    {isConfirmed ? "확정된 요청" : "만료된 요청"}
-  </div>
-);
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 36 36"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M7 26L7.15928 25.6525C7.9634 23.898 8.45024 22.015 8.59724 20.0907L9.12162 13.226C9.47615 8.58495 13.3454 5 18 5V5C22.6546 5 26.5239 8.58495 26.8784 13.226L27.4028 20.0907C27.5498 22.015 28.0366 23.898 28.8407 25.6525L29 26"
+          stroke={isFuture ? "#059669" : "#1B92FF"}
+          strokeWidth="2"
+        />
+        <path
+          d="M29 26H7L9 21L10 11L12.5 6.5L18 5L23 6.5L26 11L27 21L29 26Z"
+          fill={isFuture ? "#059669" : "#1B92FF"}
+        />
+        <path
+          d="M7 26L29 26"
+          stroke={isFuture ? "#059669" : "#1B92FF"}
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M21 29C21 30.6569 19.6569 32 18 32C16.3431 32 15 30.6569 15 29"
+          stroke={isFuture ? "#059669" : "#1B92FF"}
+          strokeWidth="2"
+        />
+      </svg>
+      {getStatusText()}
+    </div>
+  );
+};
 
 const RequestDetails = ({ request }: { request: MovingRequest }) => {
   const movingDate = new Date(request.movingDate);
   const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
+  const now = new Date();
+  const isFuture = movingDate > now;
+
+  const formatDateTime = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}. ${month}. ${day}. ${hours}시 ${minutes}분`;
+  };
 
   return (
     <div className="flex flex-col gap-3 text-lg font-medium text-left">
       <div className="flex flex-col pc:flex-row items-start pc:items-center gap-1 pc:gap-3">
-        <StatusBadge isConfirmed={request.isConfirmed} />
+        <StatusBadge
+          movingDate={request.movingDate}
+          isConfirmed={request.isConfirmed}
+        />
       </div>
 
       <div className="text-lg tablet:text-xl pc:text-2xl text-gray-500">
-        {movingDate.toLocaleDateString()} ({weekDays[movingDate.getDay()]})에
-        진행한 무빙
+        {formatDateTime(movingDate)} ({weekDays[movingDate.getDay()]})에
+        {isFuture ? " 진행 예정인 무빙" : " 진행한 무빙"}
       </div>
 
       <div className="flex flex-col gap-1">
         <DetailRow
           label="견적 요청일"
-          value={new Date(request.requestDate).toLocaleDateString()}
+          value={formatDateTime(new Date(request.requestDate))}
         />
         <DetailRow
           label="서비스"

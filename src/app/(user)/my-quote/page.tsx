@@ -175,7 +175,7 @@ const MyQuotePage = () => {
             </ul>
           ) : (
             <div className="flex justify-center items-center min-h-[200px] text-gray-500">
-              활성중인 이사요청이 없습니다.
+              받은 견적이 없습니다.
             </div>
           )}
         </>
