@@ -1,18 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import Loader from "../common/Loader";
 import clsx from "clsx";
 
+import { Dropdown, DropdownItem, DropdownBell } from "../common/Dropdown";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import {
-  Dropdown,
-  DropdownList,
-  DropdownItem,
-  DropdownBell,
-} from "../common/Dropdown";
-import { getNotificationList, readNotification } from "@/api/notification";
+  GetNotificationListData,
+  getNotificationList,
+  readNotification,
+} from "@/api/notification";
 
-import { type Notification } from "@/api/notification";
 import { NOTIFICATION_DEFAULT_PAGE_SIZE } from "@/variables/notification";
 import assets from "@/variables/images";
 
@@ -26,7 +31,37 @@ export default function DropdownNotification({
   disabled = false,
 }: DropdownNotificationProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [notificationList, setNotificationList] = useState<Notification[]>([]);
+  const queryClient = useQueryClient();
+
+  const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery<
+    GetNotificationListData,
+    Error,
+    InfiniteData<GetNotificationListData>,
+    string[],
+    number | null
+  >({
+    queryKey: ["notifications"],
+    queryFn: ({ pageParam = null }) =>
+      getNotificationList({
+        lastCursorId: pageParam,
+      }),
+    getNextPageParam: (data) => {
+      if (data.lastCursorId === "" || data.lastCursorId === null) {
+        return null;
+      }
+
+      const cursor = Number(data.lastCursorId);
+      return isNaN(cursor) ? null : cursor;
+    },
+    initialPageParam: null,
+  });
+
+  const loadMoreRef = useInfiniteScroll({
+    callback: () => {
+      if (hasNextPage) fetchNextPage();
+    },
+    options: { threshold: 0.5 },
+  });
 
   const dropdownStyles = {
     base: "relative w-6 h-6 rounded-full cursor-pointer",
@@ -40,6 +75,15 @@ export default function DropdownNotification({
     [dropdownStyles.open]: isOpen,
     [dropdownStyles.disabled]: disabled,
   });
+
+  const badgeClass = clsx(
+    "absolute -top-1 -right-1",
+    "flex items-center justify-center",
+    "min-w-[16px] h-[16px]",
+    "rounded-full bg-red-500",
+    "text-[10px] text-white font-bold",
+    "pc:min-w-[18px] pc:h-[18px] pc:text-[11px]"
+  );
 
   const dropdownListClass = clsx(
     "absolute flex flex-col items-center \
@@ -88,38 +132,55 @@ export default function DropdownNotification({
     return <p className="text-base">{parseText(text)}</p>;
   };
 
-  const fetchNotifications = async () => {
-    const data = await getNotificationList();
-    setNotificationList(data.notifications);
-  };
-
   const handleReadNotification = async (id: number) => {
-    // 즉시 UI 업데이트
-    setNotificationList((prev) =>
-      prev.map((notification) =>
-        notification.id === id
-          ? { ...notification, isRead: true }
-          : notification
-      )
+    queryClient.setQueryData<InfiniteData<GetNotificationListData>>(
+      ["notifications"],
+      (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            notifications: page.notifications.map((notification) =>
+              notification.id === id
+                ? { ...notification, isRead: true }
+                : notification
+            ),
+          })),
+        };
+      }
     );
 
-    // API 호출은 백그라운드에서 실행
     try {
       await readNotification(id);
+      onSelect(id);
     } catch (error) {
-      // API 호출이 실패하면 상태를 원래대로 되돌림
-      setNotificationList((prev) =>
-        prev.map((notification) =>
-          notification.id === id
-            ? { ...notification, isRead: false }
-            : notification
-        )
+      queryClient.setQueryData<InfiniteData<GetNotificationListData>>(
+        ["notifications"],
+        (oldData) => {
+          if (!oldData) return oldData;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page) => ({
+              ...page,
+              notifications: page.notifications.map((notification) =>
+                notification.id === id
+                  ? { ...notification, isRead: false }
+                  : notification
+              ),
+            })),
+          };
+        }
       );
       console.error("알림 읽기 실패:", error);
     }
   };
 
-  const items = notificationList.map((item) => {
+  const notifications = data?.pages.flatMap((page) => page.notifications) ?? [];
+  const unreadCount = notifications.filter((item) => !item.isRead).length;
+  const items = notifications.map((item) => {
     const children = <HighlightedText text={item.content} />;
 
     return {
@@ -137,40 +198,71 @@ export default function DropdownNotification({
     setIsOpen(false);
   };
 
-  const itemsWithDivider = [
-    <div className={notificationClass}>
-      <div>알림</div>
-      <div onClick={handleCloseList}>
-        <Image src={assets.icons.x} alt="알림 닫기" width={24} height={24} />
-      </div>
-    </div>,
-    ...items.map((item, index) => (
-      <DropdownItem
-        key={item.id}
-        className={clsx(
-          dropdownItemClass,
-          index === 0 && "border-t-0",
-          item.isRead && readNotificationClass
-        )}
-        onClick={item.onClick}
-      >
-        {item.children}
-        <div className={timeClass}>{item.time}</div>
-      </DropdownItem>
-    )),
-  ];
-
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
+  const styles = {
+    dropdownList: clsx(
+      "overflow-y-auto",
+      "max-h-[400px]",
+      "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+    ),
+    loadingContainer: "flex justify-center items-center h-8",
+    scrollTrigger: "h-10 bg-transparent",
+  };
 
   return (
     <Dropdown
-      trigger={<DropdownBell className={dropdownTriggerClass} />}
+      trigger={
+        <div className="relative">
+          <DropdownBell
+            className={dropdownTriggerClass}
+            isEmpty={unreadCount < 1}
+          />
+          {unreadCount > 0 && (
+            <div className={badgeClass}>
+              {unreadCount > NOTIFICATION_DEFAULT_PAGE_SIZE
+                ? `${NOTIFICATION_DEFAULT_PAGE_SIZE}+`
+                : unreadCount}
+            </div>
+          )}
+        </div>
+      }
       isOpen={isOpen}
       onToggle={() => setIsOpen((prev) => !prev)}
     >
-      <DropdownList className={dropdownListClass} items={itemsWithDivider} />
+      <div className={dropdownListClass}>
+        <div className={notificationClass}>
+          <div>알림</div>
+          <div onClick={handleCloseList}>
+            <Image
+              src={assets.icons.x}
+              alt="알림 닫기"
+              width={24}
+              height={24}
+            />
+          </div>
+        </div>
+        <div className={styles.dropdownList}>
+          {items.map((item, index) => (
+            <DropdownItem
+              key={item.id}
+              className={clsx(
+                dropdownItemClass,
+                index === 0 && "border-t-0",
+                item.isRead && readNotificationClass
+              )}
+              onClick={item.onClick}
+            >
+              {item.children}
+              <div className={timeClass}>{item.time}</div>
+            </DropdownItem>
+          ))}
+          {isFetching && (
+            <div className={styles.loadingContainer}>
+              <Loader />
+            </div>
+          )}
+          <div ref={loadMoreRef} className={styles.scrollTrigger} />
+        </div>
+      </div>
     </Dropdown>
   );
 }

@@ -66,9 +66,10 @@ export function DropdownUserName({ name = "사용자명" }: DropdownUserNameProp
 
 type DropdownBellProps = {
   className?: string;
+  isEmpty?: boolean;
 };
 
-export function DropdownBell({ className }: DropdownBellProps) {
+export function DropdownBell({ className, isEmpty }: DropdownBellProps) {
   const commonImageFrameClass = clsx(
     "relative w-6 h-6 pc:w-9 pc:h-9",
     className
@@ -76,7 +77,11 @@ export function DropdownBell({ className }: DropdownBellProps) {
 
   return (
     <div className={commonImageFrameClass}>
-      <Image src={assets.icons.alarm} alt="알림 드롭 다운" fill />
+      <Image
+        src={isEmpty ? assets.icons.alarm : assets.icons.alarmBlue}
+        alt="알림 드롭 다운"
+        fill
+      />
     </div>
   );
 }
@@ -130,18 +135,19 @@ export function DropdownItem({
 }
 
 type DropdownListProps = {
-  items: React.ReactNode[];
+  items?: React.ReactNode[];
   className?: string;
 };
 
 export function DropdownList({ items, className }: DropdownListProps) {
   return (
     <div className={clsx("z-50", className)}>
-      {items.map((item, index) => (
-        <div key={index} className="w-full">
-          {item}
-        </div>
-      ))}
+      {items &&
+        items.map((item, index) => (
+          <div key={index} className="w-full">
+            {item}
+          </div>
+        ))}
     </div>
   );
 }

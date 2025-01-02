@@ -18,11 +18,16 @@ export interface Notification {
 export interface GetNotificationListData {
   notifications: Notification[];
   hasNext: boolean;
-  lastCursorId: number | null;
+  lastCursorId?: string | number | null;
 }
 
-export async function getNotificationList(): Promise<GetNotificationListData> {
+export async function getNotificationList({
+  lastCursorId,
+}: {
+  lastCursorId?: string | number | null;
+}): Promise<GetNotificationListData> {
   const params: Record<string, any> = {
+    ...(lastCursorId !== null && { lastCursorId }),
     isRead: false,
     limit: NOTIFICATION_DEFAULT_PAGE_SIZE,
   };
