@@ -82,7 +82,7 @@ export const movingRequests = {
     } catch (error: any) {
       const errorMessage = error.response?.data?.data?.message;
 
-      if (errorMessage === "활성중인 이사요청이 있습니다.") {
+      if (errorMessage === "활성중인 견적요청이 있습니다.") {
         throw new Error("ACTIVE_REQUEST_EXISTS");
       }
 

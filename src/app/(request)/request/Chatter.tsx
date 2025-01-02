@@ -118,7 +118,7 @@ const EstimateRequest: React.FC = () => {
           setMessages([
             {
               type: "bot",
-              text: "이미 진행 중인 이사 요청이 있습니다.",
+              text: "이미 진행 중인 견적 요청이 있습니다.",
             },
           ]);
           toast.error(data.message);
@@ -193,7 +193,7 @@ const EstimateRequest: React.FC = () => {
           ...prev,
           {
             type: "bot",
-            text: "이미 진행 중인 이사 요청이 있어 새로운 견적을 요청할 수 없습니다.",
+            text: "이미 진행 중인 견적 요청이 있어 새로운 견적을 요청할 수 없습니다.",
           },
         ]);
         return;
@@ -201,14 +201,14 @@ const EstimateRequest: React.FC = () => {
 
       const postData = transformDataForPost({ type, date, addresses });
       await movingRequests.create(postData);
-      toast.success("이사 요청이 완료되었습니다!");
+      toast.success("견적 요청이 완료되었습니다!");
 
       setTimeout(() => {
         router.push("/");
       }, 2000);
     } catch (error) {
       if (error instanceof Error && error.message === "ACTIVE_REQUEST_EXISTS") {
-        toast.error("이미 진행 중인 이사 요청이 있습니다.");
+        toast.error("이미 진행 중인 견적 요청이 있습니다.");
       } else {
         toast.error("요청 처리 중 문제가 발생했습니다.");
         console.error("Moving request error:", error);
@@ -346,7 +346,7 @@ const EstimateRequest: React.FC = () => {
           {messages[messages.length - 1]?.type === "bot" &&
             !isLoading &&
             !messages[0]?.text?.includes(
-              "이미 진행 중인 이사 요청이 있습니다"
+              "이미 진행 중인 견적 요청이 있습니다"
             ) && (
               <motion.div
                 key={`step-${step}`}
