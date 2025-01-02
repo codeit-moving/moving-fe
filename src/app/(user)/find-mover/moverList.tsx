@@ -155,15 +155,15 @@ export default function MoverListWithFilters({
       GetMoverListResponseData,
       Error,
       InfiniteData<GetMoverListResponseData>,
-      (
-        | string
-        | {
-            keyword: string;
-            currentServiceFilter: number | null;
-            currentRegionFilter: number | null;
-            orderBy: "recent" | "movingDate";
-          }
-      )[],
+      [
+        "moverList",
+        {
+          keyword: string;
+          currentServiceFilter: number | null;
+          currentRegionFilter: number | null;
+          orderBy: "recent" | "movingDate";
+        }
+      ],
       number | null
     >({
       queryKey: ["moverList", formState],

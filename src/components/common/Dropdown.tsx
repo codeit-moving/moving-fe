@@ -72,11 +72,55 @@ type DropdownBellProps = {
 export function DropdownBell({ className, isEmpty }: DropdownBellProps) {
   const commonImageFrameClass = clsx(
     "relative w-6 h-6 pc:w-9 pc:h-9",
-    className
+    className,
+    !isEmpty && "bell-shake"
   );
 
   return (
     <div className={commonImageFrameClass}>
+      <style jsx>{`
+        @keyframes bellShake {
+          0%,
+          100% {
+            transform: rotate(0deg);
+          }
+          5% {
+            transform: rotate(-20deg);
+          }
+          7.5% {
+            transform: rotate(20deg);
+          }
+          10% {
+            transform: rotate(-15deg);
+          }
+          12.5% {
+            transform: rotate(15deg);
+          }
+          15% {
+            transform: rotate(0deg);
+          }
+          25%,
+          85% {
+            transform: rotate(0deg);
+          }
+          90% {
+            transform: rotate(-20deg);
+          }
+          92.5% {
+            transform: rotate(20deg);
+          }
+          95% {
+            transform: rotate(-15deg);
+          }
+          97.5% {
+            transform: rotate(15deg);
+          }
+        }
+
+        .bell-shake {
+          animation: bellShake 4s infinite;
+        }
+      `}</style>
       <Image
         src={isEmpty ? assets.icons.alarm : assets.icons.alarmBlue}
         alt="알림 드롭 다운"

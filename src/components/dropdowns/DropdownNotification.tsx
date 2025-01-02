@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   InfiniteData,
   useInfiniteQuery,
@@ -178,6 +178,8 @@ export default function DropdownNotification({
 
   const notifications = data?.pages.flatMap((page) => page.notifications) ?? [];
   const unreadCount = notifications.filter((item) => !item.isRead).length;
+  const lastCursorId =
+    data?.pages[data?.pages.length - 1]?.lastCursorId ?? null;
 
   return (
     <Dropdown
@@ -189,7 +191,9 @@ export default function DropdownNotification({
           />
           {unreadCount > 0 && (
             <div className={styles.dropdown.badge}>
-              {unreadCount > NOTIFICATION_DEFAULT_PAGE_SIZE
+              {lastCursorId
+                ? `${unreadCount}+`
+                : NOTIFICATION_DEFAULT_PAGE_SIZE < unreadCount
                 ? `${NOTIFICATION_DEFAULT_PAGE_SIZE}+`
                 : unreadCount}
             </div>
