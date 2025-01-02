@@ -19,7 +19,7 @@ export default function QuoteRequestLayout({
   return (
     <QuoteProgressProvider>
       {/* ProgressBar 영역 - sticky 적용 */}
-      <div className="sticky top-0 z-50 bg-white">
+      <div className="sticky top-0 z-5 bg-white">
         <div className="flex flex-col max-w-[1400px] font-semibold px-5 py-8 mx-auto gap-6">
           견적 요청
           <ProgressBar />

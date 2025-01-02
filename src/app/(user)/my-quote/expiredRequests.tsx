@@ -426,12 +426,14 @@ const ExpiredRequests = () => {
               </button>
 
               <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                className={`overflow-y-scroll transition-all duration-500 ease-in-out ${
                   openSection === request.id ? "max-h-[670px]" : "max-h-0"
                 }`}
               >
                 <div className="px-6 py-4 flex justify-between items-center border-t border-b border-gray-100">
-                  <div className="text-gray-500">견적서 필터</div>
+                  <div className="text-gray-400 text-xl font-semibold">
+                    견적서 보기
+                  </div>
                   <QuoteFilterDropdown
                     onSelect={(code) => handleFilterChange(request.id, code)}
                     disabled={loading}

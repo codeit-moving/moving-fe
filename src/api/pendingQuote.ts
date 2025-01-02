@@ -101,6 +101,15 @@ export const fetchPendingQuotes = async (): Promise<PendingQuotesResponse> => {
     return response.data;
   } catch (error) {
     console.error("Error fetching pending quotes:", error);
+
+    // 404일 경우 빈 배열과 함께 totalCount도 반환
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return {
+        list: [],
+        totalCount: 0,
+      };
+    }
+
     const errorMessage =
       error instanceof Error ? error.message : "An unknown error occurred";
     throw new Error(`Failed to fetch pending quotes: ${errorMessage}`);
