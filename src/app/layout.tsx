@@ -46,8 +46,8 @@ export default function RootLayout({
         )}
       >
         <MSWComponent>
-          <NiceModalProvider>
-            <TanstackQueryClientProvider>
+          <TanstackQueryClientProvider>
+            <NiceModalProvider>
               <GNB />
               <QuoteGNBWrapper />
               {children}
@@ -55,8 +55,8 @@ export default function RootLayout({
               <Toaster />
               {isDevelopment() && <ReactQueryDevtoolsClient />}
               {/* Development 환경에서만 렌더링 */}
-            </TanstackQueryClientProvider>
-          </NiceModalProvider>
+            </NiceModalProvider>
+          </TanstackQueryClientProvider>
         </MSWComponent>
       </body>
     </html>
