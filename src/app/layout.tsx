@@ -10,7 +10,6 @@ import NiceModalProvider from "@/components/NiceModalProvider";
 import MSWComponent from "@/components/layout/MswComponent";
 import { isDevelopment } from "@/utils/env";
 import ReactQueryDevtoolsClient from "@/components/ReactQueryDevtoolsClient";
-import { useUserStore } from "@/store/userStore";
 import NiceModalRegistry from "@/components/layout/NiceModalRegistry";
 
 const pretendard = localFont({
@@ -35,8 +34,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const userRole = useUserStore.getState().userRole;
-
   return (
     <html lang="ko">
       <body
