@@ -68,6 +68,12 @@ interface MovingRequestData {
   region: number;
 }
 
+interface ActiveRequestResponse {
+  id?: number;
+  activeRequest: boolean;
+  message: string;
+}
+
 export const movingRequests = {
   create: async (data: MovingRequestData) => {
     try {
@@ -76,16 +82,38 @@ export const movingRequests = {
     } catch (error: any) {
       const errorMessage = error.response?.data?.data?.message;
 
-      if (errorMessage === "활성중인 이사요청이 있습니다.") {
+      if (errorMessage === "활성중인 견적요청이 있습니다.") {
         throw new Error("ACTIVE_REQUEST_EXISTS");
       }
 
-      // 다른 에러는 로깅하고 전파
       console.error("Error creating moving request:", {
         error: error.response?.data || error.message,
         requestData: data,
       });
       throw error;
+    }
+  },
+
+  checkActive: async (): Promise<ActiveRequestResponse> => {
+    try {
+      const response = await axiosInstance.get<ActiveRequestResponse>(
+        `${PATH}/active`,
+        {
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error checking active request:", error);
+
+      return {
+        activeRequest: false,
+        message: "요청 확인 중 문제가 발생했습니다.",
+      };
     }
   },
 };
@@ -207,4 +235,11 @@ export async function getMovingRequestListByMover({
   }
 }
 
-export type { PendingQuotesResponse, Quote, Mover, MovingRequest, Rating };
+export type {
+  PendingQuotesResponse,
+  Quote,
+  Mover,
+  MovingRequest,
+  Rating,
+  ActiveRequestResponse,
+};

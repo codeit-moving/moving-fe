@@ -2,7 +2,7 @@
 
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatField from "@/components/common/ChatField";
 import DatePicker from "@/components/request/DatePicker";
@@ -105,15 +105,49 @@ const EstimateRequest: React.FC = () => {
   const [type, setType] = useState<string>("");
   const [date, setDate] = useState<Date | null>(null);
   const [addresses, setAddresses] = useState<Address>({ from: "", to: "" });
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      type: "bot",
-      text: "몇 가지 정보만 알려주시면 최대 5개의 견적을 받을 수 있어요 😊",
-    },
-    { type: "bot", text: "이사 종류를 선택해 주세요." },
-  ]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { step, setStep } = useQuoteProgress();
+
+  useEffect(() => {
+    const checkActiveRequest = async () => {
+      try {
+        const data = await movingRequests.checkActive();
+
+        if (data.activeRequest) {
+          setMessages([
+            {
+              type: "bot",
+              text: "이미 진행 중인 견적 요청이 있습니다.",
+            },
+          ]);
+          toast.error(data.message);
+        } else {
+          setMessages([
+            {
+              type: "bot",
+              text: "몇 가지 정보만 알려주시면 최대 5개의 견적을 받을 수 있어요 😊",
+            },
+            { type: "bot", text: "이사 종류를 선택해 주세요." },
+          ]);
+        }
+      } catch (error) {
+        console.error("Error checking active request:", error);
+        // 에러가 발생해도 견적 요청은 계속 진행할 수 있도록 함
+        setMessages([
+          {
+            type: "bot",
+            text: "몇 가지 정보만 알려주시면 최대 5개의 견적을 받을 수 있어요 😊",
+          },
+          { type: "bot", text: "이사 종류를 선택해 주세요." },
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkActiveRequest();
+  }, []);
 
   // Message Handlers
   const handleNextStep = (newMessages: Message[], delay = 500) => {
@@ -151,18 +185,37 @@ const EstimateRequest: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
+      const activeCheck = await movingRequests.checkActive();
+
+      if (activeCheck.activeRequest) {
+        toast.error(activeCheck.message);
+        setMessages((prev) => [
+          ...prev,
+          {
+            type: "bot",
+            text: "이미 진행 중인 견적 요청이 있어 새로운 견적을 요청할 수 없습니다.",
+          },
+        ]);
+        return;
+      }
+
       const postData = transformDataForPost({ type, date, addresses });
       await movingRequests.create(postData);
-      toast.success("이사 요청이 완료되었습니다!");
+      toast.success("견적 요청이 완료되었습니다!");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
     } catch (error) {
       if (error instanceof Error && error.message === "ACTIVE_REQUEST_EXISTS") {
-        toast.error("이미 진행 중인 이사 요청이 있습니다.");
+        toast.error("이미 진행 중인 견적 요청이 있습니다.");
       } else {
         toast.error("요청 처리 중 문제가 발생했습니다.");
         console.error("Moving request error:", error);
       }
     }
   };
+
   const handleEdit = (editStep: number) => {
     setStep(editStep);
     const stepMessages = {
@@ -240,7 +293,7 @@ const EstimateRequest: React.FC = () => {
   };
 
   return (
-    <div className="w-full py-10">
+    <div className="w-full pb-4">
       <div className="my-4 space-y-4">
         <AnimatePresence>
           {messages.map((message, index) => (
@@ -270,7 +323,7 @@ const EstimateRequest: React.FC = () => {
                     radius="24px"
                   />
                 </div>
-                {message.type === "user" && (
+                {message.type === "user" && !isLoading && (
                   <div className="flex justify-end">
                     {message.text === type && (
                       <EditButton onClick={() => handleEdit(0)} />
@@ -288,19 +341,23 @@ const EstimateRequest: React.FC = () => {
           ))}
         </AnimatePresence>
 
-        {/* 스텝 컴포넌트 */}
+        {/* Only show step content if there's no active request */}
         <AnimatePresence mode="wait">
-          {messages[messages.length - 1]?.type === "bot" && !isLoading && (
-            <motion.div
-              key={`step-${step}`}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={chatBubbleVariants}
-            >
-              <div className="flex justify-end">{renderStepContent()}</div>
-            </motion.div>
-          )}
+          {messages[messages.length - 1]?.type === "bot" &&
+            !isLoading &&
+            !messages[0]?.text?.includes(
+              "이미 진행 중인 견적 요청이 있습니다"
+            ) && (
+              <motion.div
+                key={`step-${step}`}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={chatBubbleVariants}
+              >
+                <div className="flex justify-end">{renderStepContent()}</div>
+              </motion.div>
+            )}
         </AnimatePresence>
       </div>
     </div>

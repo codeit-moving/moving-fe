@@ -88,10 +88,13 @@ const MyQuotePage = () => {
         setQuotes(list);
         setErrorMessage(null);
       } catch (error: any) {
+        console.log("Error object structure:", JSON.stringify(error, null, 2));
         console.error("Error fetching quotes:", error);
-        if (error.response?.status === 404) {
+
+        // Axios 에러의 경우 status code로 체크
+        if (error.name === "AxiosError" && error.response?.status === 404) {
           setQuotes([]);
-          setErrorMessage(null);
+          setErrorMessage(null); // 404는 정상적인 "데이터 없음" 상태로 처리
         } else {
           setErrorMessage("견적 정보를 불러오는데 실패했습니다.");
         }
@@ -172,7 +175,7 @@ const MyQuotePage = () => {
             </ul>
           ) : (
             <div className="flex justify-center items-center min-h-[200px] text-gray-500">
-              활성중인 이사요청이 없습니다.
+              받은 견적이 없습니다.
             </div>
           )}
         </>

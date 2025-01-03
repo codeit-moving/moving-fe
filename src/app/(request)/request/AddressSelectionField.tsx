@@ -62,7 +62,7 @@ export default function AddressSelectionField({
                 setCurrentType("from");
                 setIsModalOpen(true);
               }}
-              className="w-540px text-pr-blue-300 p-4 border font-semibold border-solid rounded-2xl border-pr-blue-300 rounded-lg cursor-pointer hover:bg-pr-blue-50 text-md pc:text-2lg placeholder-pr-blue-300"
+              className="w-540px text-pr-blue-300 p-4 border font-semibold border-solid rounded-2xl border-pr-blue-300 cursor-pointer hover:bg-pr-blue-50 text-md pc:text-2lg placeholder-pr-blue-300"
             />
           </div>
 
@@ -77,7 +77,7 @@ export default function AddressSelectionField({
                 setCurrentType("to");
                 setIsModalOpen(true);
               }}
-              className="w-540px text-pr-blue-300 p-4 border font-semibold border-solid rounded-2xl border-pr-blue-300 rounded-lg cursor-pointer hover:bg-pr-blue-50 text-md pc:text-2lg placeholder-pr-blue-300"
+              className="w-540px text-pr-blue-300 p-4 border font-semibold border-solid rounded-2xl border-pr-blue-300 cursor-pointer hover:bg-pr-blue-50 text-md pc:text-2lg placeholder-pr-blue-300"
             />
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function AddressSelectionField({
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-[#141414] bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white px-8 py-6 rounded-[32px] w-full max-w-lg">
+          <div className="bg-white px-6 py-3 pc:px-8 pc:py-6 rounded-[32px] w-full max-w-lg">
             <h3 className="text-2xl font-semibold mb-10 flex justify-between">
               <div>
                 {currentType === "from" ? "출발지" : "도착지"}를 선택해주세요

@@ -19,7 +19,7 @@ export const movingRequestHandlers = [
           path: "/moving-requests/by-customer",
           method: "GET",
           message: "Not Found",
-          data: { message: "조건의 맞는 이사요청 목록이 없습니다." },
+          data: { message: "조건에 맞는 견적요청 목록이 없습니다." },
           date: new Date().toISOString(),
         },
         { status: 404 }

@@ -12,6 +12,7 @@ interface DayInfo {
   isCurrentMonth?: boolean;
   isPrevMonth?: boolean;
   isNextMonth?: boolean;
+  isDisabled?: boolean;
 }
 
 interface DatePickerProps {
@@ -35,23 +36,39 @@ interface DatePickerProps {
  *
  * @returns {JSX.Element} 선택할 수 있는 날짜와 시간이 포함된 UI
  */
-
 const DatePicker: React.FC<DatePickerProps> = ({
   onChange,
   onComplete,
   initialDate = new Date(),
 }) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정하여 날짜만 비교
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1); // 기본값을 내일로 설정
+
   const [currentDate, setCurrentDate] = React.useState(
-    () => new Date(initialDate)
+    () => new Date(tomorrow)
   );
   const [selectedDate, setSelectedDate] = React.useState(
-    () => new Date(initialDate)
+    () => new Date(tomorrow)
   );
   const [step, setStep] = React.useState<Step>(DATE_STEP);
   const [selectedTime, setSelectedTime] = React.useState({
-    hours: initialDate.getHours(),
-    minutes: initialDate.getMinutes(),
+    hours: tomorrow.getHours(),
+    minutes: tomorrow.getMinutes(),
   });
+
+  // 선택할 수 있는 날짜인지 확인하는 함수
+  const isDisabled = (day: DayInfo): boolean => {
+    const selectedDay = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      day.date
+    );
+    selectedDay.setHours(0, 0, 0, 0);
+    return selectedDay < tomorrow;
+  };
 
   const getDaysInMonth = React.useCallback((date: Date): DayInfo[] => {
     const year = date.getFullYear();
@@ -62,15 +79,25 @@ const DatePicker: React.FC<DatePickerProps> = ({
     const startingDay = firstDay.getDay();
     const prevMonthLastDay = new Date(year, month, 0).getDate();
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 오늘 날짜의 00:00로 초기화
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1); // 내일 날짜로 설정
+
     return [
       ...Array.from({ length: startingDay }, (_, i) => ({
         date: prevMonthLastDay - (startingDay - 1) + i,
         isPrevMonth: true,
       })),
-      ...Array.from({ length: daysInMonth }, (_, i) => ({
-        date: i + 1,
-        isCurrentMonth: true,
-      })),
+      ...Array.from({ length: daysInMonth }, (_, i) => {
+        const dayDate = new Date(year, month, i + 1);
+        const isDisabled = dayDate < tomorrow; // 내일 날짜 이전은 비활성화
+        return {
+          date: i + 1,
+          isCurrentMonth: true,
+          isDisabled, // 내일 이전 날짜는 비활성화
+        };
+      }),
       ...Array.from({ length: 42 - (startingDay + daysInMonth) }, (_, i) => ({
         date: i + 1,
         isNextMonth: true,
@@ -109,7 +136,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
   const handleDateSelection = useCallback(
     (day: DayInfo) => {
-      if (day.isCurrentMonth) {
+      if (day.isCurrentMonth && !isDisabled(day)) {
+        // 비활성화된 날짜는 선택하지 않도록
         const newDate = new Date(
           currentDate.getFullYear(),
           currentDate.getMonth(),
@@ -177,7 +205,6 @@ const DatePicker: React.FC<DatePickerProps> = ({
       </h2>
     </div>
   );
-
   const DateGrid = React.memo(() => {
     const days = getDaysInMonth(currentDate);
 
@@ -195,6 +222,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
           {days.map((day, index) => {
             const isSelected = isSelectedDate(day);
+            const disabled = isDisabled(day); // 날짜가 비활성화됐는지 확인
             return (
               <button
                 key={`day-${index}`}
@@ -205,8 +233,10 @@ const DatePicker: React.FC<DatePickerProps> = ({
                   "transition-colors duration-200",
                   !day.isCurrentMonth && "text-gray-300",
                   day.isCurrentMonth && "text-black hover:bg-gray-100",
-                  isSelected && "bg-blue-500 text-white hover:bg-blue-500"
+                  isSelected && "bg-blue-500 text-white hover:bg-blue-500",
+                  disabled && " text-gray-300 cursor-not-allowed" // 비활성화된 날짜 스타일
                 )}
+                disabled={disabled} // 비활성화된 날짜는 클릭되지 않도록
               >
                 {day.date}
               </button>
