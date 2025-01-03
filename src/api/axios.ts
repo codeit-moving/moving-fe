@@ -63,23 +63,19 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     // redirect 데이터가 data 객체 안에 있는 경우를 처리
     if (error.response?.data?.data?.redirect === true) {
-      try {
-        const result = await Swal.fire({
-          title: "프로필 등록",
-          text: error.response?.data?.data?.message || "프로필을 등록해주세요.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "확인",
-          confirmButtonColor: "#3085d6",
-          cancelButtonText: "취소",
-        });
+      const result = await Swal.fire({
+        title: "프로필 등록",
+        text: error.response?.data?.data?.message || "프로필을 등록해주세요.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "확인",
+        confirmButtonColor: "#3085d6",
+        cancelButtonText: "취소",
+      });
 
-        if (result.isConfirmed && error.response?.data?.data?.redirectUrl) {
-          window.location.href = error.response.data.data.redirectUrl;
-          return Promise.reject(error);
-        }
-      } catch (swalError) {
-        console.log("[Axios] Swal 에러:", swalError);
+      if (result.isConfirmed && error.response?.data?.data?.redirectUrl) {
+        window.location.href = error.response.data.data.redirectUrl;
+        return Promise.reject(error);
       }
     }
 
@@ -113,9 +109,6 @@ axiosInstance.interceptors.response.use(
 
     // response error handle
     if (error.response) {
-      console.error("API response error", error.response.data);
-
-      //여기서 error 정리
       const apiError: AxiosResponseError = {
         path: error.response.data.path,
         method: error.response.data.method,

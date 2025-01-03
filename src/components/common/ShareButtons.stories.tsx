@@ -13,8 +13,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const mockUrl = "https://www.naver.com/";
-
 const mockMoverInfo = {
   favoriteCount: 3,
   reviewCount: 5,
@@ -33,7 +31,6 @@ const mockQuoteInfo = {
 export const MoverShare: Story = {
   args: {
     variant: "mover",
-    url: mockUrl,
     moverInfo: mockMoverInfo,
   },
 };
@@ -41,7 +38,6 @@ export const MoverShare: Story = {
 export const QuoteShare: Story = {
   args: {
     variant: "quote",
-    url: mockUrl,
     quoteInfo: mockQuoteInfo,
   },
 };

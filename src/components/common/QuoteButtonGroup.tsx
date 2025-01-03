@@ -4,7 +4,7 @@ import Button, { ButtonProps } from "@/components/common/Button";
 
 interface QuoteButtonGroupProps {
   isFavorite: boolean;
-  isDesignated: boolean;
+  disabled: boolean;
   isPc?: boolean;
   moverNickname?: string;
   buttonText?: string;
@@ -15,7 +15,7 @@ interface QuoteButtonGroupProps {
 
 export default function QuoteButtonGroup({
   isFavorite,
-  isDesignated,
+  disabled,
   isPc = false,
   moverNickname,
   buttonText,
@@ -34,7 +34,7 @@ export default function QuoteButtonGroup({
 
   const buttonProps: ButtonProps = {
     children: buttonText,
-    variant: isDesignated ? "outlined" : "primary",
+    variant: disabled ? "outlined" : "primary",
     width: "100%",
     onClick: onButtonClick,
   };
