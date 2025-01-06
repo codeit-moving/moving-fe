@@ -13,8 +13,7 @@ import Message from "@/components/common/Message";
 const styles = {
   topContainer:
     "mb-[110px] tablet:mb-[72px] pc:flex pc:flex-row pc:gap-[117px] pc:justify-between pc:max-w-[1400px] pc:mx-auto",
-  title:
-    "text-2lg font-semibold text-black-400 pb-[6px] pc:text-2xl pc:pb-[30px]",
+  title: "text-2lg font-semibold text-black-400 pc:text-2xl",
   container: "flex flex-col gap-[24px]",
   pcShareContainer: "hidden pc:block ",
   shareContainer: "pc:hidden",
