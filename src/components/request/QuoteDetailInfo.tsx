@@ -4,10 +4,10 @@ import { formatDate, formatDateWithDayTime } from "@/utils/utilFunctions";
 
 const styles = {
   container: `flex flex-col justify-center gap-2.5 
-     px-[20px] w-full h-[192px] 
+     px-[20px] py-[16px] w-full 
      bg-bg-100 border-solid border-[1px] rounded-[16px] border-line-100 
-     tablet:px-[32px] tablet:h-[208px]     
-     pc:gap-4 pc:px-[40px]  pc:h-[258px]`,
+     tablet:px-[32px] tablet:py-[24px]     
+     pc:gap-4 pc:px-[40px] pc:py-[32px]`,
   wrapper: "flex flex-row justify-center h-6 text-md pc:h-[26px] pc:text-2lg",
   title: "w-[105px] text-grayscale-300 pc:w-[122px]",
   value: "w-full text-black-400 text-ellipsis",
