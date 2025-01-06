@@ -24,6 +24,7 @@ export const useAuth = () => {
           name: userInfo.data.user.name,
           phoneNumber: userInfo.data.user.phoneNumber,
           role: userRole,
+          isOAuth: userInfo.data.user.isOAuth,
         });
       } catch (error: any) {
         if (

@@ -8,6 +8,7 @@ import Button from "../common/Button";
 import cn from "@/config/cn";
 import { getRegionText, getServiceText } from "@/utils/utilFunctions";
 import TextWithGrayLabel from "../common/card/TextWithGrayLabel";
+import { useUserStore } from "@/store/userStore";
 
 interface MoverProfileCardProps {
   data: FullMoverData & Partial<ProfileData>;
@@ -43,6 +44,7 @@ const MoverProfileCard = ({
   onPrimaryClick,
   onOutlinedClick,
 }: MoverProfileCardProps) => {
+  const { isOAuth } = useUserStore();
   const serviceText = data.services
     .map((service) => getServiceText(service))
     .join(", ");
@@ -103,6 +105,7 @@ const MoverProfileCard = ({
           withIcon
           className={styles.button}
           onClick={onOutlinedClick}
+          disabled={isOAuth}
         >
           기본 정보 수정
         </Button>
