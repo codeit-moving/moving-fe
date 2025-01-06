@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import toast from "react-hot-toast";
 
 // 로그인된 사용자가 접근하면 안 되는 페이지
 const authRoutes = [
@@ -56,9 +57,13 @@ export default async function middleware(request: NextRequest) {
 
       const responseData = await response.json();
 
-      if (responseData.data?.redirect === true && response.status === 302) {
+      if (responseData.data?.redirect === true) {
         const redirectUrl = new URL(responseData.data.redirectUrl, request.url);
         redirectUrl.searchParams.set("oauth", "true");
+        toast.success("프로필을 등록하여 회원가입을 완성해주세요.", {
+          position: "top-center",
+          icon: "👤",
+        });
         const res = NextResponse.redirect(redirectUrl);
         cookies.forEach((cookie) => {
           res.headers.append("Set-Cookie", cookie);
