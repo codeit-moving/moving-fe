@@ -66,7 +66,7 @@ export default function RoleGuard({
           name: userInfo.user.name,
           phoneNumber: userInfo.user.phoneNumber,
           role: userRole,
-          isOAuth: false,
+          isOAuth: userInfo.user.isOAuth,
         });
 
         const hasPermission = userRole && allowedRoles?.includes(userRole);

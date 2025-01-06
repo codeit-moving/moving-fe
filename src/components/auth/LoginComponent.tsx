@@ -95,7 +95,7 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
         name: userInfo.user.name,
         phoneNumber: userInfo.user.phoneNumber,
         role: userRole,
-        isOAuth: false,
+        isOAuth: userInfo.user.isOAuth,
       });
       reset();
       isUser ? router.push("/find-mover") : router.push("/mover/request");
