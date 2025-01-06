@@ -52,13 +52,10 @@ export default async function middleware(request: NextRequest) {
         }
       );
 
-      // 백엔드에서 보낸 쿠키 처리
       const cookies = response.headers.getSetCookie();
 
-      // 객체일 경우 JSON 처리
       const responseData = await response.json();
 
-      // 회원가입
       if (responseData.data?.redirect === true && response.status === 302) {
         const redirectUrl = new URL(responseData.data.redirectUrl, request.url);
         redirectUrl.searchParams.set("oauth", "true");
@@ -66,21 +63,6 @@ export default async function middleware(request: NextRequest) {
         cookies.forEach((cookie) => {
           res.headers.append("Set-Cookie", cookie);
         });
-        return res;
-      }
-
-      // 리다이렉트 응답인 경우 (로그인)
-      if (response.status === 302 || response.status === 301) {
-        const redirectUrl = response.headers.get("location");
-        const res = NextResponse.redirect(
-          new URL(redirectUrl || "/", request.url)
-        );
-
-        // 쿠키 설정
-        cookies.forEach((cookie) => {
-          res.headers.append("Set-Cookie", cookie);
-        });
-
         return res;
       }
 
