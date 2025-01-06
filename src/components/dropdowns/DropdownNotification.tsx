@@ -62,7 +62,7 @@ export default function DropdownNotification({
         "pc:min-w-[18px] pc:h-[18px] pc:text-[11px]"
       ),
       container: clsx(
-        "absolute flex flex-col items-center",
+        "absolute flex flex-col items-center z-[999]",
         "p-4 py-2.5 top-[37px] right-[-100px] w-[312px]",
         "border-solid border-[1px] border-line-100 rounded-2xl",
         "bg-white",
