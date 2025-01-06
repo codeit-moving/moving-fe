@@ -99,20 +99,20 @@ export const fetchPendingQuotes = async (): Promise<PendingQuotesResponse> => {
       "/moving-requests/pending-quotes"
     );
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching pending quotes:", error);
 
-    // 404일 경우 빈 배열과 함께 totalCount도 반환
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
+    if (
+      error.path === "/moving-requests/pending-quotes" &&
+      error.message === "활성중인 이사요청이 없습니다."
+    ) {
       return {
         list: [],
         totalCount: 0,
       };
     }
 
-    const errorMessage =
-      error instanceof Error ? error.message : "An unknown error occurred";
-    throw new Error(`Failed to fetch pending quotes: ${errorMessage}`);
+    throw error;
   }
 };
 
