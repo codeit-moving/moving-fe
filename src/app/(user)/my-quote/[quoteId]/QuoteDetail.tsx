@@ -69,7 +69,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
       tablet:mt-6 
       pc:mt-6`,
     content: `box-border flex flex-col gap-[23.5px] min-w-[328px] w-full 
-      pc:gap-[39.5px]`,
+      pc:gap-[39.5px] pc:max-w-[955px]`,
     costSection: `flex flex-col justify-between w-full h-[74px] 
       tablet:h-[94px] 
       pc:h-[110px]`,
