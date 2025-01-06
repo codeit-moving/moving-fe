@@ -1,3 +1,5 @@
+import { formatDateWithDay } from "@/utils/utilFunctions";
+
 interface QuoteModalMoverProps {
   customerName: string;
   moveDate: string;
@@ -35,7 +37,7 @@ export default function QuoteModalMover({
       <p className={styles.customerName}>{customerName} 고객님</p>
       <div className={styles.moveContainer}>
         <p className={styles.chips}>이사일</p>
-        <p className={styles.textFont}>{moveDate}</p>
+        <p className={styles.textFont}>{formatDateWithDay(moveDate)}</p>
       </div>
       <div className={styles.locationContainer}>
         <div className={styles.locationWrapper}>

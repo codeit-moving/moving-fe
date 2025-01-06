@@ -7,7 +7,8 @@ import TextWithGrayLabel from "./TextWithGrayLabel";
 import LineSeparator from "../LineSeparator";
 
 export interface ReviewMoverData {
-  id: number;
+  confirmedQuoteId: number;
+  moverId: number;
   service: number;
   isDesignated: boolean;
   imageUrl: string | null;

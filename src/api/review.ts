@@ -3,6 +3,7 @@ import { type OffsetResponse, type OffsetParams } from "@/types/api";
 import { type MyReviewCardData } from "@/components/cards/MyReviewCard";
 import { type ReviewMoverData } from "@/components/common/card/ReviewMover";
 import { type CustomerReviewData } from "@/components/review/CustomerReview";
+import { type CreateReviewData } from "@/types/review";
 
 const PATH = "/reviews";
 
@@ -39,5 +40,33 @@ export const getMoversReviewList = async ({
   const response = await axiosInstance.get(`${PATH}/mover/${moverId}`, {
     params: { pageNum, pageSize },
   });
+  return response.data;
+};
+
+interface CreateReviewResponse {
+  id: number;
+  rating: number;
+  imageUrl: string[];
+  content: string;
+}
+
+//리뷰 작성 하기
+export const createReview = async (
+  reviewData: CreateReviewData
+): Promise<CreateReviewResponse> => {
+  const formData = new FormData();
+
+  formData.append("confirmedQuoteId", String(reviewData.confirmedQuoteId));
+  formData.append("rating", String(reviewData.rating));
+  formData.append("content", reviewData.content);
+
+  reviewData.images?.forEach((image) => {
+    formData.append("imageUrl", image);
+  });
+
+  const response = await axiosInstance.post(`${PATH}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
   return response.data;
 };

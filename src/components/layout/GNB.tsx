@@ -10,6 +10,7 @@ import DropdownNotification from "../dropdowns/DropdownNotification";
 import useResize from "../../hooks/useResize";
 import assets from "@/variables/images";
 import { useUserStore } from "@/store/userStore";
+import { useAuth } from "@/hooks/useAuth";
 
 import { PC_WIDTH } from "@/variables/screen";
 
@@ -43,6 +44,7 @@ function NavItem({ href, isIncludedPath = false, children }: NavItemProps) {
 // 2. 모바일에서 메뉴 버튼 클릭 시 사이드바 토글시 유저정보는 따로 fetch하는 것이 좋을 듯
 
 const GNB = () => {
+  useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useResize((width) => {
@@ -52,7 +54,6 @@ const GNB = () => {
   });
 
   const { userName, userRole } = useUserStore();
-  console.log("GNB userName : ", userName, "userRole : ", userRole);
 
   const renderTabs = () => {
     switch (userRole) {

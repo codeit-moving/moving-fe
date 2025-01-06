@@ -135,7 +135,7 @@ export default function MoverDetailPage() {
           <QuoteButtonGroup
             isPc={true}
             isFavorite={data.isFavorite}
-            isDesignated={data.isDesignated as boolean}
+            disabled={data.isDesignated as boolean}
             moverNickname={data.nickname}
             buttonText={cn(
               data.isDesignated ? "지정 견적 요청 취소" : "지정 견적 요청하기",
@@ -160,7 +160,7 @@ export default function MoverDetailPage() {
         isFavorite={data.isFavorite}
         onFavoriteClick={handleFavorite}
         onButtonClick={handleQuoteRequest}
-        isDesignated={data.isDesignated as boolean}
+        disabled={data.isDesignated as boolean}
         buttonText={cn(
           data.isDesignated ? "지정 견적 요청 취소" : "지정 견적 요청하기",
           isDesignating && "Loading..."

@@ -30,7 +30,6 @@ export const useAuth = () => {
           error?.response?.status !== 401 &&
           error?.response?.status !== 403
         ) {
-          console.log("[useAuth] 예상치 못한 에러:", error);
         }
       }
     };

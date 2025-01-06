@@ -10,7 +10,6 @@ import NiceModalProvider from "@/components/NiceModalProvider";
 import MSWComponent from "@/components/layout/MswComponent";
 import { isDevelopment } from "@/utils/env";
 import ReactQueryDevtoolsClient from "@/components/ReactQueryDevtoolsClient";
-import { useUserStore } from "@/store/userStore";
 import NiceModalRegistry from "@/components/layout/NiceModalRegistry";
 
 const pretendard = localFont({
@@ -42,8 +41,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const userRole = useUserStore.getState().userRole;
-
   return (
     <html lang="ko">
       <body
@@ -53,8 +50,8 @@ export default function RootLayout({
         )}
       >
         <MSWComponent>
-          <NiceModalProvider>
-            <TanstackQueryClientProvider>
+          <TanstackQueryClientProvider>
+            <NiceModalProvider>
               <GNB />
               <QuoteGNBWrapper />
               {children}
@@ -62,8 +59,8 @@ export default function RootLayout({
               <Toaster />
               {isDevelopment() && <ReactQueryDevtoolsClient />}
               {/* Development 환경에서만 렌더링 */}
-            </TanstackQueryClientProvider>
-          </NiceModalProvider>
+            </NiceModalProvider>
+          </TanstackQueryClientProvider>
         </MSWComponent>
       </body>
     </html>

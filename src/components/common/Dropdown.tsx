@@ -66,17 +66,66 @@ export function DropdownUserName({ name = "사용자명" }: DropdownUserNameProp
 
 type DropdownBellProps = {
   className?: string;
+  isEmpty?: boolean;
 };
 
-export function DropdownBell({ className }: DropdownBellProps) {
+export function DropdownBell({ className, isEmpty }: DropdownBellProps) {
   const commonImageFrameClass = clsx(
     "relative w-6 h-6 pc:w-9 pc:h-9",
-    className
+    className,
+    !isEmpty && "bell-shake"
   );
 
   return (
     <div className={commonImageFrameClass}>
-      <Image src={assets.icons.alarm} alt="알림 드롭 다운" fill />
+      <style jsx>{`
+        @keyframes bellShake {
+          0%,
+          100% {
+            transform: rotate(0deg);
+          }
+          5% {
+            transform: rotate(-20deg);
+          }
+          7.5% {
+            transform: rotate(20deg);
+          }
+          10% {
+            transform: rotate(-15deg);
+          }
+          12.5% {
+            transform: rotate(15deg);
+          }
+          15% {
+            transform: rotate(0deg);
+          }
+          25%,
+          85% {
+            transform: rotate(0deg);
+          }
+          90% {
+            transform: rotate(-20deg);
+          }
+          92.5% {
+            transform: rotate(20deg);
+          }
+          95% {
+            transform: rotate(-15deg);
+          }
+          97.5% {
+            transform: rotate(15deg);
+          }
+        }
+
+        .bell-shake {
+          animation: bellShake 4s infinite;
+        }
+      `}</style>
+      <Image
+        src={isEmpty ? assets.icons.alarm : assets.icons.alarmBlue}
+        alt="알림 드롭 다운"
+        fill
+      />
     </div>
   );
 }
@@ -130,18 +179,19 @@ export function DropdownItem({
 }
 
 type DropdownListProps = {
-  items: React.ReactNode[];
+  items?: React.ReactNode[];
   className?: string;
 };
 
 export function DropdownList({ items, className }: DropdownListProps) {
   return (
     <div className={clsx("z-50", className)}>
-      {items.map((item, index) => (
-        <div key={index} className="w-full">
-          {item}
-        </div>
-      ))}
+      {items &&
+        items.map((item, index) => (
+          <div key={index} className="w-full">
+            {item}
+          </div>
+        ))}
     </div>
   );
 }

@@ -12,8 +12,9 @@ export const reviewKey = {
   all: ["review"] as const,
   lists: () => [...reviewKey.all, "lists"] as const,
   list: (params = {}) => [...reviewKey.lists(), { ...params }] as const, //리뷰 리스트
-  me: () => [...reviewKey.lists(), "me"] as const, // 내가 쓴 리뷰
-  available: () => [...reviewKey.list(), "available"] as const, // 내가 작성할 수 있는 리뷰
+  me: (params = {}) => [...reviewKey.lists(), "me", { ...params }] as const, // 내가 쓴 리뷰
+  available: (params = {}) =>
+    [...reviewKey.list(), "available", { ...params }] as const, // 내가 작성할 수 있는 리뷰
   mover: (moverId: number) => [...reviewKey.lists(), "mover", moverId] as const, // 특정 기사의 리뷰 목록
 };
 
