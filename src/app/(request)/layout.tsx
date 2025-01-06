@@ -3,7 +3,7 @@
 import {
   QuoteProgressProvider,
   useQuoteProgress,
-} from "@/context/QuoteProgressContext";
+} from "@/contexts/QuoteProgressContext";
 import ProgressBarMovingRequest from "@/components/common/progress-bar/ProgressBarMovingRequest";
 
 function ProgressBar() {
