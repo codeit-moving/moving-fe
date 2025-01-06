@@ -15,14 +15,12 @@ import { getServiceText } from "@/utils/utilFunctions";
 import { SERVICE_CODES, SERVICE_TEXTS } from "@/variables/service";
 
 type DropdownServiceProps = {
-  onSelect: (serviceCode: number) => void;
-  value?: number | null;
-  onChange?: (value: number | null) => void;
+  value: number | null;
+  onChange: (value: number | null) => void;
   disabled?: boolean;
 };
 
 export default function DropdownService({
-  onSelect,
   value,
   onChange,
   disabled = false,
@@ -71,7 +69,8 @@ export default function DropdownService({
   );
 
   const handleSelectService = (key: string) => {
-    onSelect(SERVICE_CODES[key as keyof typeof SERVICE_CODES]);
+    const serrviceCode = SERVICE_CODES[key as keyof typeof SERVICE_CODES];
+    onChange?.(serrviceCode);
     setCurrentSelectService(
       getServiceText(SERVICE_CODES[key as keyof typeof SERVICE_CODES])
     );

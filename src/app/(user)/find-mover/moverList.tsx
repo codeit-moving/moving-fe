@@ -71,16 +71,12 @@ function FavoriteMoverList({ userRole }: FavoriteMoverListProps) {
 }
 
 interface FilterProps {
-  onRegionChange: (newStates: number | null) => void;
-  onServiceChange: (newStates: number | null) => void;
-  onInitChange: () => void;
+  formState: FormState;
+  onFilterChange: (value: number | null, type: "region" | "service") => void;
+  onInitFilter: () => void;
 }
 
-function Filter({
-  onRegionChange,
-  onServiceChange,
-  onInitChange,
-}: FilterProps) {
+function Filter({ formState, onFilterChange, onInitFilter }: FilterProps) {
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
   const [selectedService, setSelectedService] = useState<number | null>(null);
 
@@ -101,39 +97,31 @@ function Filter({
 
   const handleSelectRegion = (regionCode: number) => {
     setSelectedRegion(regionCode);
-    onRegionChange(regionCode);
+    onFilterChange(regionCode, "region");
   };
 
   const handleSelectService = (serviceCode: number) => {
     setSelectedService(serviceCode);
-    onServiceChange(serviceCode);
+    onFilterChange(serviceCode, "service");
   };
 
   const handleInitFilter = () => {
     setSelectedRegion(null);
     setSelectedService(null);
-    onInitChange();
+    onInitFilter();
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        필터
-        <div className={styles.resetButton} onClick={handleInitFilter}>
-          초기화
-        </div>
-      </div>
-      <div className={styles.sectionTitle}>지역을 선택해주세요</div>
+      {/* ... existing code ... */}
       <DropdownRegion
-        onSelect={handleSelectRegion}
-        value={selectedRegion}
-        onChange={setSelectedRegion}
+        value={formState.currentRegionFilter}
+        onChange={(value) => onFilterChange(value, "region")}
       />
       <div className={styles.sectionTitle}>어떤 서비스가 필요하세요?</div>
       <DropdownService
-        onSelect={handleSelectService}
-        value={selectedService}
-        onChange={setSelectedService}
+        value={formState.currentServiceFilter}
+        onChange={(value) => onFilterChange(value, "service")}
       />
     </div>
   );
@@ -300,6 +288,17 @@ export default function MoverListWithFilters({
     }));
   };
 
+  const handleFilterChange = (
+    value: number | null,
+    type: "region" | "service"
+  ) => {
+    if (type === "region") {
+      handleRegionFilterChange(value);
+    } else {
+      handleServiceFilterChange(value);
+    }
+  };
+
   const handleInitFilterChange = () => {
     setFormState({
       keyword: "",
@@ -328,9 +327,9 @@ export default function MoverListWithFilters({
         <div className={styles.mainContent}>
           <div className={styles.filter.container}>
             <Filter
-              onRegionChange={handleRegionFilterChange}
-              onServiceChange={handleServiceFilterChange}
-              onInitChange={handleInitFilterChange}
+              formState={formState}
+              onFilterChange={handleFilterChange}
+              onInitFilter={handleInitFilterChange}
             />
             <FavoriteMoverList userRole={userRole} />
           </div>
@@ -338,18 +337,25 @@ export default function MoverListWithFilters({
             <div className={styles.moverList.sortContainer}>
               <div className={styles.moverList.dropdownContainer}>
                 <DropdownRegion
-                  onSelect={handleRegionFilterChange}
-                  disabled={false}
+                  value={formState.currentRegionFilter}
+                  onChange={(value) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      currentRegionFilter: value,
+                    }))
+                  }
                 />
                 <DropdownService
-                  onSelect={handleServiceFilterChange}
-                  disabled={false}
+                  value={formState.currentServiceFilter}
+                  onChange={(value) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      currentServiceFilter: value,
+                    }))
+                  }
                 />
               </div>
-              <DropdownSortMovingRequest
-                onSelect={handleSortChange}
-                disabled={false}
-              />
+              <DropdownSortMovingRequest onSelect={handleSortChange} />
             </div>
             <div className={styles.searchBar.container}>
               <Input

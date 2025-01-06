@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 import {
   Dropdown,
-  DropdownList,
+  DropdownOption,
   DropdownItem,
   DropdownFilter,
   DropdownImage,
@@ -15,14 +15,12 @@ import { getRegionText } from "@/utils/utilFunctions";
 import { REGION_CODES, REGION_TEXTS } from "@/variables/regions";
 
 type DropdownRegionProps = {
-  onSelect: (regionCode: number) => void;
   value?: number | null;
   onChange?: (value: number | null) => void;
   disabled?: boolean;
 };
 
 export default function DropdownRegion({
-  onSelect,
   value,
   onChange,
   disabled = false,
@@ -90,10 +88,9 @@ export default function DropdownRegion({
   );
 
   const handleSelectRegion = (key: string) => {
-    onSelect(REGION_CODES[key as keyof typeof REGION_CODES]);
-    setCurrentSelectRegion(
-      getRegionText(REGION_CODES[key as keyof typeof REGION_CODES])
-    );
+    const regionCode = REGION_CODES[key as keyof typeof REGION_CODES];
+    onChange?.(regionCode);
+    setCurrentSelectRegion(getRegionText(regionCode));
     setIsOpen(false);
   };
 
@@ -145,7 +142,10 @@ export default function DropdownRegion({
       onToggle={() => setIsOpen((prev) => !prev)}
     >
       <div className={dropdownListWrapperClass}>
-        <DropdownList className={dropdownListClass} items={itemsWithDivider} />
+        <DropdownOption
+          className={dropdownListClass}
+          items={itemsWithDivider}
+        />
       </div>
     </Dropdown>
   );
