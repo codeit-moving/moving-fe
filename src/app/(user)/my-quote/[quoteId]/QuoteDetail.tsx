@@ -9,7 +9,6 @@ import QuoteDetailInfo from "@/components/request/QuoteDetailInfo";
 import QuoteButtonGroup from "@/components/common/QuoteButtonGroup";
 import { setMoverFavorite } from "@/api/mover";
 import { confirmQuote } from "@/api/quote";
-import { ShareBox } from "@/components/temp";
 import ShareButtons from "@/components/common/ShareButtons";
 
 import { GetQuoteApiResponseData } from "@/types/api";
@@ -177,7 +176,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
           </div>
           <LineSeparator direction="horizontal" />
           <div className={styles.shareBoxWrapper}>
-            <ShareBox />
+            <ShareButtons variant="quote" quoteInfo={quoteInfo} />
           </div>
           <LineSeparator
             direction="horizontal"
