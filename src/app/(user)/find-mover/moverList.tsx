@@ -77,9 +77,6 @@ interface FilterProps {
 }
 
 function Filter({ formState, onFilterChange, onInitFilter }: FilterProps) {
-  const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
-  const [selectedService, setSelectedService] = useState<number | null>(null);
-
   const styles = {
     container: `
       pc:w-[328px] 
@@ -93,22 +90,6 @@ function Filter({ formState, onFilterChange, onInitFilter }: FilterProps) {
     sectionTitle: `
       flex flex-row items-center text-2lg text-black-400 font-semibold 
       pc:mt-[10px] pc:w-full pc:h-[64px]`,
-  };
-
-  const handleSelectRegion = (regionCode: number) => {
-    setSelectedRegion(regionCode);
-    onFilterChange(regionCode, "region");
-  };
-
-  const handleSelectService = (serviceCode: number) => {
-    setSelectedService(serviceCode);
-    onFilterChange(serviceCode, "service");
-  };
-
-  const handleInitFilter = () => {
-    setSelectedRegion(null);
-    setSelectedService(null);
-    onInitFilter();
   };
 
   return (
@@ -207,7 +188,9 @@ export default function MoverListWithFilters({
 
   const styles = {
     container: `flex flex-col items-center pc:w-full`,
-    subContainer: `flex flex-col items-center pc:max-w-[1400px] pc:w-full`,
+    subContainer: `flex flex-col items-center w-full 
+      tablet:w-full 
+      pc:max-w-[1400px] pc:w-full`,
     header: {
       container: `hidden w-full h-[54px] 
         pc:flex flex-row gap-2.5 items-center justify-center pc:h-[96px]`,
@@ -215,16 +198,22 @@ export default function MoverListWithFilters({
         tablet:w-[600px] 
         pc:flex flex-row items-center pc:w-[1400px] pc:text-2xl`,
     },
-    mainContent: `box-border flex 
+    mainContent: `box-border flex w-full 
+      tablet:w-full 
       pc:flex-row pc:justify-between pc:w-full pc:mt-6`,
     filter: {
       container: `box-border w-[328px] hidden 
         tablet:hidden 
         pc:flex pc:flex-col pc:gap-[46px]`,
     },
+    gap: {
+      container: `w-[10px] hidden 
+      tablet:hidden
+      pc:block`,
+    },
     moverList: {
-      container: `box-border flex flex-col w-[328px] 
-        tablet:w-[600px] 
+      container: `box-border flex flex-col w-full min-w-[328px] 
+        tablet:w-full 
         pc:w-[955px]`,
       sortContainer: `flex flex-row items-center justify-between h-[68px] 
         pc:h-[40px] pc:justify-end`,
@@ -339,6 +328,7 @@ export default function MoverListWithFilters({
             />
             <FavoriteMoverList userRole={userRole} />
           </div>
+          <div className={styles.gap.container}></div>
           <div className={styles.moverList.container}>
             <div className={styles.moverList.sortContainer}>
               <div className={styles.moverList.dropdownContainer}>
