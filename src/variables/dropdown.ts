@@ -1,8 +1,11 @@
-export const PROFILE_CUSTOMER = [
-  { text: "기본정보 수정", link: "/me/info-edit" },
+export const PROFILE_CUSTOMER_OAUTH = [
   { text: "프로필 수정", link: "/me/profile-edit" },
   { text: "찜한 기사님", link: "/me/mover" },
   { text: "이사 리뷰", link: "/me/review" },
+];
+export const PROFILE_CUSTOMER = [
+  { text: "기본정보 수정", link: "/me/info-edit" },
+  ...PROFILE_CUSTOMER_OAUTH,
 ];
 export const PROFILE_MOVER = [
   { text: "마이페이지", link: "/mover/my-page" },

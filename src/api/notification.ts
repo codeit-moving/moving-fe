@@ -9,7 +9,7 @@ export interface Notification {
   id: number;
   content: string;
   isRead: boolean;
-  createAt: Date;
+  createdAt: Date;
   updateAt: Date;
   userId: number;
   timeGap: string;

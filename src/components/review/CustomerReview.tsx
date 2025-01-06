@@ -9,12 +9,12 @@ export interface CustomerReviewData {
   id: number;
   rating: number;
   content: string;
-  createAt: string;
+  createdAt: string;
   name: string;
   images: string[] | null;
 }
 const CustomerReview = ({ data }: { data: CustomerReviewData }) => {
-  const createdDate = format(new Date(data.createAt), "yyyy-MM-dd");
+  const createdDate = format(new Date(data.createdAt), "yyyy-MM-dd");
 
   return (
     <li

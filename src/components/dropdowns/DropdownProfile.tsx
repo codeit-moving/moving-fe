@@ -12,9 +12,14 @@ import {
   DropdownUserName,
 } from "../common/Dropdown";
 import { logout } from "@/api/auth";
+import { useUserStore } from "@/store/userStore";
 import { resetUserStore } from "@/utils/auth";
 
-import { PROFILE_CUSTOMER, PROFILE_MOVER } from "@/variables/dropdown";
+import {
+  PROFILE_CUSTOMER_OAUTH,
+  PROFILE_CUSTOMER,
+  PROFILE_MOVER,
+} from "@/variables/dropdown";
 
 type DropdownProfileProps = {
   onSelect?: (href: string) => void;
@@ -38,8 +43,10 @@ export default function DropdownProfile({
     open: "",
     disabled: "cursor-not-allowed",
   };
+  const { isOAuth } = useUserStore();
 
   console.log("DropdownProfile isMover", isMover);
+  console.log("DropdownProfile isOAuth", isOAuth);
 
   const dropdownTriggerClass = clsx(dropdownStyles.base, {
     [dropdownStyles.able]: !disabled,
@@ -88,9 +95,13 @@ export default function DropdownProfile({
     window.location.href = "/";
   };
 
+  const profileCustomerMenu = isOAuth
+    ? PROFILE_CUSTOMER_OAUTH
+    : PROFILE_CUSTOMER;
+
   const customerItemsWithDivider = [
     <div key={"customer label"} className={nameClass}>{`${name} 고객님`}</div>,
-    ...PROFILE_CUSTOMER.map((item, index) => (
+    ...profileCustomerMenu.map((item, index) => (
       <Link href={item.link}>
         <DropdownItem
           key={index}
