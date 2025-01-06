@@ -12,17 +12,14 @@ export default function Loading() {
     if (!progress || !truck) return;
 
     const animate = () => {
-      // 처음 위치로 리셋
       progress.style.width = "0%";
       truck.style.left = "0%";
       progress.style.transition = "none";
       truck.style.transition = "none";
 
-      // 강제 리플로우
       progress.offsetHeight;
       truck.offsetHeight;
 
-      // 애니메이션 적용 (3초로 변경)
       progress.style.transition = "all 3000ms ease-in-out";
       truck.style.transition = "all 3000ms ease-in-out";
       progress.style.width = "100%";
@@ -30,7 +27,6 @@ export default function Loading() {
     };
 
     animate();
-    // 간격을 3100ms로 설정 (애니메이션 시간 + 약간의 여유)
     const interval = setInterval(animate, 3100);
 
     return () => clearInterval(interval);
@@ -50,7 +46,7 @@ export default function Loading() {
           style={{
             left: "-12px",
             width: "36px",
-            transform: "scaleX(-1) translateX(50%) translateY(-63%)", // translateY 값을 -50%에서 -25%로 변경하여 아래로 내림
+            transform: "scaleX(-1) translateX(50%) translateY(-63%)",
           }}
         >
           <svg
@@ -60,7 +56,6 @@ export default function Loading() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            {/* SVG 내용은 동일 */}
             <circle cx="433" cy="259" r="31" fill="#242945" />
             <path
               d="M168 250H451C451 258.837 443.837 266 435 266H184C175.163 266 168 258.837 168 250Z"
