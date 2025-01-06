@@ -21,7 +21,7 @@ export default function MyPage() {
   }
 
   return (
-    <>
+    <div className="pc:max-w-[1400px] pc:flex pc:flex-col pc:justify-center pc:mx-auto">
       <section>
         <h2
           className={"text-lg font-bold text-black-400 pc:text-2xl mb-[15px]"}
@@ -45,6 +45,6 @@ export default function MyPage() {
         className="my-[24px] pc:my-[48px]"
       />
       <MoversReviewList totalRating={data.rating} moverId={data.id} />
-    </>
+    </div>
   );
 }
