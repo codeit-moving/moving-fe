@@ -15,9 +15,11 @@ import NiceModalRegistry from "@/components/layout/NiceModalRegistry";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
-  display: "swap",
+  display: "block",
   weight: "45 920",
   variable: "--font-pretendard",
+  preload: true,
+  fallback: ["system-ui", "sans-serif"],
 });
 
 const globalStyles = "text-black-400";
@@ -28,6 +30,11 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

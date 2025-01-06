@@ -87,7 +87,7 @@ export default function RoleGuard({
   }, [allowedRoles, fallbackPath, router, pathname]);
 
   if (isLoading) {
-    return <Loader msg="페이지 로딩중" />;
+    return null;
   }
 
   return isAuthorized ? children : null;

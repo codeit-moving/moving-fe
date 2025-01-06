@@ -163,6 +163,7 @@ const EstimateRequest: React.FC = () => {
 
   // Step Handlers
   const handleTypeSelection = (selectedType: string) => {
+    if (isLoading) return;
     setType(selectedType);
     handleNextStep([
       { type: "user", text: selectedType },
@@ -171,6 +172,7 @@ const EstimateRequest: React.FC = () => {
   };
 
   const handleDateComplete = (isoString: string) => {
+    if (isLoading) return;
     const selectedDate = new Date(isoString);
     setDate(selectedDate);
     handleNextStep([
@@ -178,7 +180,6 @@ const EstimateRequest: React.FC = () => {
       { type: "bot", text: "이사 지역을 선택해주세요." },
     ]);
   };
-
   const handleAddressSelection = (fromAddr: string, toAddr: string) => {
     setAddresses({ from: fromAddr, to: toAddr });
   };
@@ -264,12 +265,19 @@ const EstimateRequest: React.FC = () => {
             },
           ]}
           onSelect={handleTypeSelection}
+          disabled={isLoading} // 로딩 상태에 따른 비활성화
         />
       );
     }
 
     if (step === 1) {
-      return <DatePicker onChange={() => {}} onComplete={handleDateComplete} />;
+      return (
+        <DatePicker
+          onChange={() => {}}
+          onComplete={handleDateComplete}
+          disabled={isLoading} // 로딩 상태에 따른 비활성화
+        />
+      );
     }
 
     if (step === 2) {

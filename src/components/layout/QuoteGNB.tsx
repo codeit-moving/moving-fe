@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import LineSeparator from "../common/LineSeparator";
 
@@ -10,16 +10,26 @@ interface Tab {
 
 interface QuoteGNBProps {
   tabs: Tab[];
-  currentTab?: number;
+  initialTab?: number;
+  onTabChange?: (tabId: number) => void; // Add onTabChange callback prop
 }
 
-export const QuoteGNB = ({ tabs, currentTab = 0 }: QuoteGNBProps) => {
+export const QuoteGNB = ({
+  tabs,
+  initialTab = 0,
+  onTabChange,
+}: QuoteGNBProps) => {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState(currentTab);
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
 
   const handleTabClick = (tabId: number) => {
     setActiveTab(tabId);
     router.push(`?tab=${tabId}`);
+    onTabChange?.(tabId);
   };
 
   return (
@@ -33,18 +43,11 @@ export const QuoteGNB = ({ tabs, currentTab = 0 }: QuoteGNBProps) => {
           <button
             key={tab.id}
             onClick={() => handleTabClick(tab.id)}
-            className={`
-              py-4 text-lg font-bold
-              transition-all duration-500
-              border-b-2 min-w-[120px]
-              pc:text-xl pc:font-semibold
-              ${
-                activeTab === tab.id
-                  ? "text-black-400 border-black-400"
-                  : "text-gray-400 border-transparent"
-              }
-              hover:text-black
-            `}
+            className={`py-4 text-lg font-bold transition-all duration-500 border-b-2 min-w-[120px] pc:text-xl pc:font-semibold ${
+              activeTab === tab.id
+                ? "text-black-400 border-black-400"
+                : "text-gray-400 border-transparent"
+            } hover:text-black`}
             role="tab"
             aria-selected={activeTab === tab.id}
           >

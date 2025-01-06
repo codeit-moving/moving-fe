@@ -19,6 +19,7 @@ interface DatePickerProps {
   onChange: (isoString: string) => void;
   onComplete?: (isoString: string) => void;
   initialDate?: Date;
+  disabled?: boolean;
 }
 
 /**
@@ -40,7 +41,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
   onChange,
   onComplete,
   initialDate = new Date(),
+  disabled = false,
 }) => {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const today = new Date();
   today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정하여 날짜만 비교
 
@@ -152,14 +155,23 @@ const DatePicker: React.FC<DatePickerProps> = ({
     [currentDate, selectedTime, onChange]
   );
 
-  const handleTimeSelection = () => {
-    const newDate = new Date(selectedDate);
-    newDate.setHours(selectedTime.hours);
-    newDate.setMinutes(selectedTime.minutes);
-    setSelectedDate(newDate);
-    const isoString = newDate.toISOString();
-    onChange?.(isoString);
-    onComplete?.(isoString);
+  const handleTimeSelection = async () => {
+    if (isSubmitting || disabled) return;
+
+    setIsSubmitting(true);
+    try {
+      const newDate = new Date(selectedDate);
+      newDate.setHours(selectedTime.hours);
+      newDate.setMinutes(selectedTime.minutes);
+      setSelectedDate(newDate);
+      const isoString = newDate.toISOString();
+      onChange?.(isoString);
+      await onComplete?.(isoString);
+    } finally {
+      setTimeout(() => {
+        setIsSubmitting(false);
+      }, 1000);
+    }
   };
 
   const navigateMonth = (direction: number) => {
@@ -222,11 +234,11 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
           {days.map((day, index) => {
             const isSelected = isSelectedDate(day);
-            const disabled = isDisabled(day); // 날짜가 비활성화됐는지 확인
+            const isDisabledDay = isDisabled(day) || disabled;
             return (
               <button
                 key={`day-${index}`}
-                onClick={() => handleDateSelection(day)}
+                onClick={() => !isDisabledDay && handleDateSelection(day)}
                 className={clsx(
                   "h-10 w-10 rounded-full",
                   "flex items-center justify-center",
@@ -234,9 +246,10 @@ const DatePicker: React.FC<DatePickerProps> = ({
                   !day.isCurrentMonth && "text-gray-300",
                   day.isCurrentMonth && "text-black hover:bg-gray-100",
                   isSelected && "bg-blue-500 text-white hover:bg-blue-500",
-                  disabled && " text-gray-300 cursor-not-allowed" // 비활성화된 날짜 스타일
+                  isDisabledDay && "text-gray-300 cursor-not-allowed",
+                  disabled && "opacity-50"
                 )}
-                disabled={disabled} // 비활성화된 날짜는 클릭되지 않도록
+                disabled={isDisabledDay}
               >
                 {day.date}
               </button>
@@ -266,20 +279,26 @@ const DatePicker: React.FC<DatePickerProps> = ({
     ],
     [selectedTime]
   );
-
   const handleButtonClick = useCallback(() => {
+    if (disabled || isSubmitting) return;
+
     if (step === DATE_STEP) {
       setStep(TIME_STEP);
     } else {
       handleTimeSelection();
     }
-  }, [step, handleTimeSelection]);
+  }, [step, handleTimeSelection, disabled, isSubmitting]);
 
   DatePickerHeader.displayName = "DatePickerHeader";
   DateGrid.displayName = "DateGrid";
 
   return (
-    <div className="w-[327px] tablet:w-[400px] pc:w-[640px] bg-white rounded-[32px] rounded-tr-none shadow-lg">
+    <div
+      className={clsx(
+        "w-[327px] tablet:w-[400px] pc:w-[640px] bg-white rounded-[32px] rounded-tr-none shadow-lg",
+        disabled && "opacity-50"
+      )}
+    >
       <div className="px-4 tablet:px-6 pc:px-8 py-4 tablet:py-5 pc:py-6">
         <div className="transition-all duration-300 ease-in-out">
           {step === DATE_STEP ? (
@@ -313,12 +332,20 @@ const DatePicker: React.FC<DatePickerProps> = ({
             </>
           )}
         </div>
-
         <button
-          className="w-full mt-6 py-4 px-6 bg-pr-blue-300 text-white rounded-[16px] text-xl font-semibold hover:bg-pr-blue-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className={clsx(
+            "w-full mt-6 py-4 px-6 bg-pr-blue-300 text-white rounded-[16px] text-xl font-semibold",
+            "hover:bg-pr-blue-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+            (disabled || isSubmitting) && "opacity-50 cursor-not-allowed"
+          )}
           onClick={handleButtonClick}
+          disabled={disabled || isSubmitting}
         >
-          {step === DATE_STEP ? "시간 선택" : "선택완료"}
+          {isSubmitting
+            ? "처리중..."
+            : step === DATE_STEP
+            ? "시간 선택"
+            : "선택완료"}
         </button>
       </div>
     </div>
