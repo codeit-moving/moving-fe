@@ -62,6 +62,9 @@ export default function MyReviewPage() {
     return <Loader msg="리뷰 목록을 불러오고 있어요." />;
   }
 
+  console.log("reviewToWriteList", reviewToWriteList);
+  console.log("myReviewList", myReviewList);
+
   const displayData =
     currentTab === 0
       ? reviewToWriteList ?? emptyReviewList

@@ -53,7 +53,7 @@ export default function ReviewModal({ onClose, data }: ReviewModalProps) {
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
 
-  const { mutate } = useReviewMutation();
+  const { mutate } = useReviewMutation(data.confirmedQuoteId);
 
   const isValid = rating > 0 && review.length >= 10;
 
@@ -92,12 +92,16 @@ export default function ReviewModal({ onClose, data }: ReviewModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const reviewData: CreateReviewData = {
-      confirmedQuoteId: data.confirmedQuoteId,
       rating: rating,
       content: review,
       images: images,
     };
-    mutate(reviewData);
+    mutate(reviewData, {
+      onSuccess: () => {
+        toast.success("리뷰가 등록되었습니다");
+        onClose();
+      },
+    });
   };
 
   return (
