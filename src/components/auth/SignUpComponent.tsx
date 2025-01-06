@@ -63,17 +63,13 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
         phoneNumber: data.phoneNumber,
       });
 
-      console.log("👤 validate pass");
-
       if (isUser) {
-        console.log("👤 isUser");
         router.push("/me/profile");
         toast.success("프로필을 등록하여 회원가입을 완성해주세요.", {
           position: "top-center",
           icon: "👤",
         });
       } else {
-        console.log("👤 else");
         router.push("/mover/profile");
         toast.success("프로필을 등록하여 회원가입을 완성해주세요.", {
           position: "top-center",
@@ -81,7 +77,6 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
         });
       }
 
-      // 성공 시 폼 초기화
       reset();
     } catch (error: any) {
       const errorMessage =

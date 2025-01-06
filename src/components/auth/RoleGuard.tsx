@@ -66,8 +66,9 @@ export default function RoleGuard({
           name: userInfo.user.name,
           phoneNumber: userInfo.user.phoneNumber,
           role: userRole,
+          isOAuth: false,
         });
-        console.log("RoleGuard userType : ", useUserStore.getState().userRole);
+
         const hasPermission = userRole && allowedRoles?.includes(userRole);
         if (!hasPermission) {
           router.replace(fallbackPath);
@@ -76,7 +77,6 @@ export default function RoleGuard({
 
         setIsAuthorized(true);
       } catch (error) {
-        console.error("Role check error:", error);
         router.replace(fallbackPath);
       } finally {
         setIsLoading(false);

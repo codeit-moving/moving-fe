@@ -30,7 +30,7 @@ const LIMITS = {
 // 정규식 패턴
 const REGEX = {
   name: new RegExp(`^[가-힣]{${LIMITS.NAME.MIN},${LIMITS.NAME.MAX}}$`),
-  password: /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{5,}$/,
+  password: /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{8,}$/,
   phone: /^010-\d{4}-\d{4}$/,
   nickname: new RegExp(
     `^[가-힣]{${LIMITS.NICKNAME.MIN},${LIMITS.NICKNAME.MAX}}$`

@@ -18,6 +18,16 @@ interface SignUpComponentProps {
   isUser: boolean;
 }
 
+interface FormFieldProps {
+  register: any;
+  error?: string;
+  label: string;
+  type: string;
+  placeholder: string;
+  name: string;
+  auth: boolean;
+}
+
 const styles = {
   container: `flex flex-col items-center w-full tablet:px-0`,
   logo: `pc:w-[140px] pc:h-[80px] mb-[10px]`,
@@ -29,6 +39,29 @@ const styles = {
   button: `mt-[16px]`,
   snsContainer: `flex flex-col items-center gap-[24px] mt-[40px]`,
 };
+
+const FormField = ({
+  label,
+  name,
+  type = "text",
+  placeholder,
+  register,
+  error,
+  auth,
+}: FormFieldProps) => (
+  <div className={styles.formItem}>
+    <label htmlFor={name} className={styles.formLabel}>
+      {label}
+    </label>
+    <Input
+      {...register(name)}
+      type={type}
+      placeholder={placeholder}
+      error={error}
+      isAuth={auth}
+    />
+  </div>
+);
 
 export default function SignUpComponent({ isUser }: SignUpComponentProps) {
   const router = useRouter();
@@ -48,11 +81,9 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
       throw new Error("유효성 검사 실패");
     }
     try {
-      // 미완성. signin API response 구조 확인 필요
       await login(data);
 
       const userInfo = await getUserInfo();
-      console.log("SignUpComponent userInfo: ", userInfo);
       const userRole = userInfo.user.mover
         ? "MOVER"
         : userInfo.user.customer
@@ -84,30 +115,24 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
     <div className={styles.container}>
       <FormHeader isUser={isUser} signUp={false} />
       <form className={styles.form}>
-        <div className={styles.formItem}>
-          <label htmlFor="email" className={styles.formLabel}>
-            이메일
-          </label>
-          <Input
-            {...register("email")}
-            type="email"
-            placeholder="이메일을 입력해주세요."
-            isAuth={true}
-            error={errors.email?.message}
-          />
-        </div>
-        <div className={styles.formItem}>
-          <label htmlFor="password" className={styles.formLabel}>
-            비밀번호
-          </label>
-          <Input
-            {...register("password")}
-            type="password"
-            placeholder="비밀번호를 입력해주세요."
-            isAuth={true}
-            error={errors.password?.message}
-          />
-        </div>
+        <FormField
+          label="이메일"
+          name="email"
+          type="email"
+          placeholder="이메일을 입력해주세요."
+          register={register}
+          error={errors.email?.message}
+          auth={true}
+        />
+        <FormField
+          label="비밀번호"
+          name="password"
+          type="password"
+          placeholder="비밀번호를 입력해주세요."
+          register={register}
+          error={errors.password?.message}
+          auth={true}
+        />
         <Button
           children="로그인"
           type="submit"
