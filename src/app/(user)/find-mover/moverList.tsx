@@ -6,7 +6,7 @@ import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
 
 import Input from "@/components/common/Input";
 import MoverInfoCard from "@/components/cards/MoverInfoCard";
-import LoadingDots from "@/components/LoadingDots";
+import Loader from "@/components/common/Loader";
 import DropdownRegion from "@/components/dropdowns/DropdownRegion";
 import DropdownService from "@/components/dropdowns/DropdownService";
 import DropdownSortMovingRequest from "@/components/dropdowns/DropdownSortMovingRequest";
@@ -113,7 +113,13 @@ function Filter({ formState, onFilterChange, onInitFilter }: FilterProps) {
 
   return (
     <div className={styles.container}>
-      {/* ... existing code ... */}
+      <div className={styles.header}>
+        <span>필터</span>
+        <span className={styles.resetButton} onClick={onInitFilter}>
+          초기화
+        </span>
+      </div>
+      <div className={styles.sectionTitle}>어디로 이사하시나요?</div>
       <DropdownRegion
         value={formState.currentRegionFilter}
         onChange={(value) => onFilterChange(value, "region")}
@@ -370,10 +376,9 @@ export default function MoverListWithFilters({
               </div>
             </div>
             <div className={styles.listContainer}>
-              {isFetching && <LoadingDots />}
               {moverInfos}
               <div ref={loadMoreRef} className="h-20 bg-transparent"></div>
-              {isFetchingNextPage && <LoadingDots />}
+              {isFetchingNextPage && <Loader />}
               {hasNextPage && <ScrollIndicator />}
             </div>
           </div>
