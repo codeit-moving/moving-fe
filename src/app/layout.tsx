@@ -11,6 +11,9 @@ import MSWComponent from "@/components/layout/MswComponent";
 import { isDevelopment } from "@/utils/env";
 import ReactQueryDevtoolsClient from "@/components/ReactQueryDevtoolsClient";
 import NiceModalRegistry from "@/components/layout/NiceModalRegistry";
+import Toast from "@/components/Toast";
+import { NavigationEvents } from "@/components/NavigationEvents";
+import { NavigationProgress } from "@/components/NavigationProgress";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -52,13 +55,15 @@ export default function RootLayout({
         <MSWComponent>
           <TanstackQueryClientProvider>
             <NiceModalProvider>
+              <NavigationEvents />
+              <NavigationProgress />
               <GNB />
               <QuoteGNBWrapper />
               {children}
               <NiceModalRegistry />
               <Toaster />
+              <Toast />
               {isDevelopment() && <ReactQueryDevtoolsClient />}
-              {/* Development 환경에서만 렌더링 */}
             </NiceModalProvider>
           </TanstackQueryClientProvider>
         </MSWComponent>

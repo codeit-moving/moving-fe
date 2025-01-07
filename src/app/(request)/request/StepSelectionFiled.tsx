@@ -10,7 +10,7 @@ interface StepSelectionFieldProps {
   onSelect: (value: string) => void;
   type?: "custom" | "admin";
   radius?: string | number;
-  disabled?: boolean; // 추가: 외부에서 disabled 상태를 제어할 수 있도록
+  disabled?: boolean;
 }
 
 const StepSelectionField: React.FC<StepSelectionFieldProps> = ({
@@ -18,7 +18,7 @@ const StepSelectionField: React.FC<StepSelectionFieldProps> = ({
   onSelect,
   type = "admin",
   radius = "24px",
-  disabled = false, // 기본값 false
+  disabled = false,
 }) => {
   const [selectedValue, setSelectedValue] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -51,7 +51,7 @@ const StepSelectionField: React.FC<StepSelectionFieldProps> = ({
       try {
         await onSelect(selectedValue);
 
-        // 제출 후 일정 시간 동안 재제출 방지 (예: 1초)
+        // 제출 후 일정 시간 동안 재제출 방지
         submitTimeoutRef.current = setTimeout(() => {
           setIsSubmitting(false);
         }, 1000);

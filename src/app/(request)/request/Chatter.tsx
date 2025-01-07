@@ -133,7 +133,7 @@ const EstimateRequest: React.FC = () => {
         }
       } catch (error) {
         console.error("Error checking active request:", error);
-        // 에러가 발생해도 견적 요청은 계속 진행할 수 있도록 함
+        // 에러가 발생해도 견적 요청은 계속 진행할 수 있도록 함 (어차피 마지막에 보낼때 한번더 validation할거)
         setMessages([
           {
             type: "bot",

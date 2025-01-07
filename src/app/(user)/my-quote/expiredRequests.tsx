@@ -104,7 +104,7 @@ const StatusBadge = ({
 
   return (
     <div
-      className={`gap-1 rounded-xl py-1 px-2 items-center flex flex-row ${colorClasses}`}
+      className={`gap-1 rounded-[4px] py-1 px-2 items-center flex flex-row ${colorClasses}`}
     >
       <svg
         width="20"

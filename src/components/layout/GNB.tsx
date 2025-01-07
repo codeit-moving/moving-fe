@@ -11,7 +11,7 @@ import useResize from "../../hooks/useResize";
 import assets from "@/variables/images";
 import { useUserStore } from "@/store/userStore";
 import { useAuth } from "@/hooks/useAuth";
-
+import { NavItem } from "../NavItem";
 import { PC_WIDTH } from "@/variables/screen";
 
 interface NavItemProps {
@@ -19,29 +19,6 @@ interface NavItemProps {
   isIncludedPath?: boolean;
   children: ReactNode;
 }
-
-function NavItem({ href, isIncludedPath = false, children }: NavItemProps) {
-  const pathname = usePathname();
-
-  const isActive = isIncludedPath
-    ? pathname === href
-    : pathname.startsWith(href);
-
-  let linkStyle = cn(
-    "text-lg font-bold",
-    isActive ? "text-black-400" : "text-gray-400"
-  );
-
-  return (
-    <Link href={href} className={linkStyle}>
-      {children}
-    </Link>
-  );
-}
-
-// TODO:
-// 1. 유저타입에 따라 렌더링되는 탭 변경
-// 2. 모바일에서 메뉴 버튼 클릭 시 사이드바 토글시 유저정보는 따로 fetch하는 것이 좋을 듯
 
 const GNB = () => {
   useAuth();
