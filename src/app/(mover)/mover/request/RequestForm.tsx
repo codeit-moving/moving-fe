@@ -12,7 +12,7 @@ import DropdownSortMovingRequest from "@/components/dropdowns/DropdownSortMoving
 import { ServiceFilter, DesignateFilter } from "./filters";
 import EmptyList from "@/components/EmptyList";
 import ScrollIndicator from "@/components/ScrollIndicator";
-import LoadingDots from "@/components/LoadingDots";
+import Loader from "@/components/common/Loader";
 import { FilterNiceModal } from "./FilterNiceModal";
 import { RejectRequetNiceModal } from "./RejectRequetNiceModal";
 import { CreateQuoteNiceModal } from "./CreateQuoteNiceModal";
@@ -112,32 +112,45 @@ export default function RequestForm({ initialData }: RequestFormProps) {
     });
 
   const styles = {
-    container: "flex flex-col items-center pc:w-full",
-    header: `flex flex-row gap-2.5 items-center justify-center 
-      w-[328px] h-[54px] 
-      tablet:w-[600px] 
-      pc:w-[1400px] pc:h-[96px]`,
-    headerText: `flex flex-row items-center 
-      w-full h-full 
-      text-2lg text-[#2b2b2b] font-semibold cursor-pointer 
-      pc:text-2xl`,
-    filterWrapper:
-      "box-border flex flex-row justify-center gap-[117px] mt-4 tablet:mt-6 pc:mt-6",
-    sidebar:
-      "box-border gap-6 w-[328px] hidden tablet:hidden pc:flex pc:flex-col",
-    content: "box-border flex flex-col w-[328px] tablet:w-[600px] pc:w-[955px]",
+    container: `flex flex-col items-center 
+      pc:w-full`,
+    subContainer: `flex flex-col items-center 
+      pc:max-w-[1400px] 
+      w-full`,
+    header: {
+      container: `hidden w-full h-[54px] 
+        pc:flex flex-row gap-2.5 items-center justify-center pc:h-[96px]`,
+      text: `w-[328px] h-full text-2lg text-[#2b2b2b] font-semibold cursor-pointer 
+        tablet:w-[600px] 
+        pc:flex flex-row items-center pc:w-[1400px] pc:text-2xl`,
+    },
+    filterWrapper: `box-border flex flex-row w-full mt-4 
+      tablet:mt-6 
+      pc:justify-between  pc:mt-6`,
+    sidebar: `box-border gap-6 w-[328px] hidden 
+      tablet:hidden 
+      pc:flex pc:flex-col`,
+    gap: `w-[10px] hidden 
+      tablet:hidden
+      pc:block`,
+    content: `box-border flex flex-col min-w-[328px] w-full 
+    pc:w-[955px]`,
     searchWrapper: `relative flex items-center 
       px-0 py-3 
       w-full h-[76px] 
       tablet:px-2.5 tablet:py-3 
       pc:p-0 pc:h-[64px]`,
-    searchInput: "w-full pl-[46px] pc:pl-[68px]",
-    searchIcon: "absolute left-4 w-6 h-6 pc:left-6 pc:w-9 pc:h-9",
-    filterAndSort:
-      "flex flex-row justify-between w-full h-[40px] px-[10px] py-1 pc:mt-6 pc:p-0",
-    itemCount: "flex flex-row items-center text-sm pc:text-lg font-medium",
-    dropdownAndFilter: "flex flex-row gap-1",
-    filterIcon: "relative w-8 h-8 pc:hidden",
+    searchInput: `w-full pl-[46px] 
+      pc:pl-[68px]`,
+    searchIcon: `absolute left-4 w-6 h-6 
+      pc:left-6 pc:w-9 pc:h-9`,
+    filterAndSort: `flex flex-row justify-between w-full h-[40px] px-[10px] py-1 
+      pc:mt-6 pc:p-0`,
+    itemCount: `flex flex-row items-center text-sm 
+      pc:text-lg font-medium`,
+    dropdownAndFilter: `flex flex-row gap-1`,
+    filterIcon: `relative w-8 h-8 
+      pc:hidden`,
     itemList: `flex flex-col gap-[32px] 
       mt-3 overflow-hidden w-full 
       tablet:mt-4 
@@ -301,105 +314,111 @@ export default function RequestForm({ initialData }: RequestFormProps) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.headerText}>받은 요청</div>
-      </div>
-      <div className={styles.filterWrapper}>
-        <div className={styles.sidebar}>
-          <ServiceFilter
-            serviceCounts={
-              data
-                ? [
-                    data.pages[data.pages.length - 1]?.serviceCounts.smallMove,
-                    data.pages[data.pages.length - 1]?.serviceCounts.houseMove,
-                    data.pages[data.pages.length - 1]?.serviceCounts.officeMove,
-                  ]
-                : [0, 0, 0]
-            }
-            onChange={(states) => setCurrentServiceFilterState(states)}
-          />
-          <DesignateFilter
-            designateCounts={
-              data
-                ? [
-                    data.pages[data.pages.length - 1]?.requestCounts.total -
+      <div className={styles.subContainer}>
+        <div className={styles.header.container}>
+          <div className={styles.header.text}>받은 요청</div>
+        </div>
+        <div className={styles.filterWrapper}>
+          <div className={styles.sidebar}>
+            <ServiceFilter
+              serviceCounts={
+                data
+                  ? [
+                      data.pages[data.pages.length - 1]?.serviceCounts
+                        .smallMove,
+                      data.pages[data.pages.length - 1]?.serviceCounts
+                        .houseMove,
+                      data.pages[data.pages.length - 1]?.serviceCounts
+                        .officeMove,
+                    ]
+                  : [0, 0, 0]
+              }
+              onChange={(states) => setCurrentServiceFilterState(states)}
+            />
+            <DesignateFilter
+              designateCounts={
+                data
+                  ? [
+                      data.pages[data.pages.length - 1]?.requestCounts.total -
+                        data.pages[data.pages.length - 1]?.requestCounts
+                          .designated,
                       data.pages[data.pages.length - 1]?.requestCounts
                         .designated,
-                    data.pages[data.pages.length - 1]?.requestCounts.designated,
-                  ]
-                : [0, 0]
-            }
-            onChange={(states) => setRequestState(states)}
-          />
-        </div>
-        <div className={styles.content}>
-          <div className={styles.searchWrapper}>
-            <Input
-              name="searchKeyword"
-              placeholder="어떤 고객님을 찾고 계세요?"
-              className={styles.searchInput}
-              value={formState.keyword}
-              onChange={(e) =>
-                setFormState((prev) => ({ ...prev, keyword: e.target.value }))
+                    ]
+                  : [0, 0]
               }
+              onChange={(states) => setRequestState(states)}
             />
-            <div className={styles.searchIcon}>
-              <Image src={assets.icons.search} alt="검색" fill />
-            </div>
           </div>
-          <div className={styles.filterAndSort}>
-            <div className={styles.itemCount}>{`전체 ${
-              data?.pages[data.pages.length - 1]?.requestCounts?.total || 0
-            }건`}</div>
-            <div className={styles.dropdownAndFilter}>
-              <DropdownSortMovingRequest
-                onSelect={(sortIndex) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    orderBy: ["recent", "movingDate"][sortIndex] as
-                      | "recent"
-                      | "movingDate",
-                  }))
+          <div className={styles.gap}></div>
+          <div className={styles.content}>
+            <div className={styles.searchWrapper}>
+              <Input
+                name="searchKeyword"
+                placeholder="어떤 고객님을 찾고 계세요?"
+                className={styles.searchInput}
+                value={formState.keyword}
+                onChange={(e) =>
+                  setFormState((prev) => ({ ...prev, keyword: e.target.value }))
                 }
-                disabled={data?.pages[0].list.length === 0}
               />
-              <div
-                className={styles.filterIcon}
-                onClick={handleFilterIconClick}
-              >
-                <Image
-                  src={
-                    isAllTrue(formState.currentServiceFilter) &&
-                    formState.isDesignated === null
-                      ? assets.icons.filterInactive
-                      : assets.icons.filterActive
-                  }
-                  alt="필터"
-                  fill
-                />
+              <div className={styles.searchIcon}>
+                <Image src={assets.icons.search} alt="검색" fill />
               </div>
             </div>
-          </div>
-          <div className={styles.itemList}>
-            {isFetching && <LoadingDots />}
-            {isListEmpty ? (
-              <EmptyList text="조회된 이사 요청 정보가 없습니다" />
-            ) : (
-              data?.pages.map((page, i) =>
-                page.list.map((item, index) => (
-                  <IncomingRequestCard
-                    key={`${item.id}-${index}`}
-                    data={item}
-                    onPrimaryClick={handleAcceptRequest}
-                    onOutlinedClick={handleRejectRequest}
+            <div className={styles.filterAndSort}>
+              <div className={styles.itemCount}>{`전체 ${
+                data?.pages[data.pages.length - 1]?.requestCounts?.total || 0
+              }건`}</div>
+              <div className={styles.dropdownAndFilter}>
+                <DropdownSortMovingRequest
+                  onSelect={(sortIndex) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      orderBy: ["recent", "movingDate"][sortIndex] as
+                        | "recent"
+                        | "movingDate",
+                    }))
+                  }
+                  disabled={data?.pages[0].list.length === 0}
+                />
+                <div
+                  className={styles.filterIcon}
+                  onClick={handleFilterIconClick}
+                >
+                  <Image
+                    src={
+                      isAllTrue(formState.currentServiceFilter) &&
+                      formState.isDesignated === null
+                        ? assets.icons.filterInactive
+                        : assets.icons.filterActive
+                    }
+                    alt="필터"
+                    fill
                   />
-                ))
-              )
-            )}
+                </div>
+              </div>
+            </div>
+            <div className={styles.itemList}>
+              {isListEmpty ? (
+                <EmptyList text="조회된 이사 요청 정보가 없습니다" />
+              ) : (
+                data?.pages.map((page, i) =>
+                  page.list.map((item, index) => (
+                    <IncomingRequestCard
+                      key={`${item.id}-${index}`}
+                      data={item}
+                      onPrimaryClick={handleAcceptRequest}
+                      onOutlinedClick={handleRejectRequest}
+                    />
+                  ))
+                )
+              )}
 
-            <div ref={loadMoreRef} className="h-20 bg-transparent"></div>
-            {isFetchingNextPage && <LoadingDots />}
-            {!isListEmpty && hasNextPage && <ScrollIndicator />}
+              <div ref={loadMoreRef} className="h-20 bg-transparent"></div>
+              {isFetchingNextPage && <Loader />}
+              {!isListEmpty && hasNextPage && <ScrollIndicator />}
+            </div>
           </div>
         </div>
       </div>

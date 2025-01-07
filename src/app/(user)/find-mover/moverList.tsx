@@ -189,8 +189,7 @@ export default function MoverListWithFilters({
   const styles = {
     container: `flex flex-col items-center pc:w-full`,
     subContainer: `flex flex-col items-center w-full 
-      tablet:w-full 
-      pc:max-w-[1400px] pc:w-full`,
+      pc:max-w-[1400px]`,
     header: {
       container: `hidden w-full h-[54px] 
         pc:flex flex-row gap-2.5 items-center justify-center pc:h-[96px]`,
@@ -199,8 +198,7 @@ export default function MoverListWithFilters({
         pc:flex flex-row items-center pc:w-[1400px] pc:text-2xl`,
     },
     mainContent: `box-border flex w-full 
-      tablet:w-full 
-      pc:flex-row pc:justify-between pc:w-full pc:mt-6`,
+      pc:flex-row pc:justify-between pc:mt-6`,
     filter: {
       container: `box-border w-[328px] hidden 
         tablet:hidden 
@@ -208,8 +206,8 @@ export default function MoverListWithFilters({
     },
     gap: {
       container: `w-[10px] hidden 
-      tablet:hidden
-      pc:block`,
+        tablet:hidden
+        pc:block`,
     },
     moverList: {
       container: `box-border flex flex-col w-full min-w-[328px] 
