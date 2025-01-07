@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import CreateReviewCard from "./CreateReviewCard";
+import type { ReviewMoverData } from "@/components/common/card/ReviewMover";
 
 const meta: Meta<typeof CreateReviewCard> = {
   title: "Cards/CreateReviewCard",
@@ -12,8 +13,9 @@ const meta: Meta<typeof CreateReviewCard> = {
 export default meta;
 type Story = StoryObj<typeof CreateReviewCard>;
 
-const mockData = {
-  id: 21,
+const mockData: ReviewMoverData = {
+  confirmedQuoteId: 1,
+  moverId: 1,
   service: 0,
   isDesignated: true,
   imageUrl: "",

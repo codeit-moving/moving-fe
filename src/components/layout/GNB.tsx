@@ -11,7 +11,7 @@ import useResize from "../../hooks/useResize";
 import assets from "@/variables/images";
 import { useUserStore } from "@/store/userStore";
 import { useAuth } from "@/hooks/useAuth";
-
+import { NavItem } from "../NavItem";
 import { PC_WIDTH } from "@/variables/screen";
 
 interface NavItemProps {
@@ -19,29 +19,6 @@ interface NavItemProps {
   isIncludedPath?: boolean;
   children: ReactNode;
 }
-
-function NavItem({ href, isIncludedPath = false, children }: NavItemProps) {
-  const pathname = usePathname();
-
-  const isActive = isIncludedPath
-    ? pathname === href
-    : pathname.startsWith(href);
-
-  let linkStyle = cn(
-    "text-lg font-bold",
-    isActive ? "text-black-400" : "text-gray-400"
-  );
-
-  return (
-    <Link href={href} className={linkStyle}>
-      {children}
-    </Link>
-  );
-}
-
-// TODO:
-// 1. 유저타입에 따라 렌더링되는 탭 변경
-// 2. 모바일에서 메뉴 버튼 클릭 시 사이드바 토글시 유저정보는 따로 fetch하는 것이 좋을 듯
 
 const GNB = () => {
   useAuth();
@@ -78,7 +55,7 @@ const GNB = () => {
   };
 
   return (
-    <nav className="w-full h-[88px] py-[10px] px-[24px] tablet:px-[72px] pc:border-b pc:border-solid pc:border-line-100 bg-white">
+    <nav className="w-full h-[60px] pc:h-[88px] py-[10px] px-[24px] tablet:px-[72px] border-b border-solid border-line-100 bg-white transition-all duration-300">
       <div className="max-w-[1400px] h-full  mx-auto flex justify-between items-center">
         <div className="flex items-center gap-20">
           <Link href="/">

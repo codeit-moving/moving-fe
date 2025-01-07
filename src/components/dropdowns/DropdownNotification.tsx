@@ -96,6 +96,8 @@ export default function DropdownNotification({
       time: "text-sm text-gray-300 font-medium",
       loading: "flex justify-center items-center h-8",
       scrollTrigger: "h-10 bg-transparent",
+      empty: "flex justify-center items-center h-full",
+      emptyText: "text-md text-black-200",
     },
   };
 
@@ -216,6 +218,13 @@ export default function DropdownNotification({
           </div>
         </div>
         <div className={styles.notification.list}>
+          {notifications.length === 0 && (
+            <div className={styles.notification.empty}>
+              <div className={styles.notification.emptyText}>
+                알림이 없습니다.
+              </div>
+            </div>
+          )}
           {notifications.map((item, index) => (
             <DropdownItem
               key={item.id}

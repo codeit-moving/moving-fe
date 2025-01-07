@@ -10,11 +10,9 @@ const GREY_BG_PATHS = ["/mover/my-quote"];
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <>
-      <RoleGuard allowedRoles={"MOVER"}>
-        <Main grayBgPaths={GREY_BG_PATHS}>{children}</Main>
-      </RoleGuard>
-    </>
+    <RoleGuard allowedRoles={"MOVER"}>
+      <Main grayBgPaths={GREY_BG_PATHS}>{children}</Main>
+    </RoleGuard>
   );
 };
 

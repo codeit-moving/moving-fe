@@ -8,6 +8,14 @@ import { fetchPendingQuotes } from "@/api/pendingQuote";
 import ExpiredRequests from "./expiredRequests";
 import { confirmQuote } from "@/api/quote";
 
+interface AxiosResponseError {
+  path: string;
+  method: string;
+  message: string;
+  date: string;
+  status?: number;
+}
+
 interface MovingRequest {
   service: number;
   movingDate: string;
@@ -28,6 +36,7 @@ interface Mover {
   rating: {
     average: number;
     totalCount: number;
+    totalSum: number;
     "1": number;
     "2": number;
     "3": number;
@@ -87,16 +96,20 @@ const MyQuotePage = () => {
         const { list } = await fetchPendingQuotes();
         setQuotes(list);
         setErrorMessage(null);
-      } catch (error: any) {
-        console.log("Error object structure:", JSON.stringify(error, null, 2));
-        console.error("Error fetching quotes:", error);
-
-        // Axios 에러의 경우 status code로 체크
-        if (error.name === "AxiosError" && error.response?.status === 404) {
+      } catch (error: AxiosResponseError | any) {
+        // 활성 이사 요청 없음 케이스
+        if (
+          error.path === "/moving-requests/pending-quotes" &&
+          error.message === "활성중인 이사요청이 없습니다."
+        ) {
+          // 이사 요청 없음은 정상적인 상태로 처리
           setQuotes([]);
-          setErrorMessage(null); // 404는 정상적인 "데이터 없음" 상태로 처리
+          setErrorMessage(null);
         } else {
+          // 그 외의 실제 에러 케이스
+          console.error("Error fetching quotes:", error);
           setErrorMessage("견적 정보를 불러오는데 실패했습니다.");
+          setQuotes([]);
         }
       } finally {
         setLoading(false);
@@ -138,7 +151,16 @@ const MyQuotePage = () => {
     nickname: quote.mover.nickname,
     career: quote.mover.career,
     isDesignated: quote.mover.isDesignated,
-    rating: quote.mover.rating,
+    rating: {
+      ...quote.mover.rating,
+      totalSum: Number(
+        quote.mover.rating[1] +
+          quote.mover.rating[2] +
+          quote.mover.rating[3] +
+          quote.mover.rating[4] +
+          quote.mover.rating[5]
+      ),
+    },
     reviewCount: quote.mover.reviewCount,
     cost: quote.cost,
     confirmCount: quote.mover.confirmCount,

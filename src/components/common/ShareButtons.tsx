@@ -47,8 +47,6 @@ const ShareButtons = ({ variant, moverInfo, quoteInfo }: ShareButtonsProps) => {
     return `${origin}${pathname}${query ? `?${query}` : ""}`;
   }, [pathname, searchParams]);
 
-  console.log("fullUrl", fullUrl);
-
   const heading =
     variant === "mover"
       ? "나만 알기엔 아쉬운 기사님인가요?"

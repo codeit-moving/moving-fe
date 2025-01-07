@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { getUserInfo } from "@/api/user";
 import { useUserStore } from "@/store/userStore";
-import Loader from "../common/Loader";
+import { toast } from "react-hot-toast";
 
 interface RoleGuardProps {
   children: React.ReactNode;
@@ -12,7 +12,6 @@ interface RoleGuardProps {
   fallbackPath?: string;
 }
 
-// 검사가 필요없는 public 경로들
 const publicPaths = [
   "/auth/login",
   "/auth/register",
@@ -36,24 +35,34 @@ export default function RoleGuard({
   const router = useRouter();
   const pathname = usePathname();
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<null | boolean>(null); // null로 초기화
 
   useEffect(() => {
     const checkUserRole = async () => {
-      // public 경로인 경우 바로 접근 허용
-      if (publicPaths.some((path) => pathname.startsWith(path))) {
-        setIsAuthorized(true);
-        setIsLoading(false);
-        return;
-      }
-
-      if (commonPaths.includes(pathname) && !useUserStore.getState().userRole) {
-        setIsAuthorized(true);
-        setIsLoading(false);
-        return;
-      }
-
       try {
+        if (publicPaths.some((path) => pathname.startsWith(path))) {
+          setIsAuthorized(true);
+          setIsLoading(false);
+          return;
+        }
+
+        if (
+          commonPaths.includes(pathname) &&
+          !useUserStore.getState().userRole
+        ) {
+          setIsAuthorized(true);
+          setIsLoading(false);
+          return;
+        }
+
+        if (
+          pathname.startsWith("/me/info-edit") &&
+          pathname.includes("/mover/info-edit") &&
+          useUserStore.getState().isOAuth
+        ) {
+          return;
+        }
+
         const userInfo = await getUserInfo();
         const userRole = userInfo.user.mover
           ? "MOVER"
@@ -61,22 +70,24 @@ export default function RoleGuard({
           ? "USER"
           : null;
 
-        useUserStore.getState().setUserData({
+        const setUserData = useUserStore.getState().setUserData;
+        setUserData({
           email: userInfo.user.email,
           name: userInfo.user.name,
           phoneNumber: userInfo.user.phoneNumber,
           role: userRole,
+          isOAuth: userInfo.user.isOAuth,
         });
-        console.log("RoleGuard userType : ", useUserStore.getState().userRole);
+
         const hasPermission = userRole && allowedRoles?.includes(userRole);
         if (!hasPermission) {
+          toast.error("접근 권한이 없습니다.");
           router.replace(fallbackPath);
           return;
         }
 
         setIsAuthorized(true);
       } catch (error) {
-        console.error("Role check error:", error);
         router.replace(fallbackPath);
       } finally {
         setIsLoading(false);
@@ -84,11 +95,15 @@ export default function RoleGuard({
     };
 
     checkUserRole();
-  }, [allowedRoles, fallbackPath, router, pathname]);
+  }, [allowedRoles, fallbackPath, pathname, router]);
 
-  if (isLoading) {
-    return <Loader msg="페이지 로딩중" />;
+  if (isLoading === null) {
+    return null; // loading.tsx 활용
   }
 
-  return isAuthorized ? children : null;
+  if (!isAuthorized) {
+    return null; // 권한 없으면 아무것도 렌더링하지 않음
+  }
+
+  return <>{children}</>;
 }

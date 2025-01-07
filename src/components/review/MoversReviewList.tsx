@@ -2,11 +2,11 @@ import { useGetMoversReviewList } from "@/api/query-hooks/review";
 import Pagination from "../common/Pagination";
 import RatingInfo from "../RatingInfo";
 import CustomerReview, { type CustomerReviewData } from "./CustomerReview";
-import { type RatingData } from "@/types/mover";
 import { useState } from "react";
 import Loader from "../common/Loader";
 import EmptyReview from "@/app/(user)/me/review/EmptyReview";
 import Message from "../common/Message";
+import { type RatingData } from "@/types/mover";
 
 export const MoversReviewList = ({
   totalRating,
@@ -33,7 +33,7 @@ export const MoversReviewList = ({
   return (
     <section>
       <h2 className="text-lg font-bold text-black-400 pc:my-[32px] pc:text-2xl mb-[32px]">
-        리뷰 ({totalRating.totalCount > 0 ? totalRating.totalCount : 0})
+        리뷰 ({totalRating?.totalCount ?? 0})
       </h2>
       {totalRating?.totalCount === 0 ? (
         <EmptyReview />
