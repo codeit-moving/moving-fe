@@ -39,9 +39,6 @@ export default function DropdownProfile({
   const [isOpen, setIsOpen] = useState(false);
   const { isOAuth } = useUserStore();
 
-  console.log("DropdownProfile isMover", isMover);
-  console.log("DropdownProfile isOAuth", isOAuth);
-
   const styles = {
     dropdown: {
       base: "relative flex flex-row gap-4 items-center justify-between rounded-full cursor-pointer",

@@ -187,7 +187,8 @@ export default function MoverListWithFilters({
     });
 
   const styles = {
-    container: `flex flex-col items-center pc:w-full`,
+    container: `flex flex-col items-center 
+      pc:w-full`,
     subContainer: `flex flex-col items-center w-full 
       pc:max-w-[1400px]`,
     header: {

@@ -86,10 +86,6 @@ export const movingRequests = {
         throw new Error("ACTIVE_REQUEST_EXISTS");
       }
 
-      console.error("Error creating moving request:", {
-        error: error.response?.data || error.message,
-        requestData: data,
-      });
       throw error;
     }
   },
@@ -108,8 +104,6 @@ export const movingRequests = {
       );
       return response.data;
     } catch (error) {
-      console.error("Error checking active request:", error);
-
       return {
         activeRequest: false,
         message: "요청 확인 중 문제가 발생했습니다.",
@@ -135,7 +129,6 @@ export const fetchMovingRequests = async (
     );
     return response.data;
   } catch (error) {
-    console.error("Error fetching moving requests:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
     throw new Error(`Failed to fetch moving requests: ${errorMessage}`);
@@ -159,7 +152,6 @@ export const fetchQuotesByMovingRequest = async (
 
     return response.data.list;
   } catch (error) {
-    console.error(`Error fetching quotes for moving request ${id}:`, error);
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
     throw new Error(
@@ -215,16 +207,11 @@ export async function getMovingRequestListByMover({
     });
 
     if (response.status !== 200) {
-      console.error(
-        "getMovingRequestListByMover API 호출 오류:",
-        response.statusText
-      );
       throw new Error("API 요청 실패");
     }
 
     return response.data;
   } catch (err: any) {
-    console.error("getMovingRequestListByMover API 호출 오류:", err.message);
     return {
       list: [],
       serviceCounts: { smallMove: 0, houseMove: 0, officeMove: 0 },

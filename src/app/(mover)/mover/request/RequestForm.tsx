@@ -263,15 +263,6 @@ export default function RequestForm({ initialData }: RequestFormProps) {
     cost: number;
     comment: string;
   }) => {
-    console.log(
-      "견적서 보내기 API 호출 > id : ",
-      quoteData.movingRequestId,
-      " cost : ",
-      quoteData.cost,
-      " comment : ",
-      quoteData.comment
-    );
-
     try {
       await createQuote(quoteData);
       removeItemFromList(quoteData.movingRequestId);
@@ -287,13 +278,6 @@ export default function RequestForm({ initialData }: RequestFormProps) {
     movingRequestId: number;
     comment: string;
   }) => {
-    console.log(
-      "이사 요청 반려 API 호출 > id : ",
-      quoteData.movingRequestId,
-      " comment : ",
-      quoteData.comment
-    );
-
     try {
       await rejectMovingRequest(quoteData);
       removeItemFromList(quoteData.movingRequestId);
@@ -306,15 +290,6 @@ export default function RequestForm({ initialData }: RequestFormProps) {
   };
 
   const handleFilterIconClick = () => {
-    console.log(
-      "handleFilterIconClick serviceCounts : ",
-      data?.pages[data.pages.length - 1]?.serviceCounts
-    );
-    console.log(
-      "handleFilterIconClick designateCounts : ",
-      data?.pages[data.pages.length - 1]?.requestCounts
-    );
-    console.log("handleFilterIconClick formState : ", formState);
     const designateFilter =
       formState.isDesignated === null
         ? [true, true]
