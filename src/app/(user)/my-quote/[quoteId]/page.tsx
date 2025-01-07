@@ -4,15 +4,7 @@ import QuoteDetail from "./QuoteDetail";
 import { getQuote } from "@/api/quote";
 import { GetQuoteApiResponseData } from "@/types/api";
 
-export interface MyQuotesDetailPageProps {
-  params: {
-    quoteId: string;
-  };
-}
-
-export default async function MyQuotesDetailPage({
-  params,
-}: MyQuotesDetailPageProps) {
+export default async function MyQuotesDetailPage({ params }: any) {
   const { quoteId } = await params;
 
   const cookieStore = await cookies();

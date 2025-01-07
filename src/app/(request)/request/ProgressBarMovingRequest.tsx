@@ -1,4 +1,4 @@
-import { useQuoteProgress } from "@/context/QuoteProgressContext";
+import { useQuoteProgress } from "@/contexts/QuoteProgressContext";
 import ProgressBar from "@/components/common/progress-bar/ProgressBar";
 
 export default function ProgressBarMovingRequest({
