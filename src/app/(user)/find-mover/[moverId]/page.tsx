@@ -19,10 +19,10 @@ import { useDesignatedMoverMutation } from "@/api/mutation-hooks/movingRequest";
 import BackDrop from "@/components/modals/BackDrop";
 
 const styles = {
-  topContainer: "pc:flex pc:flex-row pc:gap-[90px] pc:justify-center",
-  container: "flex flex-col gap-[24px] pc:gap-[40px] pc:max-w-[920px]",
-  pcShareContainer:
-    "hidden pc:whitespace-nowrap pc:flex pc:flex-col pc:gap-[40px]",
+  topContainer:
+    "mb-[110px] pc:mb-0 pc:flex pc:flex-row pc:gap-[90px] pc:justify-center",
+  container: "flex flex-col gap-[24px] pc:gap-[40px] pc:max-w-[940px]",
+  pcShareContainer: "hidden pc:flex pc:flex-col pc:gap-[40px]",
   shareContainer: "flex flex-col gap-[24px] pc:hidden",
   shareText: "text-lg font-semibold text-black-400 pc:text-xl",
   contentContainer: "flex flex-col gap-[16px] pc:gap-[32px]",

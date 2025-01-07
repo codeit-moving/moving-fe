@@ -5,6 +5,7 @@ import {
   useQuoteProgress,
 } from "@/context/QuoteProgressContext";
 import ProgressBarMovingRequest from "@/components/common/progress-bar/ProgressBarMovingRequest";
+import RoleGuard from "@/components/auth/RoleGuard";
 
 function ProgressBar() {
   const { step } = useQuoteProgress();
@@ -17,19 +18,21 @@ export default function QuoteRequestLayout({
   children: React.ReactNode;
 }) {
   return (
-    <QuoteProgressProvider>
-      {/* ProgressBar 영역 - sticky 적용 */}
-      <div className="sticky top-0 z-5 bg-white">
-        <div className="flex flex-col max-w-[1400px] font-semibold px-5 py-8 mx-auto gap-6">
-          견적 요청
-          <ProgressBar />
+    <RoleGuard allowedRoles={"USER"}>
+      <QuoteProgressProvider>
+        {/* ProgressBar 영역 - sticky 적용 */}
+        <div className="sticky top-0 z-5 bg-white">
+          <div className="flex flex-col max-w-[1400px] font-semibold px-5 py-8 mx-auto gap-6">
+            견적 요청
+            <ProgressBar />
+          </div>
         </div>
-      </div>
 
-      {/* 전체 배경색이 적용되는 영역 */}
-      <div className="bg-bg-200 min-h-screen w-full">
-        <div className="max-w-[1400px] px-5 mx-auto pt-4">{children}</div>
-      </div>
-    </QuoteProgressProvider>
+        {/* 전체 배경색이 적용되는 영역 */}
+        <div className="bg-bg-200 min-h-screen w-full">
+          <div className="max-w-[1400px] px-5 mx-auto pt-4">{children}</div>
+        </div>
+      </QuoteProgressProvider>
+    </RoleGuard>
   );
 }

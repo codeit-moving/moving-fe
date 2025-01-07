@@ -6,16 +6,14 @@ import LineSeparator from "@/components/common/LineSeparator";
 import { formatCost } from "@/utils/formatCost";
 import QuoteDetailInfo from "@/components/request/QuoteDetailInfo";
 import ShareButtons from "@/components/common/ShareButtons";
-import { usePathname, useSearchParams } from "next/navigation";
 import { useGetSentQuoteDetail } from "@/api/query-hooks/quote";
 import Loader from "@/components/common/Loader";
 import Message from "@/components/common/Message";
 
 const styles = {
   topContainer:
-    "mb-[110px] tablet:mb-[72px] pc:flex pc:flex-row pc:gap-[117px] pc:justify-center",
-  title:
-    "text-2lg font-semibold text-black-400 pb-[6px] pc:text-2xl pc:pb-[30px]",
+    "mb-[110px] tablet:mb-[72px] pc:flex pc:flex-row pc:gap-[117px] pc:justify-between pc:max-w-[1400px] pc:mx-auto",
+  title: "text-2lg font-semibold text-black-400 pc:text-2xl",
   container: "flex flex-col gap-[24px]",
   pcShareContainer: "hidden pc:block ",
   shareContainer: "pc:hidden",
