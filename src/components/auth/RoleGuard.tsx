@@ -53,14 +53,6 @@ export default function RoleGuard({
         return;
       }
 
-      if (
-        pathname.startsWith("/me/info-edit") &&
-        pathname.includes("/mover/info-edit") &&
-        useUserStore.getState().isOAuth
-      ) {
-        return;
-      }
-
       try {
         const userInfo = await getUserInfo();
         const userRole = userInfo.user.mover
