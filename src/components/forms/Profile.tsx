@@ -329,7 +329,7 @@ export default function Profile({
                   *
                 </span>
               </label>
-              <div className="relative">
+              <div className="relative w-[100px] h-[100px] border-solid border-[2px] border-gray-100 rounded-[8px]">
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -340,15 +340,14 @@ export default function Profile({
                 <Image
                   src={previewImage}
                   alt="profile"
-                  width={100}
-                  height={100}
+                  fill
                   onClick={handleProfileImageClick}
-                  className="cursor-pointer w-[100px] h-[100px] rounded-md"
+                  className="cursor-pointer rounded-md"
                 />
                 {isEdit && (
                   <Image
                     src={assets.icons.pencil}
-                    className="absolute cursor-pointer left-[72px] top-[5px] bg-white border-gray-300 border-solid border-[1.5px] rounded-md p-[3px]"
+                    className="absolute cursor-pointer left-[70px] top-[3px] bg-white border-gray-300 border-solid border-[1.5px] rounded-md p-[3px]"
                     width={22}
                     height={22}
                     alt="pencil"
