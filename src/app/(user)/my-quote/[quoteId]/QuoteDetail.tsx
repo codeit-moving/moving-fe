@@ -42,9 +42,9 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
       "3": data.mover.rating["3"],
       "4": data.mover.rating["4"],
       "5": data.mover.rating["5"],
+      totalCount: data.mover.rating.totalCount,
       totalSum: data.mover.rating.totalSum,
       average: data.mover.rating.average,
-      totalCount: data.mover.rating.totalCount,
     },
     reviewCount: data.mover.reviewCount,
     confirmCount: confirmState.confirmCount,
@@ -203,7 +203,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
               </div>
             )}
         </div>
-        <div className={styles.gap.container}></div>
+        <div className={styles.gap}></div>
         <div className={styles.sidebar}>
           <QuoteButtonGroup {...buttonGroupProps} isPc={true} />
           <ShareButtons variant="quote" quoteInfo={quoteInfo} />
