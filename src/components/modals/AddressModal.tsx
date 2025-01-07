@@ -15,23 +15,13 @@ interface AddressInputProps {
   zipCode?: string;
 }
 
-/**
- *
- * 모달 열고 닫기 예시
- * {isModalOpen && (
- *  <AddressInput
- *    onClose={() => setIsModalOpen(!isModalOpen)}
- *  />
- * )}
- */
-
 export default function AddressInput({
   text,
   className,
   onClose,
-  roadAddress = "서울특별시 강남구 테헤란로 14길 6 남도빌딩",
-  streetAddress = "서울특별시 강남구 테헤란로 14길 6 남도빌딩",
-  zipCode = "12345",
+  roadAddress = "",
+  streetAddress = "",
+  zipCode = "",
 }: AddressInputProps) {
   const handleClick = () => console.log("주소 선택 완료");
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
