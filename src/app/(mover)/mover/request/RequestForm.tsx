@@ -2,9 +2,14 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import Modal from "react-modal";
 import NiceModal from "@ebay/nice-modal-react";
+import { toast } from "react-hot-toast";
 
 import IncomingRequestCard from "@/components/cards/IncomingRequestCard";
 import Input from "@/components/common/Input";
@@ -59,6 +64,7 @@ export default function RequestForm({ initialData }: RequestFormProps) {
   >([true, true, true]);
   const [requestState, setRequestState] = useState<boolean[]>([true, true]);
   const [debouncedKeyword, setDebouncedKeyword] = useState(formState.keyword);
+  const queryClient = useQueryClient();
 
   const loadMoreRef = useInfiniteScroll({
     callback: () => {
@@ -230,46 +236,70 @@ export default function RequestForm({ initialData }: RequestFormProps) {
     });
   };
 
-  const submitQuote = async (quoteDate: {
+  const removeItemFromList = (requestId: number) => {
+    queryClient.setQueryData<
+      InfiniteData<GetMovingRequestListByMoverResponseData>
+    >(["movingRequestList", formState], (oldData) => {
+      if (!oldData) return oldData;
+
+      const newPages = oldData.pages.map((page) => ({
+        ...page,
+        list: page.list.filter((item) => item.id !== requestId),
+        requestCounts: {
+          ...page.requestCounts,
+          total: page.requestCounts.total - 1,
+        },
+      }));
+
+      return {
+        ...oldData,
+        pages: newPages,
+      };
+    });
+  };
+
+  const submitQuote = async (quoteData: {
     movingRequestId: number;
     cost: number;
     comment: string;
   }) => {
     console.log(
       "견적서 보내기 API 호출 > id : ",
-      quoteDate.movingRequestId,
+      quoteData.movingRequestId,
       " cost : ",
-      quoteDate.cost,
+      quoteData.cost,
       " comment : ",
-      quoteDate.comment
+      quoteData.comment
     );
 
     try {
-      const response = await createQuote(quoteDate);
-      console.log("response : ", response);
+      await createQuote(quoteData);
+      removeItemFromList(quoteData.movingRequestId);
+      toast.success("견적 보내기가 완료되었습니다!");
     } catch (err) {
-      // 에러/실패패 처리
+      toast.error("견적 보내기에 실패했습니다. 다시 시도해주세요.");
     }
 
     return;
   };
 
-  const rejectRequest = async (quoteDate: {
+  const rejectRequest = async (quoteData: {
     movingRequestId: number;
     comment: string;
   }) => {
     console.log(
       "이사 요청 반려 API 호출 > id : ",
-      quoteDate.movingRequestId,
+      quoteData.movingRequestId,
       " comment : ",
-      quoteDate.comment
+      quoteData.comment
     );
 
     try {
-      const response = await rejectMovingRequest(quoteDate);
-      console.log("response : ", response);
+      await rejectMovingRequest(quoteData);
+      removeItemFromList(quoteData.movingRequestId);
+      toast.success("견적 반려가 완료되었습니다!");
     } catch (err) {
-      // 에러/실패패 처리
+      toast.error("견적 반려에 실패했습니다. 다시 시도해주세요.");
     }
 
     return;
