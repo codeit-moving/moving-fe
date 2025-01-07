@@ -79,7 +79,7 @@ interface GetSentQuotesDetailData {
   requestDate: string;
   service: number;
   isDesignated: boolean;
-  name: string;
+  customerName: string;
   movingDate: string;
   pickupAddress: string;
   dropOffAddress: string;
@@ -95,11 +95,19 @@ interface GetSentQuotesDetailData {
  * 4. link : https://bubble-city-3ac.notion.site/API-14d9702f08878032932ee08ab2c19fb0#:~:text=quotes%20%5B%EA%B0%95%EB%B2%94%EC%A4%80%5D%20%3A%20(%EA%B8%B0%EC%82%AC%EB%8B%98%EC%9D%98)%EA%B2%AC%EC%A0%81%EC%84%9C%20%EC%83%81%EC%84%B8%20%EC%A1%B0%ED%9A%8C
  */
 export async function getSentQuoteDetail({
+  cookie,
   quoteId,
 }: {
+  cookie?: string;
   quoteId: number;
 }): Promise<GetSentQuotesDetailData> {
-  const response = await axiosInstance.get(`${PATH}/mover/${quoteId}`);
+  const headers: AxiosRequestConfig["headers"] = cookie
+    ? { Cookie: cookie }
+    : undefined;
+
+  const response = await axiosInstance.get(`${PATH}/mover/${quoteId}`, {
+    ...(headers && { headers }),
+  });
 
   return response.data;
 }

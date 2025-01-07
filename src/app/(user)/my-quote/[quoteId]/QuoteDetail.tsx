@@ -97,11 +97,9 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
       pc:text-lg`,
     warningIcon: `relative w-4 h-4 
       pc:w-6 pc:h-6`,
-    gap: {
-      container: `w-[10px] hidden 
+    gap: `w-[10px] hidden 
         tablet:hidden
         pc:block`,
-    },
     sidebar: `box-border gap-6 w-[328px] hidden 
       tablet:hidden 
       pc:flex pc:flex-col`,
