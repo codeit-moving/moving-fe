@@ -5,8 +5,8 @@ export interface RatingData {
   "3": number;
   "4": number;
   "5": number;
-  totalCount?: number;
-  totalSum?: number;
+  totalCount: number;
+  totalSum: number;
   average: number;
 }
 

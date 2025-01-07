@@ -7,7 +7,7 @@ import LineSeparator from "../common/LineSeparator";
 import { mapServiceType, formatDate } from "@/utils/utilFunctions";
 import cn from "@/config/cn";
 import StarRatingDisplay from "../common/StarRatingDisplay";
-
+import ReviewImageSlider from "../review/ReviewImageSlider";
 export interface MyReviewCardData {
   id: number;
   service: number;
@@ -19,6 +19,7 @@ export interface MyReviewCardData {
   rating: number;
   content: string;
   createdAt: string;
+  reviewImageUrl: string[] | null;
 }
 
 interface MyReviewCardProps {
@@ -59,6 +60,9 @@ const MyReviewCard = ({ data, className }: MyReviewCardProps) => {
         </div>
       </div>
       <LineSeparator direction="horizontal" />
+      {data.reviewImageUrl && data.reviewImageUrl.length > 0 && (
+        <ReviewImageSlider images={data.reviewImageUrl} />
+      )}
       <p className="text-md font-regular text-grayscale-500 line-clamp-2 whitespace-pre-wrap pc:text-lg">
         {data.content}
       </p>

@@ -1,19 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import ReviewModal from "./ReviewModal";
-
-interface ReviewMoverData {
-  id: number;
-  service: number;
-  isDesignated: boolean;
-  imageUrl: string | null;
-  nickname: string;
-  movingDate: string;
-  cost: number;
-}
+import type { ReviewMoverData } from "@/components/common/card/ReviewMover";
 
 const mockData: ReviewMoverData = {
-  id: 1,
+  moverId: 1,
   service: 0,
+  confirmedQuoteId: 1,
   isDesignated: true,
   imageUrl: "https://picsum.photos/200",
   nickname: "이사왕",
@@ -47,7 +39,6 @@ type Story = StoryObj<typeof ReviewModal>;
 export const Default: Story = {
   args: {
     onClose: () => console.log("Modal closed"),
-    onSubmit: () => console.log("Review submitted"),
     data: mockData,
   },
 };

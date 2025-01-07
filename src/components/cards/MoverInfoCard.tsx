@@ -40,7 +40,7 @@ const MoverInfoCard = ({
   return (
     <Link href={href}>
       <CardContainer size={size} className={className}>
-        <div className="flex flex-row gap-2 overflow-hidden">
+        <div className="flex flex-row flex-wrap gap-2">
           {data.isConfirmed ? (
             <ServiceChip variant="confirmed" size={size} />
           ) : undefined}
