@@ -21,7 +21,7 @@ const queryClient = new QueryClient({
         NiceModal.show("AlertModal", {
           msg: errorMessage,
           title: "지정 견적 요청하기",
-          buttonText: "지정 견적 요청",
+          buttonText: "확인",
         });
       }
       if (error.status !== 422 && errorMessage) {

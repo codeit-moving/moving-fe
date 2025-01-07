@@ -161,10 +161,13 @@ export default function MoverDetailPage() {
         onFavoriteClick={handleFavorite}
         onButtonClick={handleQuoteRequest}
         disabled={data.isDesignated as boolean}
-        buttonText={cn(
-          data.isDesignated ? "지정 견적 요청 취소" : "지정 견적 요청하기",
-          isDesignating && "Loading..."
-        )}
+        buttonText={
+          isDesignating
+            ? "로딩중..."
+            : data.isDesignated
+            ? "지정 견적 요청 취소"
+            : "지정 견적 요청하기"
+        }
       />
     </>
   );
