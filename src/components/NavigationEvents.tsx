@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useNavigationStore } from "@/store/useNavigationStore";
 
@@ -9,30 +9,55 @@ export function NavigationEvents() {
   const searchParams = useSearchParams();
   const { startNavigation, endNavigation } = useNavigationStore();
 
+  const lastPath = useRef<string | null>(null);
+  const lastSearchParams = useRef<string | null>(null);
+
+  const memoizedStartNavigation = useCallback(() => {
+    startNavigation();
+  }, [startNavigation]);
+
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const anchor = target.closest("a");
-      if (anchor?.href && anchor.href.startsWith(window.location.origin)) {
-        startNavigation();
+      if (anchor?.href) {
+        const url = new URL(anchor.href);
+
+        if (url.origin === window.location.origin) {
+          const isSamePage =
+            url.pathname === pathname && url.search === searchParams.toString();
+
+          if (!isSamePage) {
+            memoizedStartNavigation();
+          }
+        }
       }
     };
 
     window.addEventListener("click", handleAnchorClick);
-    window.addEventListener("popstate", startNavigation);
+    window.addEventListener("popstate", memoizedStartNavigation);
 
     return () => {
       window.removeEventListener("click", handleAnchorClick);
-      window.removeEventListener("popstate", startNavigation);
+      window.removeEventListener("popstate", memoizedStartNavigation);
     };
-  }, [startNavigation]);
+  }, [pathname, searchParams, memoizedStartNavigation]);
 
-  // 경로 변경 감지 및 처리
   useEffect(() => {
+    const pathChanged = pathname !== lastPath.current;
+    const searchParamsChanged =
+      searchParams.toString() !== lastSearchParams.current;
+
+    if (!pathChanged && !searchParamsChanged) {
+      return;
+    }
+
+    lastPath.current = pathname;
+    lastSearchParams.current = searchParams.toString();
+
+    memoizedStartNavigation();
+
     let mounted = true;
-
-    startNavigation();
-
     const timeoutId = setTimeout(() => {
       if (mounted) {
         endNavigation();
@@ -43,7 +68,7 @@ export function NavigationEvents() {
       mounted = false;
       clearTimeout(timeoutId);
     };
-  }, [pathname, searchParams, startNavigation, endNavigation]);
+  }, [pathname, searchParams, memoizedStartNavigation, endNavigation]);
 
   return null;
 }
