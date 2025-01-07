@@ -78,7 +78,7 @@ const GNB = () => {
   };
 
   return (
-    <nav className="w-full h-[88px] py-[10px] px-[24px] tablet:px-[72px] border-b border-solid border-line-100 bg-white">
+    <nav className="w-full h-[60px] pc:h-[88px] py-[10px] px-[24px] tablet:px-[72px] border-b border-solid border-line-100 bg-white transition-all duration-300">
       <div className="max-w-[1400px] h-full  mx-auto flex justify-between items-center">
         <div className="flex items-center gap-20">
           <Link href="/">
