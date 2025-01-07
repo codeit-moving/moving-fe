@@ -5,9 +5,9 @@ import { getQuote } from "@/api/quote";
 import { GetQuoteApiResponseData } from "@/types/api";
 
 export interface MyQuotesDetailPageProps {
-  params: {
+  params: Promise<{
     quoteId: string;
-  };
+  }>;
 }
 
 export default async function MyQuotesDetailPage({
