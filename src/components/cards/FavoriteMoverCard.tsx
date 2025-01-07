@@ -5,7 +5,7 @@ import CardContainer from "../common/card/CardContainer";
 import MoverInfo from "../common/card/MoverInfo";
 import ServiceChip, { ChipType } from "../common/card/ServiceChip";
 import { mapServiceType } from "@/utils/utilFunctions";
-
+import Link from "next/link";
 export interface FavoriteMoverData extends BaseMoverData, FavoriteFields {
   services: number[];
 }
@@ -17,16 +17,19 @@ interface FavoriteMoverCardProps {
 
 const FavoriteMoverCard = ({ data, className }: FavoriteMoverCardProps) => {
   const serviceTypes = mapServiceType(data.services);
+  const href = `/find-mover/${data.id}`;
 
   return (
-    <CardContainer>
-      <div className="flex gap-2 flex-wrap">
-        {serviceTypes.map((serviceType) => (
-          <ServiceChip variant={serviceType as ChipType} key={serviceType} />
-        ))}
-      </div>
-      <MoverInfo data={data} isLarge={true} />
-    </CardContainer>
+    <Link href={href}>
+      <CardContainer>
+        <div className="flex gap-2 flex-wrap">
+          {serviceTypes.map((serviceType) => (
+            <ServiceChip variant={serviceType as ChipType} key={serviceType} />
+          ))}
+        </div>
+        <MoverInfo data={data} isLarge={true} />
+      </CardContainer>
+    </Link>
   );
 };
 
