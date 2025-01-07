@@ -30,7 +30,7 @@ const ReviewMover = ({
 
   return (
     <>
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         <ServiceChip variant={serviceType as ChipType} />
         {data.isDesignated && <ServiceChip variant="designatedQuote" />}
       </div>

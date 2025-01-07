@@ -5,9 +5,9 @@ export interface RatingData {
   "3": number;
   "4": number;
   "5": number;
-  totalCount?: number | undefined;
-  totalSum?: number | undefined;
-  average: number | undefined;
+  totalCount: number;
+  totalSum: number;
+  average: number;
 }
 
 export interface BaseMoverData {

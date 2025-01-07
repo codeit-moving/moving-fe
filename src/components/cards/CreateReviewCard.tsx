@@ -3,16 +3,6 @@ import Button from "../common/Button";
 import cn from "@/config/cn";
 import ReviewMover, { type ReviewMoverData } from "../common/card/ReviewMover";
 
-// export interface CreateReviewData {
-//   id: number;
-//   service: number;
-//   isDesignated: boolean;
-//   imageUrl: string | null;
-//   nickname: string;
-//   movingDate: string;
-//   cost: number;
-// }
-
 interface CreateReviewCardProps {
   data: ReviewMoverData;
   className?: string;

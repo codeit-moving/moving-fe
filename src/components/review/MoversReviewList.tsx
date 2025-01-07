@@ -1,17 +1,18 @@
 import { useGetMoversReviewList } from "@/api/query-hooks/review";
 import Pagination from "../common/Pagination";
-import RatingInfo, { type Ratings } from "../RatingInfo";
+import RatingInfo from "../RatingInfo";
 import CustomerReview, { type CustomerReviewData } from "./CustomerReview";
 import { useState } from "react";
 import Loader from "../common/Loader";
 import EmptyReview from "@/app/(user)/me/review/EmptyReview";
 import Message from "../common/Message";
+import { type RatingData } from "@/types/mover";
 
 export const MoversReviewList = ({
   totalRating,
   moverId,
 }: {
-  totalRating: Ratings;
+  totalRating: RatingData;
   moverId: number;
 }) => {
   const [pageNum, setPageNum] = useState<number>(1);
