@@ -36,6 +36,7 @@ interface Mover {
   rating: {
     average: number;
     totalCount: number;
+    totalSum: number;
     "1": number;
     "2": number;
     "3": number;
@@ -150,7 +151,16 @@ const MyQuotePage = () => {
     nickname: quote.mover.nickname,
     career: quote.mover.career,
     isDesignated: quote.mover.isDesignated,
-    rating: quote.mover.rating,
+    rating: {
+      ...quote.mover.rating,
+      totalSum: Number(
+        quote.mover.rating[1] +
+          quote.mover.rating[2] +
+          quote.mover.rating[3] +
+          quote.mover.rating[4] +
+          quote.mover.rating[5]
+      ),
+    },
     reviewCount: quote.mover.reviewCount,
     cost: quote.cost,
     confirmCount: quote.mover.confirmCount,
