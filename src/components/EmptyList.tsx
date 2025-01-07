@@ -11,7 +11,7 @@ export default function EmptyList({ text }: EmptyListProps) {
         w-full h-[370px] 
         tablet:h-[656px] 
         pc:h-[656px]`,
-    imageWrapper: `relative mx-auto motion-safe:animate-bounce w-[110px] h-[82px] 
+    imageWrapper: `relative mx-auto w-[110px] h-[82px] 
         tablet:w-[184px] tablet:h-[136px] 
         pc:w-[184px] pc:h-[136px]`,
     heading: `text-xl font-medium mb-6 text-grayscale-300 
