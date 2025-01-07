@@ -52,27 +52,41 @@ export default async function middleware(request: NextRequest) {
         }
       );
 
+      // 백엔드에서 보낸 쿠키 처리
       const cookies = response.headers.getSetCookie();
 
-      const responseData = await response.json();
+      const responseClone = response.clone();
 
-      if (responseData.data?.redirect === true) {
-        const redirectUrl = new URL(responseData.data.redirectUrl, request.url);
-        redirectUrl.searchParams.set("oauth", "true");
-        const res = NextResponse.redirect(redirectUrl);
-        cookies.forEach((cookie) => {
-          res.headers.append("Set-Cookie", cookie);
-        });
-        return res;
+      try {
+        // 먼저 JSON 파싱 시도
+        const responseData = await response.json();
+        if (responseData.data?.redirect === true) {
+          const redirectUrl = new URL(
+            responseData.data.redirectUrl,
+            request.url
+          );
+          redirectUrl.searchParams.set("oauth", "true");
+          const res = NextResponse.redirect(redirectUrl);
+          cookies.forEach((cookie) => {
+            res.headers.append("Set-Cookie", cookie);
+          });
+          return res;
+        }
+      } catch (jsonError) {
+        // JSON 파싱 실패 시 일반 리다이렉트 처리
+        if (responseClone.status === 302 || responseClone.status === 301) {
+          const redirectUrl = responseClone.headers.get("location");
+          const res = NextResponse.redirect(
+            new URL(redirectUrl || "/", request.url)
+          );
+          cookies.forEach((cookie) => {
+            res.headers.append("Set-Cookie", cookie);
+          });
+          return res;
+        }
       }
-
-      const res = NextResponse.redirect(new URL("/", request.url));
-      cookies.forEach((cookie) => {
-        res.headers.append("Set-Cookie", cookie);
-      });
-      return res;
     } catch (error) {
-      console.error("OAuth 콜백 처리 에러:", error);
+      console.error("Redirect handling error:", error);
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
