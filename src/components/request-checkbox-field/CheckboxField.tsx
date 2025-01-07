@@ -7,6 +7,7 @@ interface CheckboxFieldProps {
   value: string;
   isSelected: boolean;
   onSelect: (value: string) => void;
+  disabled?: boolean;
 }
 
 const CheckboxField: React.FC<CheckboxFieldProps> = ({
@@ -14,6 +15,7 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
   value,
   isSelected,
   onSelect,
+  disabled = false,
 }) => {
   const buttonBaseClass = clsx(
     "box-border flex flex-row justify-left items-center",
@@ -21,7 +23,9 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
     "w-[280px] h-[52px]",
     "border-solid border-[1px] rounded-[16px]",
     "text-lg text-black-400 font-semibold",
-    "pc:pl-8 pc:w-[560px] pc:h-[84px] pc:text-2lg"
+    "pc:pl-8 pc:w-[560px] pc:h-[84px] pc:text-2lg",
+
+    disabled && "cursor-not-allowed opacity-50"
   );
 
   const buttonClass = clsx(
@@ -31,12 +35,20 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
       : "border-gray-100 border-solid"
   );
 
+  const handleClick = (e: React.MouseEvent) => {
+    if (!disabled) {
+      onSelect(value);
+    }
+  };
+
   return (
     <button
-      onClick={() => onSelect(value)}
+      onClick={handleClick}
       className={buttonClass}
       role="radio"
       aria-checked={isSelected}
+      disabled={disabled}
+      aria-disabled={disabled}
     >
       <div className="pointer-events-none">
         <CheckboxCircle state={isSelected} />

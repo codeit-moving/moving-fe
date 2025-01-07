@@ -9,7 +9,7 @@ import DatePicker from "@/components/request/DatePicker";
 import StepSelectionField from "./StepSelectionFiled";
 import AddressSelectionField from "./AddressSelectionField";
 import { movingRequests } from "@/api/movingRequest";
-import { useQuoteProgress } from "@/context/QuoteProgressContext";
+import { useQuoteProgress } from "@/contexts/QuoteProgressContext";
 import { REGION_CODES, REGION_TEXTS } from "@/variables/regions";
 
 // Types
@@ -133,7 +133,7 @@ const EstimateRequest: React.FC = () => {
         }
       } catch (error) {
         console.error("Error checking active request:", error);
-        // 에러가 발생해도 견적 요청은 계속 진행할 수 있도록 함
+        // 에러가 발생해도 견적 요청은 계속 진행할 수 있도록 함 (어차피 마지막에 보낼때 한번더 validation할거)
         setMessages([
           {
             type: "bot",
@@ -163,6 +163,7 @@ const EstimateRequest: React.FC = () => {
 
   // Step Handlers
   const handleTypeSelection = (selectedType: string) => {
+    if (isLoading) return;
     setType(selectedType);
     handleNextStep([
       { type: "user", text: selectedType },
@@ -171,6 +172,7 @@ const EstimateRequest: React.FC = () => {
   };
 
   const handleDateComplete = (isoString: string) => {
+    if (isLoading) return;
     const selectedDate = new Date(isoString);
     setDate(selectedDate);
     handleNextStep([
@@ -178,7 +180,6 @@ const EstimateRequest: React.FC = () => {
       { type: "bot", text: "이사 지역을 선택해주세요." },
     ]);
   };
-
   const handleAddressSelection = (fromAddr: string, toAddr: string) => {
     setAddresses({ from: fromAddr, to: toAddr });
   };
@@ -264,12 +265,19 @@ const EstimateRequest: React.FC = () => {
             },
           ]}
           onSelect={handleTypeSelection}
+          disabled={isLoading} // 로딩 상태에 따른 비활성화
         />
       );
     }
 
     if (step === 1) {
-      return <DatePicker onChange={() => {}} onComplete={handleDateComplete} />;
+      return (
+        <DatePicker
+          onChange={() => {}}
+          onComplete={handleDateComplete}
+          disabled={isLoading} // 로딩 상태에 따른 비활성화
+        />
+      );
     }
 
     if (step === 2) {
