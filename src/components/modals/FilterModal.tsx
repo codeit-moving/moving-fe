@@ -15,12 +15,11 @@ const SERVICE_FILTER: number = 0;
 const DESIGNATE_FILTER: number = 1;
 
 const allTrue = (arr: boolean[]): boolean => arr.every((item) => item);
-const sumNumberArray = (arr: number[]) => arr.reduce((sum, el) => sum + el, 0);
 
 interface FilterModalProps {
-  serviceCounts: number[];
+  serviceCounts: { houseMove: number; officeMove: number; smallMove: number };
   serviceFilters: boolean[];
-  designateCounts: number[];
+  designateCounts: { total: number; designated: number };
   designateFilters: boolean[];
   onSubmit: (data: {
     newServiceStates: boolean[];
@@ -52,6 +51,15 @@ export default function FilterModal({
     [newDesignateStates]
   );
   const [type, setType] = useState<number>(SERVICE_FILTER);
+  const totalServiceCounts = Object.values(serviceCounts).reduce(
+    (sum, value) => sum + value,
+    0
+  );
+  const arrServiceCounts = Object.entries(serviceCounts);
+  const arrDesignateCounts = [
+    designateCounts.total - designateCounts.designated,
+    designateCounts.designated,
+  ];
 
   const handleClickType = (type: number) => {
     setType(type);
@@ -173,15 +181,15 @@ export default function FilterModal({
         {type === SERVICE_FILTER ? (
           <div className="w-full h-[228px]">
             <div className={filterAllSelectClass}>
-              {`전체선택 (${sumNumberArray(serviceCounts)})`}
+              {`전체선택 (${totalServiceCounts})`}
               <Checkbox
                 state={allServiceChecked}
                 onStateChange={handleAllServiceCheckClick}
               />
             </div>
-            {serviceCounts.map((item, index) => (
+            {arrServiceCounts.map((item, index) => (
               <div className={filterItemClass} key={index}>
-                {`${serviceFilterTexts[index].text} (${item})`}
+                {`${serviceFilterTexts[index].text} (${item[1]})`}
                 <Checkbox
                   state={newServiceStates[index]}
                   onStateChange={handleServiceItemCheckClick(index)}
@@ -192,13 +200,13 @@ export default function FilterModal({
         ) : (
           <div className="w-full h-[228px]">
             <div className={filterAllSelectClass}>
-              {`전체선택 (${sumNumberArray(designateCounts)})`}
+              {`전체선택 (${designateCounts.total})`}
               <Checkbox
                 state={allDesignateChecked}
                 onStateChange={handleAllDesignateCheckClick}
               />
             </div>
-            {designateCounts.map((item, index) => (
+            {arrDesignateCounts.map((item, index) => (
               <div className={filterItemClass} key={index}>
                 {`${DesignatefilterTexts[index].text} (${item})`}
                 <Checkbox

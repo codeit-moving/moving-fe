@@ -263,11 +263,27 @@ export default function RequestForm({ initialData }: RequestFormProps) {
   };
 
   const handleFilterIconClick = () => {
+    console.log(
+      "handleFilterIconClick serviceCounts : ",
+      data?.pages[data.pages.length - 1]?.serviceCounts
+    );
+    console.log(
+      "handleFilterIconClick designateCounts : ",
+      data?.pages[data.pages.length - 1]?.requestCounts
+    );
+    console.log("handleFilterIconClick formState : ", formState);
+    const designateFilter =
+      formState.isDesignated === null
+        ? [true, true]
+        : formState.isDesignated
+        ? [false, true]
+        : [true, false];
+
     NiceModal.show("FilterNiceModal", {
       serviceCounts: data?.pages[data.pages.length - 1]?.serviceCounts,
       serviceFilters: formState.currentServiceFilter,
       designateCounts: data?.pages[data.pages.length - 1]?.requestCounts,
-      designateFilter: formState.isDesignated,
+      designateFilters: designateFilter,
       onSubmit: handleFindMovingRequestList,
     });
   };

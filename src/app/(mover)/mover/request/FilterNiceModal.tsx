@@ -2,9 +2,9 @@ import FilterModal from "@/components/modals/FilterModal";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 
 interface FilterModal_Props {
-  serviceCounts: number[];
+  serviceCounts: { houseMove: number; officeMove: number; smallMove: number };
   serviceFilters: boolean[];
-  designateCounts: number[];
+  designateCounts: { total: number; designated: number };
   designateFilters: boolean[];
   onSubmit: (data: {
     newServiceStates: boolean[];
