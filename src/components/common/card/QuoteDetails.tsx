@@ -13,7 +13,7 @@ import { type QuoteDetailsData } from "@/types/mover";
 const styles = {
   topContainer: "flex items-center justify-between",
   buttonContainer: "flex flex-col gap-2 tablet:flex-row w-full",
-  chipContainer: "flex items-center gap-2 pc:gap-3",
+  chipContainer: "flex items-center flex-wrap gap-2 pc:gap-3",
   requestDate: "text-xs text-gray-500 justify-self-end pc:text-md",
   name: "text-lg font-semibold pc:text-xl",
   requestInfoContainer:

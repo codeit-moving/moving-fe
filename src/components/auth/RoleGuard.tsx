@@ -55,6 +55,14 @@ export default function RoleGuard({
           return;
         }
 
+        if (
+          pathname.startsWith("/me/info-edit") &&
+          pathname.includes("/mover/info-edit") &&
+          useUserStore.getState().isOAuth
+        ) {
+          return;
+        }
+
         const userInfo = await getUserInfo();
         const userRole = userInfo.user.mover
           ? "MOVER"
@@ -68,6 +76,7 @@ export default function RoleGuard({
           name: userInfo.user.name,
           phoneNumber: userInfo.user.phoneNumber,
           role: userRole,
+          isOAuth: userInfo.user.isOAuth,
         });
 
         const hasPermission = userRole && allowedRoles?.includes(userRole);
@@ -79,8 +88,6 @@ export default function RoleGuard({
 
         setIsAuthorized(true);
       } catch (error) {
-        console.error("Role check error:", error);
-        toast.error("권한 확인 중 오류가 발생했습니다.");
         router.replace(fallbackPath);
       } finally {
         setIsLoading(false);

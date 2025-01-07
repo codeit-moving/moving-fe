@@ -13,6 +13,31 @@ import { useReviewMutation } from "@/api/mutation-hooks/review";
 import { CreateReviewData } from "@/types/review";
 
 const styles = {
+  wrapper: "flex items-center justify-center",
+  container: `
+    flex flex-col bg-white w-full 
+    h-[550px]
+    rounded-t-[32px] 
+    pl-[24px] pr-[14px] py-[32px]
+    tablet:rounded-[32px] tablet:w-[375px] tablet:h-[650px] 
+    pc:w-[608px] pc:h-[750px]
+  `,
+  contentContainer: `
+    flex-1
+    overflow-y-auto
+    scrollbar-thumb-rounded-full 
+    scrollbar-track-rounded-full 
+    scrollbar
+    scrollbar-thumb-grayscale-200 
+    scrollbar-w-1
+    pc:scrollbar-w-1.5
+    pr-[24px]
+  `,
+  buttonContainer: `
+    py-[20px]
+    border-t
+    border-line-200
+  `,
   lineSeparator: "my-[20px] pc:my-[32px]",
   label: "text-lg font-semibold text-black-300 mb-[16px] pc:text-xl",
 };
@@ -28,7 +53,7 @@ export default function ReviewModal({ onClose, data }: ReviewModalProps) {
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
 
-  const { mutate } = useReviewMutation();
+  const { mutate } = useReviewMutation(data.confirmedQuoteId);
 
   const isValid = rating > 0 && review.length >= 10;
 
@@ -67,22 +92,23 @@ export default function ReviewModal({ onClose, data }: ReviewModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const reviewData: CreateReviewData = {
-      confirmedQuoteId: data.confirmedQuoteId,
       rating: rating,
       content: review,
       images: images,
     };
-    mutate(reviewData);
+    mutate(reviewData, {
+      onSuccess: () => {
+        toast.success("리뷰가 등록되었습니다");
+        onClose();
+      },
+    });
   };
 
   return (
-    <form
-      className="flex flex-col bg-white w-full h-[550px] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 rounded-t-[32px] pt-[32px] pb-[40px] px-6
-  tablet:rounded-[32px] tablet:w-[375px] tablet:h-[650px] pc:w-[608px] pc:h-[750px]"
-    >
+    <form className={styles.container}>
       <div
         className="text-2lg font-bold text-black-400 flex justify-between items-center mb-[26px]
-  pc:text-2xl pc:font-semibold pc:mb-[40px]"
+          pc:text-2xl pc:font-semibold pc:mb-[40px]"
       >
         <h3 className="text-lg font-semibold text-black-300 pc:text-2xl">
           리뷰 쓰기
@@ -96,71 +122,90 @@ export default function ReviewModal({ onClose, data }: ReviewModalProps) {
           onClick={onClose}
         />
       </div>
+      <div className={styles.contentContainer}>
+        <div className="flex flex-col gap-4 pc:gap-6">
+          <ReviewMover data={data} variant="solid" />
+        </div>
+        <LineSeparator
+          direction="horizontal"
+          className={styles.lineSeparator}
+        />
+        <p className={styles.label}>평점을 선택해 주세요</p>
+        <div className="flex flex-wrap gap-[8px]">
+          <StarRating onRatingChange={handleRatingChange} />
+        </div>
+        <LineSeparator
+          direction="horizontal"
+          className={styles.lineSeparator}
+        />
 
-      <div className="flex flex-col gap-4 pc:gap-6">
-        <ReviewMover data={data} variant="solid" />
-      </div>
-      <LineSeparator direction="horizontal" className={styles.lineSeparator} />
-      <p className={styles.label}>평점을 선택해 주세요</p>
-      <div className="flex flex-wrap gap-[8px]">
-        <StarRating onRatingChange={handleRatingChange} />
-      </div>
-      <LineSeparator direction="horizontal" className={styles.lineSeparator} />
-      <p className={styles.label}>리뷰 이미지 첨부</p>
-      <div className="flex gap-[16px] mb-[20px]">
-        {previews.map((preview, index) => (
-          <div key={index} className="relative w-[100px] h-[100px]">
-            <Image
-              src={preview}
-              alt={`review-image-${index}`}
-              width={100}
-              height={100}
-              className="rounded-[8px] object-cover w-full h-full"
-            />
-            <button
-              className="absolute top-[4px] right-[4px] bg-black-400 rounded-full p-[4px] cursor-pointer"
-              onClick={() => handleRemoveImage(index)}
-              aria-label={`Remove image ${index + 1}`}
-            >
-              <Image src={assets.icons.x} alt="remove" width={16} height={16} />
-            </button>
-          </div>
-        ))}
-        {images.length < 3 && (
-          <label className="w-[100px] h-[100px] border-solid border-[1px] border-gray-200 rounded-[8px] flex items-center justify-center cursor-pointer">
-            <span className="sr-only">Add image</span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-            />
-            <Image
-              src={assets.icons.search}
-              alt="add-image"
-              width={24}
-              height={24}
-            />
-          </label>
-        )}
-      </div>
-      <LineSeparator direction="horizontal" className={styles.lineSeparator} />
+        <p className={styles.label}>리뷰 이미지 첨부</p>
+        <div className="flex gap-[16px] mb-[20px]">
+          {previews.map((preview, index) => (
+            <div key={index} className="relative w-[100px] h-[100px]">
+              <Image
+                src={preview}
+                alt={`review-image-${index}`}
+                width={100}
+                height={100}
+                className="rounded-[8px] object-cover w-full h-full"
+              />
+              <button
+                className="absolute top-[4px] right-[4px] bg-black-400 rounded-full p-[4px] cursor-pointer"
+                onClick={() => handleRemoveImage(index)}
+                aria-label={`Remove image ${index + 1}`}
+              >
+                <Image
+                  src={assets.icons.x}
+                  alt="remove"
+                  width={16}
+                  height={16}
+                />
+              </button>
+            </div>
+          ))}
+          {images.length < 3 && (
+            <label className="w-[100px] h-[100px] border-solid border-[1px] border-gray-200 rounded-[8px] flex items-center justify-center cursor-pointer">
+              <span className="sr-only">Add image</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+              <Image
+                src={assets.icons.search}
+                alt="add-image"
+                width={24}
+                height={24}
+              />
+            </label>
+          )}
+        </div>
+        <LineSeparator
+          direction="horizontal"
+          className={styles.lineSeparator}
+        />
 
-      <p className={styles.label}>상세 후기를 작성해 주세요</p>
-      <Textarea
-        placeholder="최소 10자 이상 입력해주세요"
-        value={review}
-        onChange={handleReviewChange}
-      />
-      <Button
-        variant="primary"
-        onClick={handleSubmit}
-        type="submit"
-        disabled={!isValid}
-        className="mt-[26px] pc:mt-[40px]"
-      >
-        리뷰 작성하기
-      </Button>
+        <p className={styles.label}>상세 후기를 작성해 주세요</p>
+        <Textarea
+          placeholder="최소 10자 이상 입력해주세요"
+          value={review}
+          onChange={handleReviewChange}
+        />
+
+        <div className={styles.buttonContainer}>
+          <Button
+            variant="primary"
+            onClick={handleSubmit}
+            type="submit"
+            disabled={!isValid}
+            className="w-full"
+          >
+            리뷰 작성하기
+          </Button>
+        </div>
+      </div>
     </form>
   );
 }

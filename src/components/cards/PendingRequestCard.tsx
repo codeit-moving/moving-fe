@@ -42,7 +42,7 @@ export const QuoteAmount = ({ amount }: { amount: number }) => {
 };
 
 const styles = {
-  chipContainer: "flex gap-2",
+  chipContainer: "flex gap-2 flex-wrap",
   labelsContainer:
     "flex gap-2 flex-col text-md font-medium pc:text-2lg pc:gap-4",
   buttonContainer: "flex flex-col gap-2 tablet:flex-row",

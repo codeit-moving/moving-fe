@@ -9,12 +9,13 @@ export interface CustomerReviewData {
   id: number;
   rating: number;
   content: string;
-  createAt: string;
+  createdAt: string;
   name: string;
-  images: string[] | null;
+  reviewImageUrl: string[] | null;
 }
 const CustomerReview = ({ data }: { data: CustomerReviewData }) => {
-  const createdDate = format(new Date(data.createAt), "yyyy-MM-dd");
+  const createdDate = format(new Date(data.createdAt), "yyyy-MM-dd");
+  console.log(data);
 
   return (
     <li
@@ -33,8 +34,8 @@ const CustomerReview = ({ data }: { data: CustomerReviewData }) => {
           className="w-5 h-5"
         />
       </div>
-      {data.images && data.images.length > 0 && (
-        <ReviewImageSlider images={data.images} />
+      {data.reviewImageUrl && data.reviewImageUrl.length > 0 && (
+        <ReviewImageSlider images={data.reviewImageUrl} />
       )}
       <p>{data.content}</p>
     </li>

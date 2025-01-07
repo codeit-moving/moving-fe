@@ -55,4 +55,3 @@ const fileContent = `const assets = ${JSON.stringify(
 
 // 파일 작성
 fs.writeFileSync(outputPath, fileContent, "utf-8");
-console.log(`assets 객체가 ${outputPath}에 저장되었습니다.`);

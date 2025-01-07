@@ -52,11 +52,11 @@ interface CreateReviewResponse {
 
 //리뷰 작성 하기
 export const createReview = async (
+  confirmedQuoteId: number,
   reviewData: CreateReviewData
 ): Promise<CreateReviewResponse> => {
   const formData = new FormData();
 
-  formData.append("confirmedQuoteId", String(reviewData.confirmedQuoteId));
   formData.append("rating", String(reviewData.rating));
   formData.append("content", reviewData.content);
 
@@ -64,9 +64,13 @@ export const createReview = async (
     formData.append("imageUrl", image);
   });
 
-  const response = await axiosInstance.post(`${PATH}`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const response = await axiosInstance.post(
+    `${PATH}/${confirmedQuoteId}`,
+    formData,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
 
   return response.data;
 };
