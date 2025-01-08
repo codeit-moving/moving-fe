@@ -126,9 +126,16 @@ export interface MoverMyPageResponse extends BaseMoverData {
   favoriteCount: number;
 }
 
-// (기사님) 마이 페이지
-export async function getMoverProfile(): Promise<MoverMyPageResponse> {
-  const response = await axiosInstance.get(`${PATH}/my-profile`);
+export async function getMoverProfile(
+  cookie?: string
+): Promise<MoverMyPageResponse> {
+  const headers: AxiosRequestConfig["headers"] = cookie
+    ? { Cookie: cookie }
+    : undefined;
+
+  const response = await axiosInstance.get(`${PATH}/my-profile`, {
+    ...(headers && { headers }),
+  });
   return response.data;
 }
 

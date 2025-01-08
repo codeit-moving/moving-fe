@@ -1,3 +1,5 @@
+"use client";
+
 import { useGetMoversReviewList } from "@/api/query-hooks/review";
 import Pagination from "../common/Pagination";
 import RatingInfo from "../RatingInfo";

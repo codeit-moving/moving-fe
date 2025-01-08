@@ -1,20 +1,15 @@
-"use client";
-
-import MoverProfileCard from "@/components/cards/MoverProfileCard";
 import LineSeparator from "@/components/common/LineSeparator";
-import { useRouter } from "next/navigation";
 import MoversReviewList from "@/components/review/MoversReviewList";
-import { useGetMoverMyPage } from "@/api/query-hooks/mover";
-import Loader from "@/components/common/Loader";
 import Message from "@/components/common/Message";
+import { ProfileActions } from "./ProfileActions";
+import { getMoverProfile } from "@/api/mover";
+import { cookies } from "next/headers";
 
-export default function MyPage() {
-  const router = useRouter();
-  const { data, isPending } = useGetMoverMyPage();
+export default async function MyPage() {
+  const cookieStore = await cookies();
+  const cookie = `accessToken=${cookieStore.get("accessToken")?.value}`;
 
-  if (isPending) {
-    return <Loader msg="내 페이지 불러오는 중" />;
-  }
+  const data = await getMoverProfile(cookie);
 
   if (!data) {
     return <Message msg="내 페이지 정보가 없습니다." />;
@@ -28,17 +23,11 @@ export default function MyPage() {
         >
           마이페이지
         </h2>
-
         <LineSeparator
           direction="horizontal"
           className="mb-[24px] pc:bg-transparent"
         />
-
-        <MoverProfileCard
-          data={data}
-          onPrimaryClick={() => router.push("/mover/profile-edit")}
-          onOutlinedClick={() => router.push("/mover/info-edit")}
-        />
+        <ProfileActions data={data} />
       </section>
       <LineSeparator
         direction="horizontal"

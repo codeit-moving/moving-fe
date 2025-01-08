@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from "axios";
 import { axiosInstance } from "./axios";
 import { UserInfo } from "@/types/auth";
 
@@ -8,7 +9,14 @@ export const editUserInfo = async (userData: UserInfo) => {
   return { status: response.status };
 };
 
-export const getUserInfo = async () => {
-  const response = await axiosInstance.get(`${PATH}`);
+export const getUserInfo = async (cookie?: string) => {
+  const headers: AxiosRequestConfig["headers"] = cookie
+    ? { Cookie: cookie }
+    : undefined;
+
+  const response = await axiosInstance.get(`${PATH}`, {
+    ...(headers && { headers }),
+  });
+
   return response.data;
 };
