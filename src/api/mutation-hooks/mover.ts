@@ -50,6 +50,9 @@ export function useFavoriteMutation() {
       queryClient.invalidateQueries({
         queryKey: moverKey.detail(moverId),
       });
+      queryClient.invalidateQueries({
+        queryKey: moverKey.favorite(),
+      });
     },
   });
 }

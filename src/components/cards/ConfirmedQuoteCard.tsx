@@ -9,7 +9,7 @@ interface ConfirmedQuoteCardProps {
 
 const ConfirmedQuoteCard = ({ data, className }: ConfirmedQuoteCardProps) => {
   return (
-    <CardContainer>
+    <CardContainer className="pc:w-[907px]">
       <QuoteDetails data={data} showRequestDate={false} />
     </CardContainer>
   );

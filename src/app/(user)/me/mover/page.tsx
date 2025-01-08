@@ -9,6 +9,7 @@ import Message from "@/components/common/Message";
 import { useGetFavoriteMoverList } from "@/api/query-hooks/mover";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import EmptyList from "@/components/EmptyList";
 
 export default function FavoriteMoverPage() {
   const { ref, inView } = useInView();
@@ -36,6 +37,8 @@ export default function FavoriteMoverPage() {
   const pages = data?.pages || [];
   const isEmpty = pages[0].list.length === 0 || pages?.length === 0;
 
+  if (isEmpty) return <EmptyList text="찜한 기사님 목록이 비어 있어요." />;
+
   return (
     <>
       <ul
@@ -43,8 +46,6 @@ export default function FavoriteMoverPage() {
           "max-w-[1400px] mx-auto bg-bg-100 grid grid-cols-1 pc:grid-cols-2 gap-[24px] tablet:gap-[32px] pc:gap-x-[24px] pc:gap-y-[48px]"
         )}
       >
-        {isEmpty && <Message msg="찜한 기사님 목록이 비어 있어요." />}
-
         {pages.map((page) =>
           page.list.map((mover: FavoriteMoverData) => {
             return (

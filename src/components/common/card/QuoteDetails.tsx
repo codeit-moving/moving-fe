@@ -69,12 +69,14 @@ const QuoteDetails = ({
             label="출발"
             variant="solid"
             text={data.pickupAddress}
+            className="truncate max-w-full"
           />
           <LineSeparator className="hidden tablet:block pc:hidden" />
           <TextWithGrayLabel
             label="도착"
             variant="solid"
             text={data.dropOffAddress}
+            className="truncate max-w-full"
           />
         </div>
       </div>
