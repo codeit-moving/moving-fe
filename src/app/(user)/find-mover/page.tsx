@@ -5,6 +5,8 @@ import { getMoverList } from "@/api/mover";
 
 import { MOVER_DEFAULT_PAGE_SIZE } from "@/variables/mover";
 
+export const dynamic = "force-dynamic";
+
 export default async function FindMoverList() {
   try {
     const cookieStore = await cookies();

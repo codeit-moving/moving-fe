@@ -5,6 +5,8 @@ import { getMovingRequestListByMover } from "@/api/movingRequest";
 
 import { MOVING_REQUEST_DEFAULT_PAGE_SIZE } from "@/variables/movingRequest";
 
+export const dynamic = "force-dynamic";
+
 export default async function RequestListPage() {
   try {
     const cookieStore = await cookies();

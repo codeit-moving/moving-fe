@@ -14,6 +14,7 @@ import NiceModalRegistry from "@/components/layout/NiceModalRegistry";
 import Toast from "@/components/Toast";
 import { NavigationEvents } from "@/components/NavigationEvents";
 import { NavigationProgress } from "@/components/NavigationProgress";
+import { Suspense } from "react";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -54,17 +55,19 @@ export default function RootLayout({
       >
         <MSWComponent>
           <TanstackQueryClientProvider>
-            <NiceModalProvider>
-              <NavigationEvents />
-              <NavigationProgress />
-              <GNB />
-              <QuoteGNBWrapper />
-              {children}
-              <NiceModalRegistry />
-              <Toaster />
-              <Toast />
-              {isDevelopment() && <ReactQueryDevtoolsClient />}
-            </NiceModalProvider>
+            <Suspense fallback={null}>
+              <NiceModalProvider>
+                <NavigationEvents />
+                <NavigationProgress />
+                <GNB />
+                <QuoteGNBWrapper />
+                {children}
+                <NiceModalRegistry />
+                <Toaster />
+                <Toast />
+                {isDevelopment() && <ReactQueryDevtoolsClient />}
+              </NiceModalProvider>
+            </Suspense>
           </TanstackQueryClientProvider>
         </MSWComponent>
       </body>
