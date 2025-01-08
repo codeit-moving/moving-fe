@@ -11,6 +11,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useReviewMutation } from "@/api/mutation-hooks/review";
 import { CreateReviewData } from "@/types/review";
+import { X } from "lucide-react";
 
 const styles = {
   wrapper: "flex items-center justify-center",
@@ -140,33 +141,29 @@ export default function ReviewModal({ onClose, data }: ReviewModalProps) {
         />
 
         <p className={styles.label}>리뷰 이미지 첨부</p>
-        <div className="flex gap-[16px] mb-[20px]">
+        <div className="flex gap-[8px] mb-[20px]">
           {previews.map((preview, index) => (
-            <div key={index} className="relative w-[100px] h-[100px]">
+            <div
+              key={index}
+              className="relative w-[90px] h-[90px] rounded-[8px] border-solid border-[2px] border-gray-100 aspect-square pc:w-[100px] pc:h-[100px]"
+            >
               <Image
                 src={preview}
                 alt={`review-image-${index}`}
-                width={100}
-                height={100}
-                className="rounded-[8px] object-cover w-full h-full"
+                className="object-cover"
+                fill
               />
               <button
-                className="absolute top-[4px] right-[4px] bg-black-400 rounded-full p-[4px] cursor-pointer"
+                className="absolute top-[5px] right-[5px] bg-grayscale-200 rounded-full p-[2px] cursor-pointer"
                 onClick={() => handleRemoveImage(index)}
                 aria-label={`Remove image ${index + 1}`}
               >
-                <Image
-                  src={assets.icons.x}
-                  alt="remove"
-                  width={16}
-                  height={16}
-                />
+                <X size={12} className="text-white" />
               </button>
             </div>
           ))}
           {images.length < 3 && (
-            <label className="w-[100px] h-[100px] border-solid border-[1px] border-gray-200 rounded-[8px] flex items-center justify-center cursor-pointer">
-              <span className="sr-only">Add image</span>
+            <label className="w-[90px] h-[90px] border-solid border-[2px] border-gray-100 rounded-[8px] flex items-center justify-center cursor-pointer pc:w-[100px] pc:h-[100px]">
               <input
                 type="file"
                 accept="image/*"
@@ -176,8 +173,8 @@ export default function ReviewModal({ onClose, data }: ReviewModalProps) {
               <Image
                 src={assets.icons.search}
                 alt="add-image"
-                width={24}
-                height={24}
+                width={32}
+                height={32}
               />
             </label>
           )}
