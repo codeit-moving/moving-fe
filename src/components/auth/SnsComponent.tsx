@@ -9,7 +9,7 @@ const styles = {
 
 export default function SnsComponent({ isUser }: { isUser: boolean }) {
   const handleClickSns = (sns: string) => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/oauth/${sns}/${
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}oauth/${sns}/${
       isUser ? "customer" : "mover"
     }`;
   };
