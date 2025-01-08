@@ -199,7 +199,7 @@ export default function MoverListWithFilters({
         pc:flex flex-row items-center pc:w-[1400px] pc:text-2xl`,
     },
     mainContent: `box-border flex w-full 
-      pc:flex-row pc:justify-between pc:mt-6`,
+      pc:flex-row pc:justify-between pc:mt-6 pc:gap-[10px]`,
     filter: {
       container: `box-border w-[328px] hidden 
         tablet:hidden 
@@ -327,7 +327,6 @@ export default function MoverListWithFilters({
             />
             <FavoriteMoverList userRole={userRole} />
           </div>
-          <div className={styles.gap.container}></div>
           <div className={styles.moverList.container}>
             <div className={styles.moverList.sortContainer}>
               <div className={styles.moverList.dropdownContainer}>

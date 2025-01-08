@@ -14,9 +14,7 @@ export default function EmptyList({ text }: EmptyListProps) {
     imageWrapper: `relative mx-auto w-[110px] h-[82px] 
         tablet:w-[184px] tablet:h-[136px] 
         pc:w-[184px] pc:h-[136px]`,
-    heading: `text-xl font-medium mb-6 text-grayscale-300 
-        tablet:text-2xl 
-        pc:text-2xl`,
+    text: `text-lg font-normal text-grayscale-400 text-center w-full pc:text-2xl`,
   };
 
   return (
@@ -24,7 +22,7 @@ export default function EmptyList({ text }: EmptyListProps) {
       <div className={styles.imageWrapper}>
         <Image src={assets.icons.empty} alt="빈 폴더" fill />
       </div>
-      <h3 className={styles.heading}>{text}</h3>
+      <p className={styles.text}>{text}</p>
     </div>
   );
 }

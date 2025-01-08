@@ -86,7 +86,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
   const styles = {
     container: `box-border flex flex-row justify-between w-full max-w-[1400px] mt-4 
       tablet:mt-6 
-      pc:mt-6`,
+      pc:mt-6 pc:gap-[10px]`,
     content: `box-border flex flex-col gap-[23.5px] min-w-[328px] w-full 
       pc:gap-[39.5px] pc:max-w-[955px]`,
     costSection: `flex flex-col justify-between w-full h-[74px] 
@@ -117,10 +117,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
       pc:text-lg`,
     warningIcon: `relative w-4 h-4 
       pc:w-6 pc:h-6`,
-    gap: `w-[10px] hidden 
-        tablet:hidden
-        pc:block`,
-    sidebar: `box-border gap-6 w-[328px] hidden 
+    sidebar: `box-border gap-6 min-w-[328px] hidden 
       tablet:hidden 
       pc:flex pc:flex-col`,
   };
@@ -211,7 +208,6 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
               </div>
             )}
         </div>
-        {/* <div className={styles.gap}></div> */}
         <div className={styles.sidebar}>
           <QuoteButtonGroup {...buttonGroupProps} isPc={true} />
           <ShareButtons variant="quote" quoteInfo={quoteInfo} />

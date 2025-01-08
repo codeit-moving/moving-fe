@@ -3,6 +3,7 @@ import CardContainer from "../common/card/CardContainer";
 import QuoteDetails from "../common/card/QuoteDetails";
 import { QuoteAmount } from "./PendingRequestCard";
 import cn from "@/config/cn";
+import Link from "next/link";
 
 interface SentQuoteCardProps {
   data: SentQuoteData;
@@ -26,23 +27,25 @@ const SentQuoteCard = ({
   onButtonClick,
 }: SentQuoteCardProps) => {
   return (
-    <CardContainer className={cn("relative", className)}>
-      <QuoteDetails
-        data={data}
-        className={classNameQuoteDetails}
-        showRequestDate={true}
-      />
-      <QuoteAmount amount={data.cost} />
+    <Link href={`/mover/my-quote/${data.id}`}>
+      <CardContainer className={cn("relative", className)}>
+        <QuoteDetails
+          data={data}
+          className={classNameQuoteDetails}
+          showRequestDate={true}
+        />
+        <QuoteAmount amount={data.cost} />
 
-      {data.isCompleted && (
-        <div className={styles.completedOverlay}>
-          <p className={styles.completedText}>이사 완료된 견적이에요</p>
-          <button className={styles.completedButton} onClick={onButtonClick}>
-            견적 상세보기
-          </button>
-        </div>
-      )}
-    </CardContainer>
+        {data.isCompleted && (
+          <div className={styles.completedOverlay}>
+            <p className={styles.completedText}>이사 완료된 견적이에요</p>
+            <button className={styles.completedButton} onClick={onButtonClick}>
+              견적 상세보기
+            </button>
+          </div>
+        )}
+      </CardContainer>
+    </Link>
   );
 };
 
