@@ -19,10 +19,11 @@ import { useDesignatedMoverMutation } from "@/api/mutation-hooks/movingRequest";
 import BackDrop from "@/components/modals/BackDrop";
 
 const styles = {
-  topContainer:
-    "mb-[110px] pc:mb-0 pc:flex pc:flex-row pc:gap-[117px] pc:justify-center",
-  container: "flex flex-col gap-[24px] pc:gap-[40px] pc:max-w-[940px]",
-  pcShareContainer: "hidden pc:flex pc:flex-col pc:gap-[40px]",
+  mainContainer: "flex flex-col items-center",
+  topContainer: `mb-[110px] w-full pc:mb-0 pc:flex pc:flex-row pc:justify-between pc:max-w-[1400px] pc:gap-[10px]`,
+  container:
+    "flex flex-col gap-[24px] pc:gap-[40px] pc:max-w-[955px] pc:w-full",
+  pcShareContainer: "hidden pc:flex pc:flex-col pc:gap-[40px] pc:min-w-[354px]",
   shareContainer: "flex flex-col gap-[24px] pc:hidden",
   shareText: "text-lg font-semibold text-black-400 pc:text-xl",
   contentContainer: "flex flex-col gap-[16px] pc:gap-[32px]",
@@ -78,10 +79,10 @@ export default function MoverDetailPage() {
   };
 
   return (
-    <>
+    <div className={styles.mainContainer}>
       <div className={styles.topContainer}>
         <div className={styles.container}>
-          <MoverInfoCard data={data} className="pc:w-[907px]" />
+          <MoverInfoCard data={data} className="pc:w-full" />
           <div className={styles.shareContainer}>
             <LineSeparator direction="horizontal" />
             <ShareButtons
@@ -130,7 +131,6 @@ export default function MoverDetailPage() {
           <LineSeparator direction="horizontal" />
           <MoversReviewList totalRating={data.rating} moverId={moverIdNum} />
         </div>
-
         <div className={styles.pcShareContainer}>
           <QuoteButtonGroup
             isPc={true}
@@ -169,6 +169,6 @@ export default function MoverDetailPage() {
             : "지정 견적 요청하기"
         }
       />
-    </>
+    </div>
   );
 }

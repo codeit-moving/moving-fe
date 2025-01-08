@@ -2,14 +2,14 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 import MoverInfoCard from "@/components/cards/MoverInfoCard";
 import LineSeparator from "@/components/common/LineSeparator";
 import QuoteDetailInfo from "@/components/request/QuoteDetailInfo";
 import QuoteButtonGroup from "@/components/common/QuoteButtonGroup";
-import { setMoverFavorite } from "@/api/mover";
+import { addMoverFavorite, deleteMoverFavorite } from "@/api/mover";
 import { confirmQuote } from "@/api/quote";
-import { ShareBox } from "@/components/temp";
 import ShareButtons from "@/components/common/ShareButtons";
 
 import { GetQuoteApiResponseData } from "@/types/api";
@@ -20,7 +20,7 @@ interface QuoteDetailProps {
 }
 
 export default function QuoteDetail({ data }: QuoteDetailProps) {
-  const [isCompeleted, setIsCompeleted] = useState<boolean>(
+  const [isCompleted, setIsCompleted] = useState<boolean>(
     data.movingRequest.isCompleted
   );
   const [confirmState, setConfirmState] = useState({
@@ -43,9 +43,9 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
       "3": data.mover.rating["3"],
       "4": data.mover.rating["4"],
       "5": data.mover.rating["5"],
+      totalCount: data.mover.rating.totalCount,
       totalSum: data.mover.rating.totalSum,
       average: data.mover.rating.average,
-      totalCount: data.mover.rating.totalCount,
     },
     reviewCount: data.mover.reviewCount,
     confirmCount: confirmState.confirmCount,
@@ -66,13 +66,29 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
     dropOffAddress: data.movingRequest.dropOffAddress,
   };
 
+  const confirmQuoteMutation = useMutation({
+    mutationFn: (quoteId: number) => confirmQuote(quoteId),
+    onSuccess: () => {
+      if (!isCompleted) {
+        setIsCompleted(true);
+        setConfirmState((prev) => ({
+          isConfirmed: true,
+          confirmCount: prev.confirmCount + 1,
+        }));
+      }
+    },
+    onError: (error) => {
+      // 에러 처리 로직 추가
+      console.error("견적 확정 중 오류 발생:", error);
+    },
+  });
+
   const styles = {
-    container: `box-border flex flex-row justify-center gap-[117px] mt-4 
+    container: `box-border flex flex-row justify-between w-full max-w-[1400px] mt-4 
       tablet:mt-6 
-      pc:mt-6`,
-    content: `box-border flex flex-col gap-[23.5px] w-[328px] 
-      tablet:w-[600px] 
-      pc:gap-[39.5px] pc:w-[955px]`,
+      pc:mt-6 pc:gap-[10px]`,
+    content: `box-border flex flex-col gap-[23.5px] min-w-[328px] w-full 
+      pc:gap-[39.5px] pc:max-w-[955px]`,
     costSection: `flex flex-col justify-between w-full h-[74px] 
       tablet:h-[94px] 
       pc:h-[110px]`,
@@ -101,51 +117,47 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
       pc:text-lg`,
     warningIcon: `relative w-4 h-4 
       pc:w-6 pc:h-6`,
-    sidebar: `box-border gap-6 w-[328px] hidden 
+    sidebar: `box-border gap-6 min-w-[328px] hidden 
       tablet:hidden 
       pc:flex pc:flex-col`,
   };
 
   const handleFavoriteButtonClick = () => {
-    setMoverFavorite({
-      moverId: data.mover.id,
-      favorite: !data.mover.isFavorite,
-    })
-      .then((res) => {
-        setFavoriteState((prev) => ({
-          isFavorite: !prev.isFavorite,
-          favoriteCount: prev.favoriteCount + (prev.isFavorite ? -1 : 1),
-        }));
-      })
-      .catch((err) => {
-        // 에러 처리
-        console.error("Failed setMoverFavorite", err);
-      });
+    favoriteState.isFavorite
+      ? deleteMoverFavorite(data.mover.id)
+          .then((res) => {
+            setFavoriteState((prev) => ({
+              isFavorite: !prev.isFavorite,
+              favoriteCount: prev.favoriteCount + (prev.isFavorite ? -1 : 1),
+            }));
+          })
+          .catch((err) => {
+            // 에러 처리
+          })
+      : addMoverFavorite(data.mover.id)
+          .then((res) => {
+            setFavoriteState((prev) => ({
+              isFavorite: !prev.isFavorite,
+              favoriteCount: prev.favoriteCount + (prev.isFavorite ? -1 : 1),
+            }));
+          })
+          .catch((err) => {
+            // 에러 처리
+          });
   };
 
   const handleConfirmQuoteButtonClick = () => {
-    confirmQuote(data.id)
-      .then((res) => {
-        if (!isCompeleted) {
-          setIsCompeleted(true);
-          setConfirmState((prev) => ({
-            isConfirmed: true,
-            confirmCount: prev.confirmCount + 1,
-          }));
-        }
-      })
-      .catch((err) => {
-        // 에러 처리
-        console.error("Failed confirmQuote", err);
-      });
+    if (!isCompleted && !confirmState.isConfirmed) {
+      confirmQuoteMutation.mutate(data.id);
+    }
   };
 
   const buttonGroupProps = {
     isFavorite: favoriteState.isFavorite,
-    disabled: isCompeleted,
+    disabled: isCompleted,
     onFavoriteClick: handleFavoriteButtonClick,
     onButtonClick: handleConfirmQuoteButtonClick,
-    buttonText: isCompeleted ? "견적 확정 완료" : "견적 확정하기",
+    buttonText: isCompleted ? "견적 확정 완료" : "견적 확정하기",
     showLabel: false,
   };
 
@@ -175,7 +187,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
           </div>
           <LineSeparator direction="horizontal" />
           <div className={styles.shareBoxWrapper}>
-            <ShareBox />
+            <ShareButtons variant="quote" quoteInfo={quoteInfo} />
           </div>
           <LineSeparator
             direction="horizontal"
@@ -186,7 +198,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
             <QuoteDetailInfo data={quoteInfoData} />
           </div>
           {!data.movingRequest.isEstimateConfirmed &&
-            !isCompeleted &&
+            !isCompleted &&
             !data.isConfirmed && (
               <div className={styles.warning}>
                 <div className={styles.warningIcon}>

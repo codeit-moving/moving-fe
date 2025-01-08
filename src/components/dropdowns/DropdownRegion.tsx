@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 
 import {
   Dropdown,
-  DropdownList,
+  DropdownOption,
   DropdownItem,
   DropdownFilter,
   DropdownImage,
@@ -15,13 +15,15 @@ import { getRegionText } from "@/utils/utilFunctions";
 import { REGION_CODES, REGION_TEXTS } from "@/variables/regions";
 
 type DropdownRegionProps = {
-  onSelect: (regionCode: number) => void;
-  disabled: boolean;
+  value?: number | null;
+  onChange?: (value: number | null) => void;
+  disabled?: boolean;
 };
 
 export default function DropdownRegion({
-  onSelect,
-  disabled,
+  value,
+  onChange,
+  disabled = false,
 }: DropdownRegionProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentSelectRegion, setCurrentSelectRegion] = useState<
@@ -86,10 +88,9 @@ export default function DropdownRegion({
   );
 
   const handleSelectRegion = (key: string) => {
-    onSelect(REGION_CODES[key as keyof typeof REGION_CODES]);
-    setCurrentSelectRegion(
-      getRegionText(REGION_CODES[key as keyof typeof REGION_CODES])
-    );
+    const regionCode = REGION_CODES[key as keyof typeof REGION_CODES];
+    onChange?.(regionCode);
+    setCurrentSelectRegion(getRegionText(regionCode));
     setIsOpen(false);
   };
 
@@ -113,6 +114,22 @@ export default function DropdownRegion({
     <div key="divider" className={dynamicLineClass}></div>,
   ];
 
+  const handleSetRegion = (code: number | null) => {
+    if (code === null) {
+      setCurrentSelectRegion("지역");
+    } else {
+      const regionText = REGION_TEXTS[code as keyof typeof REGION_TEXTS];
+      setCurrentSelectRegion(regionText);
+    }
+    onChange?.(code);
+  };
+
+  useEffect(() => {
+    if (value !== undefined) {
+      handleSetRegion(value);
+    }
+  }, [value]);
+
   return (
     <Dropdown
       trigger={
@@ -125,7 +142,10 @@ export default function DropdownRegion({
       onToggle={() => setIsOpen((prev) => !prev)}
     >
       <div className={dropdownListWrapperClass}>
-        <DropdownList className={dropdownListClass} items={itemsWithDivider} />
+        <DropdownOption
+          className={dropdownListClass}
+          items={itemsWithDivider}
+        />
       </div>
     </Dropdown>
   );

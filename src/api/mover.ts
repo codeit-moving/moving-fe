@@ -84,32 +84,30 @@ export const getMoverList = async ({
   }
 };
 
-interface setMoverFavoriteProps {
-  moverId: number;
-  favorite: boolean;
+/**
+ * 1. Endpoint:  `POST /:id/favorite`
+ * 2. Description: 기사 찜하기
+ * 3. Request : access-token 쿠키 전달
+ * 4. link : https://bubble-city-3ac.notion.site/API-14d9702f08878032932ee08ab2c19fb0#:~:text=/%3Aid/favorite%20(%20POST%20)
+ */
+export async function addMoverFavorite(moverId: number) {
+  const path = `${PATH}/${moverId}/favorite`;
+  const res = await axiosInstance.post(path);
+
+  return res;
 }
 
-export async function setMoverFavorite({
-  moverId,
-  favorite,
-}: setMoverFavoriteProps) {
-  console.log("찜하기 버튼 클릭 - 찜하기 API 호출");
+/**
+ * 1. Endpoint:  `DELETE /:id/favorite`
+ * 2. Description: 기사 찜 취소하기
+ * 3. Request : access-token 쿠키 전달
+ * 4. link : https://bubble-city-3ac.notion.site/API-14d9702f08878032932ee08ab2c19fb0#:~:text=/%3Aid/favorite%20(%20DELETE%20)
+ */
+export async function deleteMoverFavorite(moverId: number) {
+  const path = `${PATH}/${moverId}/favorite`;
+  const res = await axiosInstance.delete(path);
 
-  /**
-   * 1. Endpoint:  `GET /:id/favorite`
-   * 2. Description: 기사 수정하기
-   * 3. Request : access-token 쿠키 전달
-   * 4. link : https://www.notion.so/API-14d9702f08878032932ee08ab2c19fb0?pvs=4#a9cab076c4424ed385da592fc320c1d7
-   */
-  // const path = `${PATH}/${moverId}/favorite?favorite=${favorite}`;
-  // const res = await axiosInstance.post(path);
-
-  // return res;
-
-  return new Promise((resolve) => {
-    const response = { isFavorite: favorite, id: 0 };
-    resolve(response);
-  });
+  return res;
 }
 
 // (일반유저) 기사님 상세 페이지
@@ -128,9 +126,16 @@ export interface MoverMyPageResponse extends BaseMoverData {
   favoriteCount: number;
 }
 
-// (기사님) 마이 페이지
-export async function getMoverProfile(): Promise<MoverMyPageResponse> {
-  const response = await axiosInstance.get(`${PATH}/my-profile`);
+export async function getMoverProfile(
+  cookie?: string
+): Promise<MoverMyPageResponse> {
+  const headers: AxiosRequestConfig["headers"] = cookie
+    ? { Cookie: cookie }
+    : undefined;
+
+  const response = await axiosInstance.get(`${PATH}/my-profile`, {
+    ...(headers && { headers }),
+  });
   return response.data;
 }
 

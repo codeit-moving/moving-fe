@@ -5,6 +5,7 @@ import React, { useRef, useEffect, useCallback } from "react";
 import clsx from "clsx";
 
 import assets from "@/variables/images";
+import cn from "@/config/cn";
 
 type DropdownFilterProps = {
   children: React.ReactNode | string;
@@ -185,13 +186,31 @@ type DropdownListProps = {
 
 export function DropdownList({ items, className }: DropdownListProps) {
   return (
-    <div className={clsx("z-50", className)}>
+    <div className={clsx("z-[999]", className)}>
       {items &&
         items.map((item, index) => (
           <div key={index} className="w-full">
             {item}
           </div>
         ))}
+    </div>
+  );
+}
+
+interface DropdownOptionProps {
+  className?: string;
+  items: React.ReactNode[];
+}
+
+export function DropdownOption({ className, items }: DropdownOptionProps) {
+  return (
+    <div
+      className={cn(
+        "absolute w-full mt-1 bg-white border rounded-lg shadow-lg",
+        className
+      )}
+    >
+      {items.map((item, index) => item)}
     </div>
   );
 }

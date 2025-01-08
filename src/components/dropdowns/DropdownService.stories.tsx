@@ -20,12 +20,14 @@ const meta: Meta<typeof DropdownService> = {
 export default meta;
 type Story = StoryObj<typeof DropdownService>;
 
-function printDropdownServiceCode(serviceCode: number): void {
-  console.log("서비스 코드 :", serviceCode);
+function printDropdownServiceCode(value: number | null): void {
+  console.log("서비스 코드 :", value);
 }
 
 export const base: Story = {
   args: {
-    onSelect: printDropdownServiceCode,
+    onChange: printDropdownServiceCode,
+    value: null,
+    disabled: false,
   },
 };

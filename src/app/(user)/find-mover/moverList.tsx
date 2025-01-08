@@ -6,7 +6,7 @@ import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
 
 import Input from "@/components/common/Input";
 import MoverInfoCard from "@/components/cards/MoverInfoCard";
-import LoadingDots from "@/components/LoadingDots";
+import Loader from "@/components/common/Loader";
 import DropdownRegion from "@/components/dropdowns/DropdownRegion";
 import DropdownService from "@/components/dropdowns/DropdownService";
 import DropdownSortMovingRequest from "@/components/dropdowns/DropdownSortMovingRequest";
@@ -71,16 +71,12 @@ function FavoriteMoverList({ userRole }: FavoriteMoverListProps) {
 }
 
 interface FilterProps {
-  onRegionChange: (newStates: number | null) => void;
-  onServiceChange: (newStates: number | null) => void;
+  formState: FormState;
+  onFilterChange: (value: number | null, type: "region" | "service") => void;
+  onInitFilter: () => void;
 }
 
-function Filter({ onRegionChange, onServiceChange }: FilterProps) {
-  const [filterStates, setFilterStates] = useState<{
-    region: number | null;
-    service: number | null;
-  }>({ region: null, service: null });
-
+function Filter({ formState, onFilterChange, onInitFilter }: FilterProps) {
   const styles = {
     container: `
       pc:w-[328px] 
@@ -96,26 +92,24 @@ function Filter({ onRegionChange, onServiceChange }: FilterProps) {
       pc:mt-[10px] pc:w-full pc:h-[64px]`,
   };
 
-  const handleSelectRegion = (regionCode: number) => {
-    setFilterStates((prev) => ({ ...prev, region: regionCode }));
-    onRegionChange(regionCode);
-  };
-
-  const handleSelectService = (serviceCode: number) => {
-    setFilterStates((prev) => ({ ...prev, service: serviceCode }));
-    onServiceChange(serviceCode);
-  };
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        필터
-        <div className={styles.resetButton}>초기화</div>
+        <span>필터</span>
+        <span className={styles.resetButton} onClick={onInitFilter}>
+          초기화
+        </span>
       </div>
-      <div className={styles.sectionTitle}>지역을 선택해주세요</div>
-      <DropdownRegion onSelect={handleSelectRegion} disabled={false} />
+      <div className={styles.sectionTitle}>어디로 이사하시나요?</div>
+      <DropdownRegion
+        value={formState.currentRegionFilter}
+        onChange={(value) => onFilterChange(value, "region")}
+      />
       <div className={styles.sectionTitle}>어떤 서비스가 필요하세요?</div>
-      <DropdownService onSelect={handleSelectService} disabled={false} />
+      <DropdownService
+        value={formState.currentServiceFilter}
+        onChange={(value) => onFilterChange(value, "service")}
+      />
     </div>
   );
 }
@@ -193,7 +187,10 @@ export default function MoverListWithFilters({
     });
 
   const styles = {
-    container: `flex flex-col items-center pc:w-full`,
+    container: `flex flex-col items-center 
+      pc:w-full`,
+    subContainer: `flex flex-col items-center w-full 
+      pc:max-w-[1400px]`,
     header: {
       container: `hidden w-full h-[54px] 
         pc:flex flex-row gap-2.5 items-center justify-center pc:h-[96px]`,
@@ -201,16 +198,21 @@ export default function MoverListWithFilters({
         tablet:w-[600px] 
         pc:flex flex-row items-center pc:w-[1400px] pc:text-2xl`,
     },
-    mainContent: `box-border flex 
-      pc:flex-row justify-center gap-[117px] pc:mt-6`,
+    mainContent: `box-border flex w-full 
+      pc:flex-row pc:justify-between pc:mt-6 pc:gap-[10px]`,
     filter: {
       container: `box-border w-[328px] hidden 
         tablet:hidden 
         pc:flex pc:flex-col pc:gap-[46px]`,
     },
+    gap: {
+      container: `w-[10px] hidden 
+        tablet:hidden
+        pc:block`,
+    },
     moverList: {
-      container: `box-border flex flex-col w-[328px] 
-        tablet:w-[600px] 
+      container: `box-border flex flex-col w-full min-w-[328px] 
+        tablet:w-full 
         pc:w-[955px]`,
       sortContainer: `flex flex-row items-center justify-between h-[68px] 
         pc:h-[40px] pc:justify-end`,
@@ -280,6 +282,26 @@ export default function MoverListWithFilters({
     }));
   };
 
+  const handleFilterChange = (
+    value: number | null,
+    type: "region" | "service"
+  ) => {
+    if (type === "region") {
+      handleRegionFilterChange(value);
+    } else {
+      handleServiceFilterChange(value);
+    }
+  };
+
+  const handleInitFilterChange = () => {
+    setFormState({
+      keyword: "",
+      currentServiceFilter: null,
+      currentRegionFilter: null,
+      orderBy: "recent",
+    });
+  };
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedKeyword(formState.keyword);
@@ -292,52 +314,61 @@ export default function MoverListWithFilters({
 
   return (
     <div className={styles.container}>
-      <div className={styles.header.container}>
-        <div className={styles.header.text}>기사님 찾기</div>
-      </div>
-      <div className={styles.mainContent}>
-        <div className={styles.filter.container}>
-          <Filter
-            onRegionChange={handleRegionFilterChange}
-            onServiceChange={handleServiceFilterChange}
-          />
-          <FavoriteMoverList userRole={userRole} />
+      <div className={styles.subContainer}>
+        <div className={styles.header.container}>
+          <div className={styles.header.text}>기사님 찾기</div>
         </div>
-        <div className={styles.moverList.container}>
-          <div className={styles.moverList.sortContainer}>
-            <div className={styles.moverList.dropdownContainer}>
-              <DropdownRegion
-                onSelect={handleRegionFilterChange}
-                disabled={false}
-              />
-              <DropdownService
-                onSelect={handleServiceFilterChange}
-                disabled={false}
-              />
-            </div>
-            <DropdownSortMovingRequest
-              onSelect={handleSortChange}
-              disabled={false}
+        <div className={styles.mainContent}>
+          <div className={styles.filter.container}>
+            <Filter
+              formState={formState}
+              onFilterChange={handleFilterChange}
+              onInitFilter={handleInitFilterChange}
             />
+            <FavoriteMoverList userRole={userRole} />
           </div>
-          <div className={styles.searchBar.container}>
-            <Input
-              name="searchKeyword"
-              placeholder="텍스트를 입력해 주세요."
-              className={styles.searchBar.input}
-              value={formState.keyword}
-              onChange={handleInputChange}
-            />
-            <div className={styles.searchBar.icon}>
-              <Image src={assets.icons.search} alt="검색" fill />
+          <div className={styles.moverList.container}>
+            <div className={styles.moverList.sortContainer}>
+              <div className={styles.moverList.dropdownContainer}>
+                <DropdownRegion
+                  value={formState.currentRegionFilter}
+                  onChange={(value) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      currentRegionFilter: value,
+                    }))
+                  }
+                />
+                <DropdownService
+                  value={formState.currentServiceFilter}
+                  onChange={(value) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      currentServiceFilter: value,
+                    }))
+                  }
+                />
+              </div>
+              <DropdownSortMovingRequest onSelect={handleSortChange} />
             </div>
-          </div>
-          <div className={styles.listContainer}>
-            {isFetching && <LoadingDots />}
-            {moverInfos}
-            <div ref={loadMoreRef} className="h-20 bg-transparent"></div>
-            {isFetchingNextPage && <LoadingDots />}
-            {hasNextPage && <ScrollIndicator />}
+            <div className={styles.searchBar.container}>
+              <Input
+                name="searchKeyword"
+                placeholder="텍스트를 입력해 주세요."
+                className={styles.searchBar.input}
+                value={formState.keyword}
+                onChange={handleInputChange}
+              />
+              <div className={styles.searchBar.icon}>
+                <Image src={assets.icons.search} alt="검색" fill />
+              </div>
+            </div>
+            <div className={styles.listContainer}>
+              {moverInfos}
+              <div ref={loadMoreRef} className="h-20 bg-transparent"></div>
+              {isFetchingNextPage && <Loader />}
+              {hasNextPage && <ScrollIndicator />}
+            </div>
           </div>
         </div>
       </div>

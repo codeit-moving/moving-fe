@@ -8,7 +8,7 @@ import Loader from "@/components/common/Loader";
 import Message from "@/components/common/Message";
 import { type QuoteDetailsData, type SentQuoteData } from "@/types/quote";
 import { CursorResponse } from "@/types/api";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useInView } from "react-intersection-observer";
 
 interface QuoteCardListProps {
@@ -42,10 +42,7 @@ const QuoteCardList = ({ pages, currentTab }: QuoteCardListProps) => {
   );
 };
 
-export default function MyQuotePage() {
-  const searchParams = useSearchParams();
-  const currentTab = Number(searchParams.get("tab") || "0");
-
+const QuoteListContainer = ({ currentTab }: { currentTab: number }) => {
   const { ref, inView } = useInView();
 
   const {
@@ -93,5 +90,20 @@ export default function MyQuotePage() {
         )}
       </div>
     </>
+  );
+};
+
+const QuoteList = () => {
+  const searchParams = useSearchParams();
+  const currentTab = Number(searchParams.get("tab") || "0");
+
+  return <QuoteListContainer currentTab={currentTab} />;
+};
+
+export default function MyQuotePage() {
+  return (
+    <Suspense fallback={<Loader msg="로딩중..." />}>
+      <QuoteList />
+    </Suspense>
   );
 }

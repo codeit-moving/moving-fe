@@ -25,11 +25,22 @@ export default function QuoteButtonGroup({
 }: QuoteButtonGroupProps) {
   const styles = {
     buttonContainer: isPc
-      ? "hidden pc:flex pc:flex-col pc:gap-[32px] pc:justify-center pc:items-center"
-      : "fixed bottom-0 right-0 bg-white border-solid border-t border-line-100 w-full flex flex-row gap-[8px] justify-center items-center py-[10px] p-6 px-[72px] z-[999] pc:hidden",
-    likeIcon:
-      "p-[15px] w-[54px] h-[54px] cursor-pointer border border-solid border-line-200 rounded-[16px] text-nowrap pc:w-full pc:text-xl pc:font-semibold pc:py-[11px] pc:flex pc:flex-row pc:gap-[8px] pc:items-center pc:justify-center",
-    shareText: "text-lg font-semibold text-black-400 pc:text-xl",
+      ? `hidden 
+      pc:flex pc:flex-col pc:gap-[32px] 
+      pc:justify-center pc:items-center`
+      : `fixed bottom-0 right-0 bg-white 
+      border-solid border-t border-line-100 w-full z-[999] 
+      flex flex-row gap-[8px] justify-center items-center 
+      tablet:px-[72px] 
+      py-[10px] p-6 px-[24px]  
+      pc:hidden`,
+    likeIcon: `p-[15px] w-[54px] h-[54px] cursor-pointer 
+      border border-solid border-line-200 rounded-[16px] 
+      text-nowrap 
+      pc:py-[11px] pc:flex pc:flex-row pc:gap-[8px]
+      pc:items-center pc:justify-center pc:w-full pc:text-xl pc:font-semibold`,
+    shareText: `text-lg font-semibold text-black-400 
+      pc:text-xl`,
   };
 
   const buttonProps: ButtonProps = {

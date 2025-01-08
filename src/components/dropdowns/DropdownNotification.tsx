@@ -62,7 +62,7 @@ export default function DropdownNotification({
         "pc:min-w-[18px] pc:h-[18px] pc:text-[11px]"
       ),
       container: clsx(
-        "absolute flex flex-col items-center",
+        "absolute flex flex-col items-center z-[999]",
         "p-4 py-2.5 top-[37px] right-[-100px] w-[312px]",
         "border-solid border-[1px] border-line-100 rounded-2xl",
         "bg-white",
@@ -79,7 +79,7 @@ export default function DropdownNotification({
       ),
       list: clsx(
         "overflow-y-auto",
-        "max-h-[400px]",
+        "max-h-[400px] w-full",
         "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
       ),
       item: clsx(
@@ -92,7 +92,7 @@ export default function DropdownNotification({
         "cursor-pointer",
         "pc:py-4"
       ),
-      readItem: "bg-bg-300 hover:bg-bg-300",
+      readItem: "bg-line-100 hover:bg-line-100",
       time: "text-sm text-gray-300 font-medium",
       loading: "flex justify-center items-center h-8",
       scrollTrigger: "h-10 bg-transparent",

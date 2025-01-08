@@ -18,12 +18,12 @@ import {
 
 type DropdownSortMovingRequestProps = {
   onSelect: (sortCode: number) => void;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 export default function DropdownSortMovingRequest({
   onSelect,
-  disabled,
+  disabled = false,
 }: DropdownSortMovingRequestProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentSortMover, setCurrentSortMover] = useState<

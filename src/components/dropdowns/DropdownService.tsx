@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 
 import {
@@ -15,13 +15,15 @@ import { getServiceText } from "@/utils/utilFunctions";
 import { SERVICE_CODES, SERVICE_TEXTS } from "@/variables/service";
 
 type DropdownServiceProps = {
-  onSelect: (regionCode: number) => void;
-  disabled: boolean;
+  value: number | null;
+  onChange: (value: number | null) => void;
+  disabled?: boolean;
 };
 
 export default function DropdownService({
-  onSelect,
-  disabled,
+  value,
+  onChange,
+  disabled = false,
 }: DropdownServiceProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentSelectService, setCurrentSelectService] = useState<
@@ -67,7 +69,8 @@ export default function DropdownService({
   );
 
   const handleSelectService = (key: string) => {
-    onSelect(SERVICE_CODES[key as keyof typeof SERVICE_CODES]);
+    const serrviceCode = SERVICE_CODES[key as keyof typeof SERVICE_CODES];
+    onChange?.(serrviceCode);
     setCurrentSelectService(
       getServiceText(SERVICE_CODES[key as keyof typeof SERVICE_CODES])
     );
@@ -81,6 +84,22 @@ export default function DropdownService({
       onClick: () => handleSelectService(key),
     };
   });
+
+  const handleSetService = (code: number | null) => {
+    if (code === null) {
+      setCurrentSelectService("서비스");
+    } else {
+      const regionText = SERVICE_TEXTS[code as keyof typeof SERVICE_TEXTS];
+      setCurrentSelectService(regionText);
+    }
+    onChange?.(code);
+  };
+
+  useEffect(() => {
+    if (value !== undefined) {
+      handleSetService(value);
+    }
+  }, [value]);
 
   return (
     <Dropdown

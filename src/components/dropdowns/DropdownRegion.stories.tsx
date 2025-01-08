@@ -20,12 +20,14 @@ const meta: Meta<typeof DropdownRegion> = {
 export default meta;
 type Story = StoryObj<typeof DropdownRegion>;
 
-function printDropdownRegionCode(regionCode: number): void {
-  console.log("지역 코드 :", regionCode);
+function printDropdownRegionCode(value: number | null): void {
+  console.log("지역 코드 :", value);
 }
 
 export const base: Story = {
   args: {
-    onSelect: printDropdownRegionCode,
+    onChange: printDropdownRegionCode,
+    value: null,
+    disabled: false,
   },
 };
