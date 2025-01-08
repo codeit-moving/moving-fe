@@ -26,6 +26,8 @@ const mockData = {
     "4": 0,
     "5": 1,
     average: 4,
+    totalCount: 2,
+    totalSum: 8,
   },
   nickname: "김코드",
   career: 2,
