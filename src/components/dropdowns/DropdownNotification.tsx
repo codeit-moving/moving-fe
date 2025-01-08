@@ -79,7 +79,7 @@ export default function DropdownNotification({
       ),
       list: clsx(
         "overflow-y-auto",
-        "max-h-[400px]",
+        "max-h-[400px] w-full",
         "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
       ),
       item: clsx(
@@ -92,7 +92,7 @@ export default function DropdownNotification({
         "cursor-pointer",
         "pc:py-4"
       ),
-      readItem: "bg-bg-300 hover:bg-bg-300",
+      readItem: "bg-line-100 hover:bg-line-100",
       time: "text-sm text-gray-300 font-medium",
       loading: "flex justify-center items-center h-8",
       scrollTrigger: "h-10 bg-transparent",

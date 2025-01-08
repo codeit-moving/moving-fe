@@ -15,10 +15,6 @@ export interface CustomerReviewData {
 }
 const CustomerReview = ({ data }: { data: CustomerReviewData }) => {
   const createdDate = format(new Date(data.createdAt), "yyyy-MM-dd");
-<<<<<<< HEAD
-=======
-  console.log(data);
->>>>>>> dev
 
   return (
     <li

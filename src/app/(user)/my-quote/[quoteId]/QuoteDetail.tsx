@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 import MoverInfoCard from "@/components/cards/MoverInfoCard";
 import LineSeparator from "@/components/common/LineSeparator";
@@ -65,6 +66,23 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
     dropOffAddress: data.movingRequest.dropOffAddress,
   };
 
+  const confirmQuoteMutation = useMutation({
+    mutationFn: (quoteId: number) => confirmQuote(quoteId),
+    onSuccess: () => {
+      if (!isCompleted) {
+        setIsCompleted(true);
+        setConfirmState((prev) => ({
+          isConfirmed: true,
+          confirmCount: prev.confirmCount + 1,
+        }));
+      }
+    },
+    onError: (error) => {
+      // 에러 처리 로직 추가
+      console.error("견적 확정 중 오류 발생:", error);
+    },
+  });
+
   const styles = {
     container: `box-border flex flex-row justify-between w-full max-w-[1400px] mt-4 
       tablet:mt-6 
@@ -108,7 +126,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
   };
 
   const handleFavoriteButtonClick = () => {
-    data.mover.isFavorite
+    favoriteState.isFavorite
       ? deleteMoverFavorite(data.mover.id)
           .then((res) => {
             setFavoriteState((prev) => ({
@@ -132,19 +150,9 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
   };
 
   const handleConfirmQuoteButtonClick = () => {
-    confirmQuote(data.id)
-      .then((res) => {
-        if (!isCompleted) {
-          setIsCompleted(true);
-          setConfirmState((prev) => ({
-            isConfirmed: true,
-            confirmCount: prev.confirmCount + 1,
-          }));
-        }
-      })
-      .catch((err) => {
-        // 에러 처리
-      });
+    if (!isCompleted && !confirmState.isConfirmed) {
+      confirmQuoteMutation.mutate(data.id);
+    }
   };
 
   const buttonGroupProps = {
@@ -203,7 +211,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
               </div>
             )}
         </div>
-        <div className={styles.gap}></div>
+        {/* <div className={styles.gap}></div> */}
         <div className={styles.sidebar}>
           <QuoteButtonGroup {...buttonGroupProps} isPc={true} />
           <ShareButtons variant="quote" quoteInfo={quoteInfo} />

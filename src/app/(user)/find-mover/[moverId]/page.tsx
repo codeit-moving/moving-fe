@@ -19,8 +19,8 @@ import { useDesignatedMoverMutation } from "@/api/mutation-hooks/movingRequest";
 import BackDrop from "@/components/modals/BackDrop";
 
 const styles = {
-  topContainer:
-    "mb-[110px] pc:mb-0 pc:flex pc:flex-row pc:gap-[90px] pc:justify-center",
+  mainContainer: "flex flex-col justify-center",
+  topContainer: `mb-[110px] pc:mb-0 pc:flex pc:flex-row pc:justify-between`,
   container: "flex flex-col gap-[24px] pc:gap-[40px] pc:max-w-[940px]",
   pcShareContainer: "hidden pc:flex pc:flex-col pc:gap-[40px]",
   shareContainer: "flex flex-col gap-[24px] pc:hidden",
@@ -78,7 +78,7 @@ export default function MoverDetailPage() {
   };
 
   return (
-    <>
+    <div className={styles.mainContainer}>
       <div className={styles.topContainer}>
         <div className={styles.container}>
           <MoverInfoCard data={data} />
@@ -130,7 +130,6 @@ export default function MoverDetailPage() {
           <LineSeparator direction="horizontal" />
           <MoversReviewList totalRating={data.rating} moverId={moverIdNum} />
         </div>
-
         <div className={styles.pcShareContainer}>
           <QuoteButtonGroup
             isPc={true}
@@ -166,6 +165,6 @@ export default function MoverDetailPage() {
           isDesignating && "Loading..."
         )}
       />
-    </>
+    </div>
   );
 }
