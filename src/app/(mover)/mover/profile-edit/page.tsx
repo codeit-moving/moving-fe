@@ -10,6 +10,7 @@ export default async function ProfileEditPage() {
 
   try {
     const userData = await getUserInfo(cookie);
+
     return (
       <div className="flex flex-col items-center w-full">
         <Profile

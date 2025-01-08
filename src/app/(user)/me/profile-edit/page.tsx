@@ -1,26 +1,28 @@
-"use client";
+import { cookies } from "next/headers";
 
 import Profile from "@/components/forms/Profile";
+import Message from "@/components/common/Message";
 import { getUserInfo } from "@/api/user";
-import { useEffect, useState } from "react";
 
-export default function ProfileEditPage() {
-  const [userData, setUserData] = useState(null);
+export default async function ProfileEditPage() {
+  const cookieStore = await cookies();
+  const cookie = `accessToken=${cookieStore.get("accessToken")?.value}`;
 
-  useEffect(() => {
-    getUserInfo().then(setUserData);
-  }, []);
+  try {
+    const userData = await getUserInfo(cookie);
 
-  if (!userData) return null;
-
-  return (
-    <div className="flex flex-col items-center w-full">
-      <Profile
-        isUser={true}
-        isEdit={true}
-        userData={userData}
-        isOAuth={false}
-      />
-    </div>
-  );
+    return (
+      <div className="flex flex-col items-center w-full">
+        <Profile
+          isUser={false}
+          isEdit={true}
+          userData={userData}
+          isOAuth={false}
+        />
+      </div>
+    );
+  } catch (err) {
+    console.error(err);
+    return <Message msg="유저 정보 조회 오류가 발생했습니다." />;
+  }
 }
