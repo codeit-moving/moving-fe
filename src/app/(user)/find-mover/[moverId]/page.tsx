@@ -20,7 +20,7 @@ import BackDrop from "@/components/modals/BackDrop";
 
 const styles = {
   topContainer:
-    "mb-[110px] pc:mb-0 pc:flex pc:flex-row pc:gap-[90px] pc:justify-center",
+    "mb-[110px] pc:mb-0 pc:flex pc:flex-row pc:gap-[117px] pc:justify-center",
   container: "flex flex-col gap-[24px] pc:gap-[40px] pc:max-w-[940px]",
   pcShareContainer: "hidden pc:flex pc:flex-col pc:gap-[40px]",
   shareContainer: "flex flex-col gap-[24px] pc:hidden",
@@ -81,7 +81,7 @@ export default function MoverDetailPage() {
     <>
       <div className={styles.topContainer}>
         <div className={styles.container}>
-          <MoverInfoCard data={data} />
+          <MoverInfoCard data={data} className="pc:w-[907px]" />
           <div className={styles.shareContainer}>
             <LineSeparator direction="horizontal" />
             <ShareButtons
