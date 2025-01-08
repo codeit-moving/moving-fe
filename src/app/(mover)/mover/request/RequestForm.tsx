@@ -132,15 +132,12 @@ export default function RequestForm({ initialData }: RequestFormProps) {
     },
     filterWrapper: `box-border flex flex-row w-full mt-4 
       tablet:mt-6 
-      pc:justify-between  pc:mt-6`,
-    sidebar: `box-border gap-6 w-[328px] hidden 
+      pc:justify-between pc:mt-6 pc:gap-[10px]`,
+    sidebar: `box-border gap-6 min-w-[328px] hidden 
       tablet:hidden 
       pc:flex pc:flex-col`,
-    gap: `w-[10px] hidden 
-      tablet:hidden
-      pc:block`,
     content: `box-border flex flex-col min-w-[328px] w-full 
-    pc:w-[955px]`,
+    pc:max-w-[955px]`,
     searchWrapper: `relative flex items-center 
       px-0 py-3 
       w-full h-[76px] 
@@ -355,7 +352,6 @@ export default function RequestForm({ initialData }: RequestFormProps) {
               onChange={(states) => setRequestState(states)}
             />
           </div>
-          <div className={styles.gap}></div>
           <div className={styles.content}>
             <div className={styles.searchWrapper}>
               <Input

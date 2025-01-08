@@ -23,14 +23,11 @@ export default function SentQuoteDetail({ data }: SentQuoteDetailProps) {
   const styles = {
     container: `mb-[110px] w-full max-w-[1400px] 
       tablet:mb-[72px] 
-      pc:flex pc:flex-row pc:justify-between`,
+      pc:flex pc:flex-row pc:justify-between pc:gap-[10px]`,
     title:
       "text-2lg font-semibold text-black-400 pb-[6px] pc:text-2xl pc:pb-[30px]",
     content: "flex flex-col gap-[24px] w-full pc:max-w-[955px]",
-    gap: `w-[10px] hidden 
-      tablet:hidden
-      pc:block`,
-    sidebar: "hidden pc:block ",
+    sidebar: "hidden pc:block min-w-[328px]",
     shareContainer: "pc:hidden",
     shareText: "text-lg font-semibold text-black-400 pc:text-xl",
     costContainer: "flex flex-col gap-[16px] pc:gap-[32px]",
@@ -75,7 +72,6 @@ export default function SentQuoteDetail({ data }: SentQuoteDetailProps) {
             />
           </div>
         </div>
-        <div className={styles.gap}></div>
         <div className={styles.sidebar}>
           <ShareButtons
             variant="quote"
