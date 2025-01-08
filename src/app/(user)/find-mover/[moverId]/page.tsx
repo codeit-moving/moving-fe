@@ -18,6 +18,8 @@ import QuoteRequestModal from "@/components/modals/QuoteRequestModal";
 import { useDesignatedMoverMutation } from "@/api/mutation-hooks/movingRequest";
 import BackDrop from "@/components/modals/BackDrop";
 
+export const dynamic = "force-dynamic";
+
 const styles = {
   mainContainer: "flex flex-col items-center",
   topContainer: `mb-[110px] w-full pc:mb-0 pc:flex pc:flex-row pc:justify-between pc:max-w-[1400px] pc:gap-[10px]`,
