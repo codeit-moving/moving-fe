@@ -16,7 +16,6 @@ import {
   DropdownImage,
   DropdownFilter,
 } from "@/components/common/Dropdown";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface MovingRequest {
@@ -293,7 +292,6 @@ const QuoteFilterDropdown = ({
 };
 
 const ExpiredRequests = () => {
-  const router = useRouter();
   const [expiredRequests, setExpiredRequests] = useState<MovingRequest[]>([]);
   const [quoteDetails, setQuoteDetails] = useState<QuoteDetail[]>([]);
   const [openSection, setOpenSection] = useState<number | null>(null);
@@ -420,10 +418,6 @@ const ExpiredRequests = () => {
     imageUrl: quote.mover.imageUrl,
     introduction: quote.mover.introduction,
   });
-
-  const handleQuoteClick = (moverId: number) => {
-    router.push(`/find-mover/${moverId}`);
-  };
 
   if (error) {
     return (
