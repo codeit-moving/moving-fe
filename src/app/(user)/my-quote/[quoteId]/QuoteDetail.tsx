@@ -105,7 +105,7 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
       pc:text-xl`,
     shareBoxWrapper: `pc:hidden`,
     shareBoxSeparator: `pc:hidden`,
-    quoteInfo: `flex flex-col justify-between w-full h-[242px] text-lg 
+    quoteInfo: `flex flex-col justify-between w-full h-[242px] text-lg font-semibold 
       tablet:h-[258px]  
       pc:h-[330px] pc:text-2xl`,
     warning: `box-border flex flex-row items-center p-6 gap-4 
