@@ -53,7 +53,6 @@ export const getMoverList = async ({
   service,
   isFavorite = false,
 }: GetMoverListParams): Promise<GetMoverListResponseData> => {
-  console.log("getMoverList");
   const headers: AxiosRequestConfig["headers"] = cookie
     ? { Cookie: cookie }
     : undefined;

@@ -23,7 +23,6 @@ export default function AddressInput({
   streetAddress = "",
   zipCode = "",
 }: AddressInputProps) {
-  const handleClick = () => console.log("주소 선택 완료");
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
 
   const handleAddressSelect = (zipCode: string) => {

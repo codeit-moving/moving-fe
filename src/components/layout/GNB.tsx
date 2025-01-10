@@ -82,7 +82,7 @@ const GNB = () => {
             <>
               <DropdownNotification
                 onSelect={(id: number) => {
-                  console.log(id); // 임시. 테스트용
+                  console.log(id);
                 }}
               />
               <DropdownProfile name={userName} isMover={userRole === "MOVER"} />
