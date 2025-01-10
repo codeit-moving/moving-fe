@@ -123,18 +123,23 @@ export const fetchCustomerMovingRequests =
         `/moving-requests/by-customer`
       );
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching customer moving requests:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "An unknown error occurred";
 
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        throw new Error("No matching moving requests found");
+      if (
+        error.path === "/moving-requests/by-customer" &&
+        error.message === "조건의 맞는 이사요청 목록이 없습니다."
+      ) {
+        return {
+          currentPage: 1,
+          pageSize: 10,
+          totalPage: 0,
+          totalCount: 0,
+          list: [],
+        };
       }
 
-      throw new Error(
-        `Failed to fetch customer moving requests: ${errorMessage}`
-      );
+      throw error;
     }
   };
 

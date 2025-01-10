@@ -48,7 +48,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       {/* Tablet/Mobile layout (<1024px) */}
       <div className="block lg:hidden">
         <div className="flex flex-col gap-6 mb-8">
@@ -85,7 +84,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       <AuthSection />
     </main>
   );

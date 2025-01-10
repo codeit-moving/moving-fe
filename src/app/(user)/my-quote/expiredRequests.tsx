@@ -430,80 +430,86 @@ const ExpiredRequests = () => {
     <div className="w-full mx-auto">
       <h1 className="text-2xl font-bold mb-6">받았던 견적</h1>
 
-      <div className="flex flex-col gap-6">
-        {expiredRequests.map((request) => (
-          <div
-            key={request.id}
-            className="rounded-lg shadow-card border border-stone-200 overflow-hidden bg-white"
-          >
-            <div className="relative p-4">
-              <div className="flex flex-row gap-6 pc:gap-12 p-3 pc:p-6 items-center">
-                <MovingIcon />
-                <RequestDetails request={request} />
-              </div>
-
-              <LineSeparator
-                direction="horizontal"
-                className="flex tablet:hidden"
-              />
-              <LineSeparator
-                direction="horizontal"
-                className="mb-2 mx-6 w-auto bg-gray-100"
-              />
-
-              <button
-                onClick={() => toggleSection(request.id)}
-                className="w-full px-6 py-1 text-left flex items-center gap-4 justify-center hover:bg-stone-50 transition-colors duration-200"
-                aria-expanded={openSection === request.id}
-              >
-                <h2 className="text-lg font-semibold">견적서 보기</h2>
-                <ChevronDown
-                  className={`text-pr-blue-300 transform transition-transform duration-300 ${
-                    openSection === request.id ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
-              <div
-                className={`overflow-y-scroll transition-all duration-500 ease-in-out ${
-                  openSection === request.id ? "max-h-[670px]" : "max-h-0"
-                }`}
-              >
-                <div className="px-6 py-4 flex justify-between items-center border-t border-b border-gray-100">
-                  <div className="text-gray-400 text-xl font-semibold">
-                    견적서 보기
-                  </div>
-                  <QuoteFilterDropdown
-                    onSelect={(code) => handleFilterChange(request.id, code)}
-                    disabled={loading}
-                    filterType={
-                      quoteDetails.find((detail) => detail.id === request.id)
-                        ?.filterType ?? ALL_QUOTE
-                    }
-                  />
+      {expiredRequests.length > 0 ? (
+        <div className="flex flex-col gap-6">
+          {expiredRequests.map((request) => (
+            <div
+              key={request.id}
+              className="rounded-lg shadow-card border border-stone-200 overflow-hidden bg-white"
+            >
+              <div className="relative p-4">
+                <div className="flex flex-row gap-6 pc:gap-12 p-3 pc:p-6 items-center">
+                  <MovingIcon />
+                  <RequestDetails request={request} />
                 </div>
 
-                <div className="p-4 grid gap-4">
-                  {loading ? (
-                    <div className="text-center py-4">로딩 중...</div>
-                  ) : getQuotesForSection(request.id).length === 0 ? (
-                    <div className="text-center py-4 text-gray-500">
-                      견적서가 없습니다.
+                <LineSeparator
+                  direction="horizontal"
+                  className="flex tablet:hidden"
+                />
+                <LineSeparator
+                  direction="horizontal"
+                  className="mb-2 mx-6 w-auto bg-gray-100"
+                />
+
+                <button
+                  onClick={() => toggleSection(request.id)}
+                  className="w-full px-6 py-1 text-left flex items-center gap-4 justify-center hover:bg-stone-50 transition-colors duration-200"
+                  aria-expanded={openSection === request.id}
+                >
+                  <h2 className="text-lg font-semibold">견적서 보기</h2>
+                  <ChevronDown
+                    className={`text-pr-blue-300 transform transition-transform duration-300 ${
+                      openSection === request.id ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                <div
+                  className={`overflow-y-scroll transition-all duration-500 ease-in-out ${
+                    openSection === request.id ? "max-h-[670px]" : "max-h-0"
+                  }`}
+                >
+                  <div className="px-6 py-4 flex justify-between items-center border-t border-b border-gray-100">
+                    <div className="text-gray-400 text-xl font-semibold">
+                      견적서 보기
                     </div>
-                  ) : (
-                    getQuotesForSection(request.id).map((quote) => (
-                      <ReceivedQuoteCard
-                        key={quote.id}
-                        data={mapQuoteToCardData(quote)}
-                      />
-                    ))
-                  )}
+                    <QuoteFilterDropdown
+                      onSelect={(code) => handleFilterChange(request.id, code)}
+                      disabled={loading}
+                      filterType={
+                        quoteDetails.find((detail) => detail.id === request.id)
+                          ?.filterType ?? ALL_QUOTE
+                      }
+                    />
+                  </div>
+
+                  <div className="p-4 grid gap-4">
+                    {loading ? (
+                      <div className="text-center py-4">로딩 중...</div>
+                    ) : getQuotesForSection(request.id).length === 0 ? (
+                      <div className="text-center py-4 text-gray-500">
+                        견적서가 없습니다.
+                      </div>
+                    ) : (
+                      getQuotesForSection(request.id).map((quote) => (
+                        <ReceivedQuoteCard
+                          key={quote.id}
+                          data={mapQuoteToCardData(quote)}
+                        />
+                      ))
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex justify-center items-center min-h-[200px] text-gray-500">
+          받은 견적이 없습니다.
+        </div>
+      )}
     </div>
   );
 };
