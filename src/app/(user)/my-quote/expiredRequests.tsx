@@ -16,6 +16,7 @@ import {
   DropdownImage,
   DropdownFilter,
 } from "@/components/common/Dropdown";
+import Link from "next/link";
 
 interface MovingRequest {
   id: number;
@@ -428,8 +429,6 @@ const ExpiredRequests = () => {
 
   return (
     <div className="w-full mx-auto">
-      <h1 className="text-2xl font-bold mb-6">받았던 견적</h1>
-
       {expiredRequests.length > 0 ? (
         <div className="flex flex-col gap-6">
           {expiredRequests.map((request) => (
@@ -493,10 +492,12 @@ const ExpiredRequests = () => {
                       </div>
                     ) : (
                       getQuotesForSection(request.id).map((quote) => (
-                        <ReceivedQuoteCard
-                          key={quote.id}
-                          data={mapQuoteToCardData(quote)}
-                        />
+                        <Link href={`/my-quote/${quote.id}`} key={quote.id}>
+                          <ReceivedQuoteCard
+                            key={quote.id}
+                            data={mapQuoteToCardData(quote)}
+                          />
+                        </Link>
                       ))
                     )}
                   </div>
