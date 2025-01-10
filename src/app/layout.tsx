@@ -28,10 +28,13 @@ const pretendard = localFont({
 const globalStyles = "text-black-400";
 
 export const metadata: Metadata = {
-  title: "무빙",
-  description: "이사 소비자와 이사 전문가 매칭 서비스",
-  icons: {
-    icon: "/favicon.ico",
+  title: "무빙 - 이사 소비자와 이사 전문가 매칭 서비스",
+  description: "믿을 수 있는 이사 전문가를 찾아보세요",
+  openGraph: {
+    title: "무빙 - 이사 소비자와 이사 전문가 매칭 서비스",
+    description: "믿을 수 있는 이사 전문가를 찾아보세요",
+    type: "website",
+    locale: "ko_KR",
   },
 };
 
