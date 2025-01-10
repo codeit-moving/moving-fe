@@ -42,7 +42,7 @@
 
 <br><br>
 
-## <span id="dev">📝 3. 기술 스택</span>
+## <span id="dev">📝 3. 기술 및 개발 환경</span>
 
 #### FRONT-END
 
@@ -54,15 +54,17 @@
   <img src="https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=black&style=for-the-badge" height="30" alt="storybook logo"  />
   <img width="12" />
   <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white&style=for-the-badge" height="30" alt="typescript logo"  />
-  <div align="left">
+  <img width="12" />
   <img src="https://img.shields.io/badge/Sentry-362D59?logo=sentry&logoColor=white&style=for-the-badge" height="30" alt="sentry logo"  />
+  <img width="12" />
   <img src="https://img.shields.io/badge/-TanStack Query-FF4154?style=for-the-badge&logo=react%20query&logoColor=white" height="30" alt="tanstack logo"  />
-    <img src="https://img.shields.io/badge/-Zustand-FF4154?style=for-the-badge&logo=&logoColor=white" height="30" alt="zustand logo"  />
+ <img width="12" />
+ <img src="https://img.shields.io/badge/-Zustand-Fee354?style=for-the-badge&logo=&logoColor=white" height="30" alt="zustand logo"  />
+ <img width="12" />
+ <img src="https://img.shields.io/badge/MockServiceWorker-FF6A33?style=for-the-badge&logo=mockserviceworker&logoColor=white" height="30" alt="mock service worker logo"  />
 </div>
 
 ###
-
-</div>
 
 #### BACK-END
 
@@ -75,9 +77,18 @@
   <img width="12" />
   <img src="https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white&style=for-the-badge" height="30" alt="prisma logo"  />
   <img width="12" />
-  <img src="https://img.shields.io/badge/Amazon AWS-232F3E?logo=amazonaws&logoColor=white&style=for-the-badge" height="30" alt="amazonwebservices logo"  />
-   <img src="https://img.shields.io/badge/NGINX-009639?logo=nginx&logoColor=white&style=for-the-badge" height="30" alt="nginx logo"  />
+  <img src="https://img.shields.io/badge/NGINX-009639?logo=nginx&logoColor=white&style=for-the-badge" height="30" alt="nginx logo"  />
   <img width="12" />
+  <img src="https://img.shields.io/badge/PM2-2B037A?logo=pm2&logoColor=white&style=for-the-badge" height="30" alt="pm2 logo"  />
+  <img width="12" />
+  <img src="https://img.shields.io/badge/Amazon web services-232F3E?logo=amazonwebservices&logoColor=white&style=for-the-badge" height="30" alt="amazonwebservices logo"  />
+  <img width="12" />
+  <img src="https://img.shields.io/badge/AmazonS3-569A31?style=for-the-badge&logo=amazons3&logoColor=white" height="30" alt="amazon s3 logo"  />
+  <img width="12" />
+  <img src="https://img.shields.io/badge/Amazon RDS-527FFF?style=for-the-badge&logo=amazonRDS&logoColor=white" height="30" alt="amazon RDS logo"  />
+  <img width="12" />
+  <img src="https://img.shields.io/badge/amazon ec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white" height="30" alt="amazon ec2 logo"  />
+  
 </div>
 
 ###
@@ -91,6 +102,8 @@
   <img src="https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white&style=for-the-badge" height="30" alt="github logo"  />
   <img width="12" />
   <img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white&style=for-the-badge" height="30" alt="discord logo"  />
+   <img width="12" />
+  <img src="https://img.shields.io/badge/Notion-000000?logo=notion&logoColor=white&style=for-the-badge" height="30" alt="notion logo"  />
 </div>
 
 ###
