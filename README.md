@@ -3,7 +3,7 @@
 [무빙 프로젝트 노션](https://bubble-city-3ac.notion.site/1469702f08878035a353e93642fe2232?v=1469702f0887812c9d6a000c643c23d7&pvs=4) </br>
 [무빙 프로젝트 깃헙](https://github.com/codeit-moving)
 <br/>
-[무빙 배포 사이트]()
+[무빙 배포 사이트](https://moving-fe-weld.vercel.app/)
 
 ## **목차**
 
@@ -54,8 +54,14 @@
   <img src="https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=black&style=for-the-badge" height="30" alt="storybook logo"  />
   <img width="12" />
   <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white&style=for-the-badge" height="30" alt="typescript logo"  />
-  
- 
+  <div align="left">
+  <img src="https://img.shields.io/badge/Sentry-362D59?logo=sentry&logoColor=white&style=for-the-badge" height="30" alt="sentry logo"  />
+  <img src="https://img.shields.io/badge/-TanStack Query-FF4154?style=for-the-badge&logo=react%20query&logoColor=white" height="30" alt="tanstack logo"  />
+    <img src="https://img.shields.io/badge/-Zustand-FF4154?style=for-the-badge&logo=&logoColor=white" height="30" alt="zustand logo"  />
+</div>
+
+###
+
 </div>
 
 #### BACK-END
@@ -70,6 +76,8 @@
   <img src="https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white&style=for-the-badge" height="30" alt="prisma logo"  />
   <img width="12" />
   <img src="https://img.shields.io/badge/Amazon AWS-232F3E?logo=amazonaws&logoColor=white&style=for-the-badge" height="30" alt="amazonwebservices logo"  />
+   <img src="https://img.shields.io/badge/NGINX-009639?logo=nginx&logoColor=white&style=for-the-badge" height="30" alt="nginx logo"  />
+  <img width="12" />
 </div>
 
 ###
@@ -93,38 +101,115 @@
 
 ### **김현우**
 
-- **초기 프로젝트 셋팅**
-- **Nav**
-- **공용 Modal 컴포넌트**
-  - 공용으로 사용할 Modal 컴포넌트 구현
+- **초기 프로젝트 세팅**
+- **공통 컴포넌트**
+  - Server-side loading 페이지(loading.tsx) 및 Client-Side Navigation Progress Indicator
+  - 서버 컴포넌트용 loading.tsx 구현
+  - 클라이언트 사이드 네비게이션 인디케이터 추가
+  - 모든 페이지에서 일관된 로딩 경험 제공
+  - GNB & Quote GNB & Date Picker, Time Picker & Button
+  - 프로젝트 특화 요구사항에 맞는 커스터마이징 용이성
+  - 상태 업데이트 최적화를 통한 성능 향상
+  - 재사용성과 유지보수성을 고려한 컴포넌트 설계
+- **페이지**
+  - **Landing P**
+  - **404 P**
+  - **[유저] 견적 요청 P**
+    - Framer Motion 활용 부드러운 채팅 애니메이션 구현
+    - fake loading 및 loading dots로 UX 개선 중점
+    - Toast 알림을 통한 상태 알림
+  - **[유저] 내 견적 관리 P**
+    - 대기 중인 견적
+    - 받았던 견적
+    - 상위 데이터(이사 요청)와 하위 데이터(견적서) 분리
+    - "견적서 보기" 버튼 클릭 시에만 해당 데이터 로드
+    - 이미 로드된 데이터 재사용으로 불필요한 API 호출 최소화
 
 ### **이진우**
 
-- **Nav**
-- **공용 Modal 컴포넌트**
-  - 공용으로 사용할 Modal 컴포넌트 구현
+기획
+
+- API 명세서(초안) 작성
+
+- 공통 컴포넌트
+  - 체크박스
+    - 체크박스-베이스 : 사각형 체크 박스. 받은 요청P 등 사용
+      - 체크박스-서클 : 원형 체크 박스. 체크박스-필드 등 사용
+        - 체크박스-필드 : 이사 요청 생성 시 사용되는 체크박스가 포함된 선택지. 견적 요청P 사용
+    - 프로그레스바
+      - 프로그레스바-이사 요청 : 이사 요청 생성 시 진행 상황 표시
+        - 프로그레스바-리뷰 : 리뷰 정보 평점 별 선택 수 표시
+    - 드롭다운
+      - 드롭다운-베이스 : 드롭다운 컴포넌트 구성용
+        - 드롭다운-지역 : 기사 목록 조회 필터. 기사님 찾기P 사용
+        - 드롭다운-서비스 : 기사 목록 조회 필터. 기사님 찾기P 사용
+        - 드롭다운-프로필 : 사용자 별 사용 가능한 기능/페이지 선택지 제공. GNB 사용
+        - 드롭다운-알림 : 사용자 알림 목록 제공. GNB 사용
+          - 컴포넌트 전용 API
+            - 알림 목록 조회(GET)
+              - 알림 읽기(POST)
+        - 드롭다운-정렬(이사 요청) : 이사 요청 목록 조회 정렬. 받은 요청P 사용
+        - 드롭다운-정렬(기사) : 기사 목록 조회 정렬. 기사님 찾기P 사용
+        - 드롭다운-견적서 : 견적서 필터. 받았던 견적P 사용
+    - 리뷰 정보 & 별점
+      - 리뷰 정보 : 기사 리뷰 정보. 기사 상세P, 마이 페이지P(기사) 사용
+    - 엠티 리스트
+      - 엠티 리스트 : 빈 페이지/조회 되지 않는 목록 정보. 일부 페이지 사용
+- 페이지
+  - 기사님 찾기
+    - 페이지 종속 API
+      - 기사 목록 조회(GET)
+    - 견적서 상세
+      - 페이지 종속 API
+        - 견적서 상세 조회(GET)
+    - 받은 요청
+      - 페이지 종속 API
+        - 받은 요 목록 조회(GET)
+          - 견적서 작성(POST)
+            - 이사 요청 반려(POST)
+- 기타
+  - CSS 수정
+    - 공용 컴포넌트
+      - 기사 카드
+        - 견적 정보
+        - 페이지
+          - 스타일 통일 : 기사 상세P, 견적 상세P 등
+            - API 연동 : 기사 찜하기, 기사 찜 취소하기, 기사 상세 조회 등
+    - 로직 수정 & 코드 리팩토링
+      - 컴포넌트
+        - GNB
+          - 기사 카드
+            - 견적서 보내기 모달 : 기사님 찾기P 사용
+              - 컴포넌트 전용 API
+                - 견적서 작성(POST)
+            - 이사 요청 반려 모달 : 기사님 찾기P 사용
+              - 컴포넌트 전용 API
+                - 이사 요청 반려(POST)
+        - 페이지
+          - CSR 페이지 → SSR 페이지로 수정(로그인, 정보 수정 등)
+            - 클라이언트 컴포넌트 별도 분리
 
 ### **임송이**
 
 - **페이지**
-  - **기사님 상세 페이지**
+  - **기사님 상세 P**
     - 찜하기/취소 (POST, DELETE).
     - 지정 견적 요청/취소 (POST, DELETE).
       - 422 에러 시 일반 요청 미리 진행했는지 모달 알림.
     - 기사님 상세 정보 조회 (GET).
     - 리뷰 목록 가져오기 (GET) (offset pagination).
-  - **찜한 기사님 페이지**
+  - **찜한 기사님 P**
     - 무한 스크롤 구현 (GET).
-  - **이사 리뷰 페이지**
+  - **이사 리뷰 P**
     - 작성 가능한 리뷰 조회 (GET).
     - 리뷰 작성하기 모달 (POST).
     - 내가 작성한 리뷰 조회 (GET).
-  - **기사님 견적 관리**
+  - **기사님 견적 관리 P**
     - 보낸 견적 조회 (GET, 무한 스크롤).
     - 반려 요청 관리 (GET, 무한 스크롤).
-  - **기사님 견적 상세 페이지**
+  - **기사님 견적 상세 P**
     - 견적 상세 정보 조회 (GET).
-  - **기사님 마이 페이지**
+  - **기사님 마이 P**
     - 기사 상세 정보 (GET).
     - 리뷰 목록 가져오기 (GET) (offset pagination).
 - **리뷰 이미지 슬라이드 (Swipe/Slideshow)**
@@ -140,12 +225,66 @@
 
 ### **주영은**
 
+- 공통 Component
+  - Input
+    - 페이지에서 공통으로 사용되는 Input을 공통 컴포넌트로 제작
+      - 타입에 따라 검색 Input, PW Input 등 디자인 고려
+    - Modal
+      - 유사한 Modal끼리 그룹화해 컴포넌트 제작
+        - 비밀번호 확인 모달 추가 제작
+- 일반 로그인 및 회원가입
+  - PAGE
+    - 기사님과 일반 유저를 분리하여 로그인 및 회원가입 페이지 제작
+      - 회원가입 시 기본 정보 작성 후 프로필 생성 페이지로 자동 이동
+    - API
+      - 각 유저 타입에 대한 end-point 호출
+        - 기사님 : POST auth/signup/mover
+          - 고객 : POST auth/signup/customer
+    - Cookie
+      - next.config.js에서 rewrite()를 활용하여 Next.js 서버를 프록시처럼 사용해 CORS 문제 해결, 보안 강화, 쿠키 자동 전달을 구현
 - **소셜 로그인 기능**
-  - 구글 소셜 로그인 API 사용으로 소셜 로그인 기능 구현
-  - 사이트 이용을 위한 추가 정보 입력 기능 구현
-- **소셜 로그인 후 회원 추가 정보 입력 기능**
-- **공용 Modal 컴포넌트**
-  - 공용으로 사용할 Modal 컴포넌트 구현
+
+  - API
+
+    - 각 유저와 sns 타입에 대한 end-point 호출
+      `${backUrl}/oauth/${sns}/${isUser ? "customer" : "mover"}`
+
+    - Cookie
+      - middleware.ts에서 oauth로 오는 쿠키 도메인을 로컬로 변경하는 작업을 통해 Cookie 유지
+
+- **소셜 회원가입 후 회원 프로필 정보 입력 기능**
+  - user 타입(기사님, 고객)에 대한 프로필 입력을 위해 백엔드에서 받은 redirectUrl로 페이지 이동
+    - API
+      - 기사님 : POST movers/
+        - 고객 : POST customers/
+- 기본 정보
+  - PAGE
+    - user 타입에 따라 기본 정보 수정하는 페이지 제작
+      - 페이지 접근 전 비밀번호 확인을 위한 모달 추가 생성
+        - 소셜 로그인 사용자는 기본 정보 수정 불가 모달 추가 생성
+    - API
+      - 기사님과 고객 동일한 end-point 사용으로 PATCH users/ 호출
+- 프로필 정보
+  - PAGE
+    - user 타입에 따라 프로필 정보 등록 페이지 제작
+      - user 타입에 따라 프로필 정보 수정하는 페이지 제작
+    - API
+      - user 타입에 대한 end-point 사용
+        - 기사님 : PATCH movers/
+          - 고객 : PATCH customers/
+- [고객] 기사님 상세 페이지 제작
+  - 해당 기사님에 대한 상세 페이지 제작
+    - 기본 정보 카드 컴포넌트 사용
+    - 리뷰 카드 컴포넌트 사용
+- [기사] 마이페이지
+  - 기본 정보 카드 컴포넌트 사용
+    - 기본 정보 수정 및 프로필 수정 버튼을 통해 각각의 페이지로 연결
+- [기사] 내 견적 관리 및 견적 상세 페이지
+  - PAGE
+    - 보낸 견적 페이지 제작
+      - 견적 상세 페이지 제작
+        - 반려 견적 페이지 제작
+    - 해당 견적에 대한 타입(보낸 견적 조회, 반려 요청)에 따라 카드 컴포넌트를 사용ㅍ
 
 <br><br>
 
@@ -509,6 +648,10 @@
 <br><br>
 
 ## <span id="culture"> 8. 협업 문화 </span>
+
+- 매일 아침 9시 프론트, 백 모여 전체 미팅
+- PR 2명 이상 리뷰 후 머지
+- 문제 3시간 이상 안풀리면 공론화 및 도움 요청
 
 <br><br>
 
