@@ -79,7 +79,6 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
 
       reset();
     } catch (error: any) {
-      console.log("error", error);
       const errorMessage = error.message || "다시 시도해주세요.";
 
       toast.error(errorMessage, {
