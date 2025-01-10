@@ -26,7 +26,14 @@ export function useDesignatedMoverMutation() {
       return apiFunction(moverId);
     },
     onError: (error: any) => {
-      console.log("지정 견적 요청하기 에러 : ", error);
+      const errorMessage =
+        error.response?.data?.message || "요청 처리 중 오류가 발생했습니다.";
+
+      NiceModal.show("AlertModal", {
+        title: "오류 발생",
+        msg: errorMessage,
+        type: "error",
+      });
     },
     onSuccess: (response: DesignatedResponse, { moverId }) => {
       queryClient.invalidateQueries({ queryKey: moverKey.detail(moverId) });
