@@ -1,0 +1,2 @@
+export const MIN_QUOTE_COMMENT_LENGTH = 10;
+export const MAX_QUOTE_COMMENT_LENGTH = 50;

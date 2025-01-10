@@ -1,0 +1,2 @@
+export const MOVER_DEFAULT_PAGE_SIZE = 7;
+export const FAVORITE_MOVER_DEFAULT_PAGE_SIZE = 3;

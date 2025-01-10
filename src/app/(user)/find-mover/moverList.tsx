@@ -1,0 +1,377 @@
+"use client";
+
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
+
+import Input from "@/components/common/Input";
+import MoverInfoCard from "@/components/cards/MoverInfoCard";
+import Loader from "@/components/common/Loader";
+import DropdownRegion from "@/components/dropdowns/DropdownRegion";
+import DropdownService from "@/components/dropdowns/DropdownService";
+import DropdownSortMovingRequest from "@/components/dropdowns/DropdownSortMovingRequest";
+import { GetMoverListResponseData } from "@/api/mover";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import { getMoverList } from "@/api/mover";
+import ScrollIndicator from "@/components/ScrollIndicator";
+import { useUserStore } from "@/store/userStore";
+
+import assets from "@/variables/images";
+import {
+  MOVER_DEFAULT_PAGE_SIZE,
+  FAVORITE_MOVER_DEFAULT_PAGE_SIZE,
+} from "@/variables/mover";
+
+interface FavoriteMoverListProps {
+  userRole: "MOVER" | "USER" | null;
+}
+
+function FavoriteMoverList({ userRole }: FavoriteMoverListProps) {
+  const styles = {
+    container: "w-full",
+    title: `flex flex-row items-center text-xl text-black-400 font-semibold 
+      pc:h-[32px]`,
+    listContainer: `flex flex-col gap-4 
+      pc:mt-[16px] pc:w-full`,
+  };
+
+  let favoriteMoverInfos = undefined;
+
+  useEffect(() => {
+    if (userRole === "USER") {
+      favoriteMoverInfos = getMoverList({
+        order: "recent",
+        limit: FAVORITE_MOVER_DEFAULT_PAGE_SIZE,
+        nextCursorId: null,
+      }).then((data) =>
+        data.list.map((mover) => {
+          return (
+            <MoverInfoCard
+              key={`${mover.id}`}
+              data={mover}
+              size="fixed"
+              className=""
+            />
+          );
+        })
+      );
+    }
+  }, [userRole]);
+
+  if (userRole !== "USER") {
+    return undefined;
+  }
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.title}>찜한 기사님</div>
+      <div className={styles.listContainer}>{favoriteMoverInfos}</div>
+    </div>
+  );
+}
+
+interface FilterProps {
+  formState: FormState;
+  onFilterChange: (value: number | null, type: "region" | "service") => void;
+  onInitFilter: () => void;
+}
+
+function Filter({ formState, onFilterChange, onInitFilter }: FilterProps) {
+  const styles = {
+    container: `
+      pc:w-[328px] 
+      pc:h-[340px]`,
+    header: `
+      flex flex-row items-center text-xl text-black font-medium justify-between 
+      pc:px-[13.5px] pc:w-full pc:h-[64px]`,
+    resetButton: `
+      flex flex-row items-center text-lg text-grayscale-300 font-medium cursor-pointer 
+      pc:h-[32px]`,
+    sectionTitle: `
+      flex flex-row items-center text-2lg text-black-400 font-semibold 
+      pc:mt-[10px] pc:w-full pc:h-[64px]`,
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <span>필터</span>
+        <span className={styles.resetButton} onClick={onInitFilter}>
+          초기화
+        </span>
+      </div>
+      <div className={styles.sectionTitle}>어디로 이사하시나요?</div>
+      <DropdownRegion
+        value={formState.currentRegionFilter}
+        onChange={(value) => onFilterChange(value, "region")}
+      />
+      <div className={styles.sectionTitle}>어떤 서비스가 필요하세요?</div>
+      <DropdownService
+        value={formState.currentServiceFilter}
+        onChange={(value) => onFilterChange(value, "service")}
+      />
+    </div>
+  );
+}
+
+interface FormState {
+  keyword: string;
+  currentServiceFilter: number | null;
+  currentRegionFilter: number | null;
+  orderBy: "recent" | "movingDate";
+}
+
+interface MoverListWithFiltersProps {
+  initialData: GetMoverListResponseData;
+}
+
+export default function MoverListWithFilters({
+  initialData,
+}: MoverListWithFiltersProps) {
+  const [formState, setFormState] = useState<FormState>({
+    keyword: "",
+    currentServiceFilter: null,
+    currentRegionFilter: null,
+    orderBy: "recent",
+  });
+  const [debouncedKeyword, setDebouncedKeyword] = useState(formState.keyword);
+  const { userRole } = useUserStore();
+
+  const loadMoreRef = useInfiniteScroll({
+    callback: () => {
+      if (hasNextPage) fetchNextPage();
+    },
+    options: { threshold: 0.5 },
+  });
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } =
+    useInfiniteQuery<
+      GetMoverListResponseData,
+      Error,
+      InfiniteData<GetMoverListResponseData>,
+      [
+        "moverList",
+        {
+          keyword: string;
+          currentServiceFilter: number | null;
+          currentRegionFilter: number | null;
+          orderBy: "recent" | "movingDate";
+        }
+      ],
+      number | null
+    >({
+      queryKey: ["moverList", formState],
+      queryFn: ({ pageParam = null }) =>
+        getMoverList({
+          service: formState.currentServiceFilter,
+          region: formState.currentRegionFilter,
+          keyword: debouncedKeyword,
+          order: formState.orderBy,
+          limit: MOVER_DEFAULT_PAGE_SIZE,
+          nextCursorId: pageParam,
+        }),
+      getNextPageParam: (data) => {
+        if (data.nextCursor === "") {
+          return null;
+        }
+
+        const cursor = Number(data.nextCursor);
+        return isNaN(cursor) ? null : cursor;
+      },
+      initialPageParam: null,
+      initialData: {
+        pages: [initialData],
+        pageParams: [null],
+      },
+      staleTime: 0,
+    });
+
+  const styles = {
+    container: `flex flex-col items-center 
+      pc:w-full`,
+    subContainer: `flex flex-col items-center w-full 
+      pc:max-w-[1400px]`,
+    header: {
+      container: `hidden w-full h-[54px] 
+        pc:flex flex-row gap-2.5 items-center justify-center pc:h-[96px]`,
+      text: `w-[328px] h-full text-2lg text-[#2b2b2b] font-semibold cursor-pointer 
+        tablet:w-[600px] 
+        pc:flex flex-row items-center pc:w-[1400px] pc:text-2xl`,
+    },
+    mainContent: `box-border flex w-full 
+      pc:flex-row pc:justify-between pc:mt-6 pc:gap-[10px]`,
+    filter: {
+      container: `box-border w-[328px] hidden 
+        tablet:hidden 
+        pc:flex pc:flex-col pc:gap-[46px]`,
+    },
+    gap: {
+      container: `w-[10px] hidden 
+        tablet:hidden
+        pc:block`,
+    },
+    moverList: {
+      container: `box-border flex flex-col w-full min-w-[328px] 
+        tablet:w-full 
+        pc:w-[955px]`,
+      sortContainer: `flex flex-row items-center justify-between h-[68px] 
+        pc:h-[40px] pc:justify-end`,
+      dropdownContainer: `flex flex-row gap-3 pc:hidden`,
+    },
+    searchBar: {
+      container: `relative flex items-center px-0 py-3 w-full h-[76px] 
+        tablet:px-2.5 tablet:py-1.5 
+        pc:mt-6 pc:p-0 pc:h-[64px]`,
+      input: `w-full pl-[46px] 
+        pc:pl-[68px]`,
+      icon: `absolute left-[16px] w-6 h-6 
+        pc:left-6 pc:w-9 pc:h-9`,
+    },
+    listContainer: `flex flex-col w-full mt-3 gap-[24px] 
+      tablet:gap-[32px] tablet:mt-4 
+      pc:mt-[32px] pc:gap-[48px]`,
+  };
+
+  const moverInfos = data?.pages
+    ?.flatMap((page) => page.list)
+    ?.map((mover) => (
+      <MoverInfoCard
+        key={`moverList-${mover.id}`}
+        data={mover}
+        size="responsive"
+        className=""
+      />
+    ));
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormState((prev) => ({
+      ...prev,
+      keyword: value,
+    }));
+  };
+
+  const handleServiceFilterChange = (newService: number | null) => {
+    if (newService === 99) {
+      newService = null;
+    }
+
+    setFormState((prev) => ({
+      ...prev,
+      currentServiceFilter: newService,
+    }));
+  };
+
+  const handleRegionFilterChange = (newRegion: number | null) => {
+    if (newRegion === 82) {
+      newRegion = null;
+    }
+
+    setFormState((prev) => ({
+      ...prev,
+      currentRegionFilter: newRegion,
+    }));
+  };
+
+  const handleSortChange = (newSort: number) => {
+    const sorts = ["recent", "movingDate"];
+
+    setFormState((prev) => ({
+      ...prev,
+      currentSort: sorts[newSort],
+    }));
+  };
+
+  const handleFilterChange = (
+    value: number | null,
+    type: "region" | "service"
+  ) => {
+    if (type === "region") {
+      handleRegionFilterChange(value);
+    } else {
+      handleServiceFilterChange(value);
+    }
+  };
+
+  const handleInitFilterChange = () => {
+    setFormState({
+      keyword: "",
+      currentServiceFilter: null,
+      currentRegionFilter: null,
+      orderBy: "recent",
+    });
+  };
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedKeyword(formState.keyword);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [formState.keyword]);
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.subContainer}>
+        <div className={styles.header.container}>
+          <div className={styles.header.text}>기사님 찾기</div>
+        </div>
+        <div className={styles.mainContent}>
+          <div className={styles.filter.container}>
+            <Filter
+              formState={formState}
+              onFilterChange={handleFilterChange}
+              onInitFilter={handleInitFilterChange}
+            />
+            <FavoriteMoverList userRole={userRole} />
+          </div>
+          <div className={styles.moverList.container}>
+            <div className={styles.moverList.sortContainer}>
+              <div className={styles.moverList.dropdownContainer}>
+                <DropdownRegion
+                  value={formState.currentRegionFilter}
+                  onChange={(value) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      currentRegionFilter: value,
+                    }))
+                  }
+                />
+                <DropdownService
+                  value={formState.currentServiceFilter}
+                  onChange={(value) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      currentServiceFilter: value,
+                    }))
+                  }
+                />
+              </div>
+              <DropdownSortMovingRequest onSelect={handleSortChange} />
+            </div>
+            <div className={styles.searchBar.container}>
+              <Input
+                name="searchKeyword"
+                placeholder="텍스트를 입력해 주세요."
+                className={styles.searchBar.input}
+                value={formState.keyword}
+                onChange={handleInputChange}
+              />
+              <div className={styles.searchBar.icon}>
+                <Image src={assets.icons.search} alt="검색" fill />
+              </div>
+            </div>
+            <div className={styles.listContainer}>
+              {moverInfos}
+              <div ref={loadMoreRef} className="h-20 bg-transparent"></div>
+              {isFetchingNextPage && <Loader />}
+              {hasNextPage && <ScrollIndicator />}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

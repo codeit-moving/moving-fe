@@ -1,0 +1,232 @@
+import { AxiosRequestConfig } from "axios";
+
+import { axiosInstance } from "./axios";
+
+import {
+  GetMovingRequestListByMoverParamData,
+  GetMovingRequestListByMoverResponseData,
+} from "@/types/api";
+
+const PATH = "/moving-requests";
+
+interface Rating {
+  "1": number;
+  "2": number;
+  "3": number;
+  "4": number;
+  "5": number;
+  totalCount: number;
+  totalSum: number;
+  average: number;
+}
+
+interface Mover {
+  id: number;
+  nickname: string;
+  imageUrl: string | null;
+  career: number;
+  introduction: string;
+  services: number[];
+  name: string;
+  isDesignated: boolean;
+  isFavorite: boolean;
+  rating: Rating;
+  reviewCount: number;
+  confirmCount: number;
+  favoriteCount: number;
+}
+
+interface MovingRequest {
+  service: number;
+  movingDate: string;
+  pickupAddress: string;
+  dropOffAddress: string;
+  requestDate: string;
+  isConfirmed: boolean;
+  status: string;
+}
+
+interface Quote {
+  id: number;
+  cost: number;
+  comment: string;
+  isConfirmed: boolean;
+  movingRequest: MovingRequest;
+  mover: Mover;
+}
+
+interface PendingQuotesResponse {
+  totalCount: number;
+  list: Quote[];
+}
+
+interface MovingRequestData {
+  service: number;
+  movingDate: string;
+  pickupAddress: string;
+  dropOffAddress: string;
+  region: number;
+}
+
+interface ActiveRequestResponse {
+  id?: number;
+  activeRequest: boolean;
+  message: string;
+}
+
+export const movingRequests = {
+  create: async (data: MovingRequestData) => {
+    try {
+      const response = await axiosInstance.post(`${PATH}`, data);
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.data?.message;
+
+      if (errorMessage === "활성중인 견적요청이 있습니다.") {
+        throw new Error("ACTIVE_REQUEST_EXISTS");
+      }
+
+      throw error;
+    }
+  },
+
+  checkActive: async (): Promise<ActiveRequestResponse> => {
+    try {
+      const response = await axiosInstance.get<ActiveRequestResponse>(
+        `${PATH}/active`,
+        {
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return {
+        activeRequest: false,
+        message: "요청 확인 중 문제가 발생했습니다.",
+      };
+    }
+  },
+};
+
+// 고객의 이사 요청 목록 조회 함수
+export const fetchMovingRequests = async (
+  pageSize: number = 5,
+  pageNum: number = 1
+): Promise<PendingQuotesResponse> => {
+  try {
+    const response = await axiosInstance.get<PendingQuotesResponse>(
+      `${PATH}/by-customer`,
+      {
+        params: {
+          pageSize: pageSize,
+          pageNum: pageNum,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    throw new Error(`Failed to fetch moving requests: ${errorMessage}`);
+  }
+};
+
+// 특정 이사 요청 ID에 대한 견적서 목록 조회 함수
+export const fetchQuotesByMovingRequest = async (
+  id: number,
+  isCompleted: boolean = false
+): Promise<Quote[]> => {
+  try {
+    const response = await axiosInstance.get<PendingQuotesResponse>(
+      `${PATH}/${id}/quotes`,
+      {
+        params: {
+          isCompleted: isCompleted.toString(),
+        },
+      }
+    );
+
+    return response.data.list;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    throw new Error(
+      `Failed to fetch quotes for moving request ${id}: ${errorMessage}`
+    );
+  }
+};
+
+// 지정 요청 하기
+export async function createDesignatedMover(moverId: number) {
+  return axiosInstance.post(`${PATH}/${moverId}/designated`);
+}
+
+// 지정 요청 취소하기
+export async function cancelDesignatedMover(moverId: number) {
+  return axiosInstance.delete(`${PATH}/${moverId}/designated`);
+}
+
+export const DATA_COUNT = 5;
+
+export async function getMovingRequestListByMover({
+  cookie,
+  smallMove,
+  houseMove,
+  officeMove,
+  keyword,
+  isDesignated,
+  orderBy,
+  limit,
+  cursor,
+}: GetMovingRequestListByMoverParamData): Promise<GetMovingRequestListByMoverResponseData> {
+  const headers: AxiosRequestConfig["headers"] = cookie
+    ? { Cookie: cookie }
+    : undefined;
+
+  const params: Record<string, any> = {
+    smallMove,
+    houseMove,
+    officeMove,
+    orderBy,
+    ...(isDesignated !== null && { isDesignated }),
+    ...(keyword?.trim() && { keyword }),
+    ...(limit && { limit }),
+    ...(cursor && { cursor }),
+    isQuoted: false,
+    isPastRequest: false,
+  };
+
+  try {
+    const response = await axiosInstance.get(`${PATH}/by-mover`, {
+      params,
+      ...(headers && { headers }),
+    });
+
+    if (response.status !== 200) {
+      throw new Error("API 요청 실패");
+    }
+
+    return response.data;
+  } catch (err: any) {
+    return {
+      list: [],
+      serviceCounts: { smallMove: 0, houseMove: 0, officeMove: 0 },
+      requestCounts: { total: 0, designated: 0 },
+      nextCursor: "",
+      hasNext: false,
+    };
+  }
+}
+
+export type {
+  PendingQuotesResponse,
+  Quote,
+  Mover,
+  MovingRequest,
+  Rating,
+  ActiveRequestResponse,
+};

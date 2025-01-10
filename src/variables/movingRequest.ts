@@ -1,0 +1,1 @@
+export const MOVING_REQUEST_DEFAULT_PAGE_SIZE = 6;
