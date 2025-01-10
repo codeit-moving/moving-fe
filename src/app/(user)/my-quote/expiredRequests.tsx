@@ -493,7 +493,7 @@ const ExpiredRequests = () => {
                     </div>
                   ) : (
                     getQuotesForSection(request.id).map((quote) => (
-                      <Link href={`/my-quote/${quote.mover.id}`} key={quote.id}>
+                      <Link href={`/my-quote/${quote.id}`} key={quote.id}>
                         <ReceivedQuoteCard
                           key={quote.id}
                           data={mapQuoteToCardData(quote)}
