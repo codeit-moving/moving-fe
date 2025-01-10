@@ -18,11 +18,15 @@ export function NavigationEvents() {
 
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchor = target.closest("a");
-      if (anchor?.href) {
-        const url = new URL(anchor.href);
+      const target = e.target;
 
+      if (!(target instanceof Element)) return;
+
+      const anchor = target.closest("a");
+      if (!anchor?.href) return;
+
+      try {
+        const url = new URL(anchor.href);
         if (url.origin === window.location.origin) {
           const isSamePage =
             url.pathname === pathname && url.search === searchParams.toString();
@@ -31,6 +35,8 @@ export function NavigationEvents() {
             memoizedStartNavigation();
           }
         }
+      } catch (error) {
+        console.error("Error parsing URL:", error);
       }
     };
 
