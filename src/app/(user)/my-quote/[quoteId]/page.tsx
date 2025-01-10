@@ -5,6 +5,54 @@ import { getQuote } from "@/api/quote";
 import { GetQuoteApiResponseData } from "@/types/api";
 import EmptyList from "@/components/EmptyList";
 import { AxiosError } from "axios";
+import { Metadata, ResolvingMetadata } from "next";
+import { formatDateWithDay } from "@/utils/utilFunctions";
+type Props = {
+  params: { quoteId: string };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { quoteId } = params;
+  const cookieStore = await cookies();
+  const cookie = `accessToken=${cookieStore.get("accessToken")?.value}`;
+
+  try {
+    const data = await getQuote({ cookie, quoteId: Number(quoteId) });
+
+    const moveDate = formatDateWithDay(data.movingRequest.movingDate);
+
+    const title = `${data.mover.nickname} 기사님의 이사 견적서 - ${moveDate}`;
+    const description = `${data.mover.introduction}`;
+
+    console.log(data);
+
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        type: "article",
+        locale: "ko_KR",
+        images: data.mover.imageUrl ? [data.mover.imageUrl] : [],
+      },
+      twitter: {
+        card: "summary",
+        title,
+        description,
+        images: data.mover.imageUrl ? [data.mover.imageUrl] : [],
+      },
+    };
+  } catch (error) {
+    return {
+      title: "이사 견적서 상세 - 무빙",
+      description: "이사 견적서를 확인해보세요",
+    };
+  }
+}
 
 export interface MyQuotesDetailPageProps {
   params: Promise<{
