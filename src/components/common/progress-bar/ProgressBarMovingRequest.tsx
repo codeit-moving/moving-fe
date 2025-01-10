@@ -1,28 +1,23 @@
 import clsx from "clsx";
 
+import { useQuoteProgress } from "@/contexts/QuoteProgressContext";
 import ProgressBar from "./ProgressBar";
 
 interface ProgressBarMovingRequestProps {
   maxValue: number;
-  currentValue: number;
 }
 
 export default function ProgressBarMovingRequest({
   maxValue,
-  currentValue,
 }: ProgressBarMovingRequestProps) {
-  const ProgressBarMovingRequestFrameClass = clsx(
-    "h-2 bg-line-200",
-    "pc:w-full"
-  );
-  const ProgressBarMovingRequestClass = clsx("!bg-pr-blue-300");
+  const { step } = useQuoteProgress();
 
   return (
     <ProgressBar
       maxValue={maxValue}
-      currentValue={currentValue}
-      frameClass={ProgressBarMovingRequestFrameClass}
-      barClass={ProgressBarMovingRequestClass}
+      currentValue={step}
+      frameClass="w-full h-2 bg-gray-200"
+      barClass="bg-blue-600"
     />
   );
 }

@@ -14,7 +14,7 @@ export default function ProgressBar({
   barClass,
 }: ProgressBarProps) {
   const progressBarframeClass = clsx(
-    "box-border flex flex-row justify-left",
+    "box-border flex flex-row justify-start",
     "rounded-full bg-bg-300",
     "overflow-hidden",
     frameClass
@@ -22,9 +22,9 @@ export default function ProgressBar({
 
   const progressBarClass = clsx(
     "h-full",
-    "rounded-full bg-pr-yellow-100",
+    "rounded-full bg-pr-blue-300",
     "z-10",
-    "transition-all duration-700 ease-out", // 트랜지션 추가했습니다
+    "transition-all duration-700 ease-out",
     barClass
   );
 
