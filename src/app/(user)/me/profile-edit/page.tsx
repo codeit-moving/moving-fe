@@ -14,7 +14,7 @@ export default async function ProfileEditPage() {
     return (
       <div className="flex flex-col items-center w-full">
         <Profile
-          isUser={false}
+          isUser={true}
           isEdit={true}
           userData={userData}
           isOAuth={false}
