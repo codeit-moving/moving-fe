@@ -92,7 +92,7 @@ export default function DropdownNotification({
         "cursor-pointer",
         "pc:py-4"
       ),
-      readItem: "bg-line-100 hover:bg-line-100",
+      readItem: "bg-line-100 text-grayscale-400 hover:bg-line-100",
       time: "text-sm text-gray-300 font-medium",
       loading: "flex justify-center items-center h-8",
       scrollTrigger: "h-10 bg-transparent",
