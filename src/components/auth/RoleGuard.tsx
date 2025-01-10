@@ -18,8 +18,8 @@ const publicPaths = [
   "/mover/auth/login",
   "/mover/auth/register",
   "/me/profile",
-  "/mover/profile",
   "/find-mover",
+  "/mover/profile",
   "/oauth/kakao",
   "/oauth/google",
   "/oauth/naver",
@@ -40,19 +40,31 @@ export default function RoleGuard({
   useEffect(() => {
     const checkUserRole = async () => {
       try {
+        if (pathname === "/find-mover") {
+          if (useUserStore.getState().userRole === "MOVER") {
+            setIsAuthorized(false);
+            setIsLoading(false);
+            router.push("/mover/request");
+            return;
+          } else {
+            setIsAuthorized(true);
+            setIsLoading(false);
+            return;
+          }
+        }
+
         if (publicPaths.some((path) => pathname.startsWith(path))) {
           setIsAuthorized(true);
           setIsLoading(false);
           return;
         }
 
-        if (
-          commonPaths.includes(pathname) &&
-          !useUserStore.getState().userRole
-        ) {
-          setIsAuthorized(true);
-          setIsLoading(false);
-          return;
+        if (commonPaths.includes(pathname)) {
+          if (!useUserStore.getState().userRole) {
+            setIsAuthorized(true);
+            setIsLoading(false);
+            return;
+          }
         }
 
         const userInfo = await getUserInfo();
