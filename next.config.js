@@ -33,4 +33,21 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+// Injected content via Sentry wizard below
+
+import { withSentryConfig } from "@sentry/nextjs";
+
+const sentryConfig = {
+  org: "moving-1j",
+  project: "javascript-nextjs",
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  reactComponentAnnotation: {
+    enabled: true,
+  },
+  hideSourceMaps: true,
+  disableLogger: true,
+  automaticVercelMonitors: true,
+};
+
+export default withSentryConfig(nextConfig, sentryConfig);
