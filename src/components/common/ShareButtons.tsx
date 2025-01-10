@@ -43,14 +43,16 @@ const ShareButtons = ({ variant, moverInfo, quoteInfo }: ShareButtonsProps) => {
   const searchParams = useSearchParams();
   const fullUrl = useMemo(() => {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const query = searchParams.toString();
-    return `${origin}${pathname}${query ? `?${query}` : ""}`;
+    return `${origin}${pathname}`;
   }, [pathname, searchParams]);
 
   const heading =
     variant === "mover"
       ? "나만 알기엔 아쉬운 기사님인가요?"
       : "견적서 공유하기";
+
+  console.log("fullUrl", fullUrl);
+  console.log("pathname", pathname);
 
   useEffect(() => {
     const scriptId = "kakao-sdk";
@@ -97,6 +99,7 @@ const ShareButtons = ({ variant, moverInfo, quoteInfo }: ShareButtonsProps) => {
             review: String(moverInfo?.reviewCount),
             description: moverInfo?.description || "",
             name: moverInfo?.nickname || "아무개",
+            PATH: pathname,
             REGI_WEB_DOMAIN: fullUrl,
           }
         : {
@@ -106,6 +109,7 @@ const ShareButtons = ({ variant, moverInfo, quoteInfo }: ShareButtonsProps) => {
               ? formatDateWithDay(quoteInfo.movingDate)
               : "",
             pickup: quoteInfo?.pickupAddress || "",
+            PATH: pathname,
             REGI_WEB_DOMAIN: fullUrl,
           };
 
