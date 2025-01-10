@@ -105,15 +105,15 @@ export default function QuoteDetail({ data }: QuoteDetailProps) {
       pc:text-xl`,
     shareBoxWrapper: `pc:hidden`,
     shareBoxSeparator: `pc:hidden`,
-    quoteInfo: `flex flex-col justify-between w-full h-[242px] text-lg 
+    quoteInfo: `flex flex-col justify-between w-full h-[242px] text-lg font-semibold 
       tablet:h-[258px]  
       pc:h-[330px] pc:text-2xl`,
     warning: `box-border flex flex-row items-center p-6 gap-4 
-      w-full h-[48px] 
+      w-full h-[48px] mb-[76px]
       bg-pr-blue-100 border-solid border-[1px] border-pr-blue-200 rounded-[12px] 
       shadow-[inset_-2px_-2px_10px_rgba(46,46,46,0.04),_2px_2px_10px_rgba(46,46,46,0.04)] 
       text-sm font-semibold text-pr-blue-300
-      pc:h-[74px] 
+      pc:h-[74px] pc:mb-0 
       pc:text-lg`,
     warningIcon: `relative w-4 h-4 
       pc:w-6 pc:h-6`,
