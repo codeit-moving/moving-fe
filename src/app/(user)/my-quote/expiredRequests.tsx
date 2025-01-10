@@ -16,6 +16,7 @@ import {
   DropdownImage,
   DropdownFilter,
 } from "@/components/common/Dropdown";
+import Link from "next/link";
 
 interface MovingRequest {
   id: number;
@@ -491,10 +492,12 @@ const ExpiredRequests = () => {
                       </div>
                     ) : (
                       getQuotesForSection(request.id).map((quote) => (
-                        <ReceivedQuoteCard
-                          key={quote.id}
-                          data={mapQuoteToCardData(quote)}
-                        />
+                        <Link href={`/my-quote/${quote.id}`} key={quote.id}>
+                          <ReceivedQuoteCard
+                            key={quote.id}
+                            data={mapQuoteToCardData(quote)}
+                          />
+                        </Link>
                       ))
                     )}
                   </div>
