@@ -15,6 +15,7 @@ import ConfirmModal from "@/components/modals/ConfirmModal";
 import { passwordCheck } from "@/api/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { moverKey } from "@/api/queryKeys";
+import { useUserStore } from "@/store/userStore";
 
 interface InfoEditProps {
   isUser: boolean;
@@ -107,6 +108,17 @@ export default function InfoEdit({ isUser, userData }: InfoEditProps) {
       setModalShown(true);
       const showPasswordConfirm = async () => {
         try {
+          if (useUserStore.getState().isOAuth) {
+            await NiceModal.show("AlertModal", {
+              title: "소셜 로그인 사용자",
+              msg: "소셜 로그인 사용자는 기본정보 수정이 불가능합니다.",
+              buttonText: "확인",
+              onButtonClick: () => {
+                router.back();
+              },
+            });
+            return;
+          }
           await NiceModal.show("confirm-modal", {
             title: "비밀번호 확인",
             description: "정보 수정을 위해 현재 비밀번호를 입력해주세요.",

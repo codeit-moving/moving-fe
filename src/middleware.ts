@@ -20,7 +20,6 @@ const protectedRoutes = [
   "/mover/info-edit",
   "/mover/my-page",
   "/mover/my-quote",
-
   "/mover/profile-edit",
   "/mover/request",
   "/request",
@@ -53,51 +52,47 @@ export default async function middleware(request: NextRequest) {
         }
       );
 
+      // 백엔드에서 보낸 쿠키 처리
       const cookies = response.headers.getSetCookie();
-      const responseData = await response.json();
 
-      // 회원가입 리다이렉트
-      if (responseData.data?.redirect === true && response.status === 302) {
-        const redirectUrl = new URL(responseData.data.redirectUrl, request.url);
-        redirectUrl.searchParams.set("oauth", "true");
-        redirectUrl.searchParams.set("toastType", "info");
-        redirectUrl.searchParams.set(
-          "toastMessage",
-          "소셜 로그인을 위해 추가 정보를 입력해주세요."
-        );
-        const res = NextResponse.redirect(redirectUrl);
-        cookies.forEach((cookie) => {
-          res.headers.append("Set-Cookie", cookie);
-        });
-        return res;
+      const responseClone = response.clone();
+
+      try {
+        // 먼저 JSON 파싱 시도
+        const responseData = await response.json();
+        if (responseData.data?.redirect === true) {
+          const redirectUrl = new URL(
+            responseData.data.redirectUrl,
+            request.url
+          );
+          redirectUrl.searchParams.set("oauth", "true");
+          redirectUrl.searchParams.set("toastType", "info");
+          redirectUrl.searchParams.set(
+            "toastMessage",
+            "소셜 로그인을 위해 추가 정보를 입력해주세요."
+          );
+          const res = NextResponse.redirect(redirectUrl);
+          cookies.forEach((cookie) => {
+            res.headers.append("Set-Cookie", cookie);
+          });
+          return res;
+        }
+      } catch (jsonError) {
+        // JSON 파싱 실패 시 일반 리다이렉트 처리
+        if (responseClone.status === 302 || responseClone.status === 301) {
+          const redirectUrl = new URL(
+            response.headers.get("location") || "/",
+            request.url
+          );
+          redirectUrl.searchParams.set("toastType", "success");
+          redirectUrl.searchParams.set("toastMessage", "로그인되었습니다.");
+          const res = NextResponse.redirect(redirectUrl);
+          cookies.forEach((cookie) => {
+            res.headers.append("Set-Cookie", cookie);
+          });
+          return res;
+        }
       }
-
-      // 로그인 성공 시
-      if (response.status === 302 || response.status === 301) {
-        const redirectUrl = new URL(
-          response.headers.get("location") || "/",
-          request.url
-        );
-        redirectUrl.searchParams.set("toastType", "success");
-        redirectUrl.searchParams.set("toastMessage", "로그인되었습니다.");
-        const res = NextResponse.redirect(redirectUrl);
-        cookies.forEach((cookie) => {
-          res.headers.append("Set-Cookie", cookie);
-        });
-        return res;
-      }
-
-      const redirectUrl = new URL("/", request.url);
-      redirectUrl.searchParams.set("toastType", "success");
-      redirectUrl.searchParams.set(
-        "toastMessage",
-        "성공적으로 처리되었습니다."
-      );
-      const res = NextResponse.redirect(redirectUrl);
-      cookies.forEach((cookie) => {
-        res.headers.append("Set-Cookie", cookie);
-      });
-      return res;
     } catch (error) {
       console.error("OAuth 콜백 처리 에러:", error);
       const redirectUrl = new URL("/", request.url);
