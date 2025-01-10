@@ -1,9 +1,10 @@
-# **1팀\_풀스텍\_1기**
+# Codeit / **풀스택\_1기\_PART4_TEAM1**
 
-[무빙 프로젝트 노션](https://bubble-city-3ac.notion.site/1469702f08878035a353e93642fe2232?v=1469702f0887812c9d6a000c643c23d7&pvs=4) </br>
-[무빙 프로젝트 깃헙](https://github.com/codeit-moving)
-<br/>
-[무빙 배포 사이트](https://moving-fe-weld.vercel.app/)
+📋 [무빙 - 프로젝트 문서](https://bubble-city-3ac.notion.site/1469702f08878035a353e93642fe2232?v=1469702f0887812c9d6a000c643c23d7&pvs=4)
+
+💻 [GitHub Repository](https://github.com/codeit-moving)
+
+🌐 [무빙 - 배포사이트](https://moving-fe-weld.vercel.app/)
 
 ## **목차**
 
