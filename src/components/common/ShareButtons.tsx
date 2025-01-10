@@ -51,9 +51,6 @@ const ShareButtons = ({ variant, moverInfo, quoteInfo }: ShareButtonsProps) => {
       ? "나만 알기엔 아쉬운 기사님인가요?"
       : "견적서 공유하기";
 
-  console.log("fullUrl", fullUrl);
-  console.log("pathname", pathname);
-
   useEffect(() => {
     const scriptId = "kakao-sdk";
     if (!document.getElementById(scriptId)) {
