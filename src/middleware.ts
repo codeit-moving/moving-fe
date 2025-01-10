@@ -20,7 +20,7 @@ const protectedRoutes = [
   "/mover/info-edit",
   "/mover/my-page",
   "/mover/my-quote",
-  "/mover/profile",
+
   "/mover/profile-edit",
   "/mover/request",
   "/request",

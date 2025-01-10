@@ -184,7 +184,6 @@ const MyQuotePage = () => {
     <div className="max-w-[1400px] mx-auto my-[16px] pc:my-[24px]">
       {tab === "0" && (
         <>
-          <h1 className="text-2xl font-bold mb-6">대기 중인 견적</h1>
           {quotes.length > 0 ? (
             <ul className="grid grid-cols-1 gap-[24px] tablet:gap-[32px] pc:grid-cols-2 pc:gap-x-[24px] pc:gap-y-[48px]">
               {pendingRequests.map((request) => (

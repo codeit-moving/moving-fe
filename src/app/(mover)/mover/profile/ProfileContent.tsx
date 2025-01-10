@@ -15,5 +15,5 @@ export default function ProfileContent() {
     }
   }, [searchParams]);
 
-  return <Profile isUser={true} isEdit={false} isOAuth={isOAuth} />;
+  return <Profile isUser={false} isEdit={false} isOAuth={isOAuth} />;
 }
