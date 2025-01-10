@@ -342,18 +342,24 @@
 📦src
  ┣ 📂api
  ┃ ┣ 📂mutation-hooks
- ┃ ┃ ┗ 📜mover.ts
+ ┃ ┃ ┣ 📜mover.ts
+ ┃ ┃ ┣ 📜movingRequest.ts
+ ┃ ┃ ┗ 📜review.ts
  ┃ ┣ 📂query-hooks
  ┃ ┃ ┣ 📜mover.ts
  ┃ ┃ ┣ 📜quote.ts
  ┃ ┃ ┗ 📜review.ts
- ┃ ┣ 📜PendingQuotes.ts
+ ┃ ┣ 📜auth.ts
  ┃ ┣ 📜axios.ts
+ ┃ ┣ 📜customer.ts
  ┃ ┣ 📜mover.ts
  ┃ ┣ 📜movingRequest.ts
+ ┃ ┣ 📜notification.ts
+ ┃ ┣ 📜pendingQuote.ts
  ┃ ┣ 📜queryKeys.ts
  ┃ ┣ 📜quote.ts
- ┃ ┗ 📜review.ts
+ ┃ ┣ 📜review.ts
+ ┃ ┗ 📜user.ts
  ┣ 📂app
  ┃ ┣ 📂(mover)
  ┃ ┃ ┣ 📂mover
@@ -365,17 +371,24 @@
  ┃ ┃ ┃ ┣ 📂info-edit
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┃ ┣ 📂my-page
+ ┃ ┃ ┃ ┃ ┣ 📜ProfileActions.tsx
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┃ ┣ 📂my-quote
  ┃ ┃ ┃ ┃ ┣ 📂[quoteId]
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜SentQuoteDetail.tsx
  ┃ ┃ ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┃ ┣ 📂profile
+ ┃ ┃ ┃ ┃ ┣ 📜ProfileContent.tsx
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┃ ┣ 📂profile-edit
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┃ ┗ 📂request
- ┃ ┃ ┃ ┃ ┣ 📜moverRequest.tsx
+ ┃ ┃ ┃ ┃ ┣ 📜CreateQuoteNiceModal.tsx
+ ┃ ┃ ┃ ┃ ┣ 📜FilterNiceModal.tsx
+ ┃ ┃ ┃ ┃ ┣ 📜RejectRequetNiceModal.tsx
+ ┃ ┃ ┃ ┃ ┣ 📜RequestForm.tsx
+ ┃ ┃ ┃ ┃ ┣ 📜filters.tsx
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┗ 📜layout.tsx
  ┃ ┣ 📂(request)
@@ -389,12 +402,15 @@
  ┃ ┣ 📂(user)
  ┃ ┃ ┣ 📂auth
  ┃ ┃ ┃ ┣ 📂login
+ ┃ ┃ ┃ ┃ ┣ 📜SearchParamsContent.tsx
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┃ ┗ 📂register
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┣ 📂find-mover
  ┃ ┃ ┃ ┣ 📂[moverId]
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
+ ┃ ┃ ┃ ┣ 📂components
+ ┃ ┃ ┃ ┃ ┗ 📜DropdownList.tsx
  ┃ ┃ ┃ ┣ 📜moverList.tsx
  ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┣ 📂me
@@ -413,8 +429,8 @@
  ┃ ┃ ┃ ┣ 📂[quoteId]
  ┃ ┃ ┃ ┃ ┣ 📜QuoteDetail.tsx
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
+ ┃ ┃ ┃ ┣ 📜expiredRequests.tsx
  ┃ ┃ ┃ ┣ 📜mock.ts
- ┃ ┃ ┃ ┣ 📜myQuoteDropdown.tsx
  ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┗ 📜layout.tsx
  ┃ ┣ 📂fonts
@@ -422,8 +438,10 @@
  ┃ ┃ ┣ 📜GeistVF.woff
  ┃ ┃ ┣ 📜PretendardVariable.woff2
  ┃ ┃ ┗ 📜pretendard.css
+ ┃ ┣ 📜error.tsx
  ┃ ┣ 📜globals.css
  ┃ ┣ 📜layout.tsx
+ ┃ ┣ 📜loading.tsx
  ┃ ┣ 📜not-found.tsx
  ┃ ┗ 📜page.tsx
  ┣ 📂components
@@ -431,6 +449,7 @@
  ┃ ┃ ┣ 📜FormHeader.tsx
  ┃ ┃ ┣ 📜LoginComponent.stories.tsx
  ┃ ┃ ┣ 📜LoginComponent.tsx
+ ┃ ┃ ┣ 📜RoleGuard.tsx
  ┃ ┃ ┣ 📜SignUpComponent.stories.tsx
  ┃ ┃ ┣ 📜SignUpComponent.tsx
  ┃ ┃ ┗ 📜SnsComponent.tsx
@@ -536,24 +555,32 @@
  ┃ ┣ 📂forms
  ┃ ┃ ┣ 📜InfoEdit.tsx
  ┃ ┃ ┗ 📜Profile.tsx
+ ┃ ┣ 📂home
+ ┃ ┃ ┣ 📜AuthButtons.tsx
+ ┃ ┃ ┗ 📜AuthSection.tsx
+ ┃ ┣ 📂hooks
+ ┃ ┃ ┗ 📜useResize.tsx
  ┃ ┣ 📂layout
  ┃ ┃ ┣ 📜GNB.stories.tsx
  ┃ ┃ ┣ 📜GNB.tsx
  ┃ ┃ ┣ 📜Main.tsx
  ┃ ┃ ┣ 📜MswComponent.tsx
+ ┃ ┃ ┣ 📜NiceModalRegistry.tsx
  ┃ ┃ ┣ 📜QuoteGNB.stories.tsx
  ┃ ┃ ┣ 📜QuoteGNB.tsx
  ┃ ┃ ┗ 📜QuoteGNBWrapper.tsx
  ┃ ┣ 📂modals
- ┃ ┃ ┣ 📜AddressModal.stories.tsx
- ┃ ┃ ┣ 📜AddressModal.tsx
+ ┃ ┃ ┣ 📜AlertModal.tsx
+ ┃ ┃ ┣ 📜BackDrop.tsx
  ┃ ┃ ┣ 📜ConfirmModal.tsx
+ ┃ ┃ ┣ 📜CreateQuoteModal.stories.tsx
+ ┃ ┃ ┣ 📜CreateQuoteModal.tsx
  ┃ ┃ ┣ 📜FilterModal.stories.tsx
  ┃ ┃ ┣ 📜FilterModal.tsx
- ┃ ┃ ┣ 📜QuoteModal.stories.tsx
- ┃ ┃ ┣ 📜QuoteModal.tsx
  ┃ ┃ ┣ 📜QuoteRequestModal.stories.tsx
  ┃ ┃ ┣ 📜QuoteRequestModal.tsx
+ ┃ ┃ ┣ 📜RejectRequetModal.stories.tsx
+ ┃ ┃ ┣ 📜RejectRequetModal.tsx
  ┃ ┃ ┣ 📜ReviewModal.stories.tsx
  ┃ ┃ ┗ 📜ReviewModal.tsx
  ┃ ┣ 📂request
@@ -572,22 +599,29 @@
  ┃ ┣ 📜ButtonFavorite.tsx
  ┃ ┣ 📜CheckboxField.stories.tsx
  ┃ ┣ 📜CheckboxField.tsx
+ ┃ ┣ 📜EmptyList.tsx
+ ┃ ┣ 📜LoadingDots.tsx
  ┃ ┣ 📜MovingRequestProgressInfo.stories.tsx
  ┃ ┣ 📜MovingRequestProgressInfo.tsx
+ ┃ ┣ 📜NavItem.tsx
+ ┃ ┣ 📜NavigationEvents.tsx
+ ┃ ┣ 📜NavigationProgress.tsx
  ┃ ┣ 📜NiceModalProvider.tsx
  ┃ ┣ 📜RatingInfo.stories.tsx
  ┃ ┣ 📜RatingInfo.tsx
  ┃ ┣ 📜ReactQueryDevtoolsClient.tsx
- ┃ ┗ 📜temp.tsx
+ ┃ ┣ 📜ScrollIndicator.tsx
+ ┃ ┗ 📜Toast.tsx
  ┣ 📂config
  ┃ ┣ 📜cn.ts
  ┃ ┗ 📜queryClient.ts
- ┣ 📂context
- ┃ ┗ 📜QuoteProgressContext.tsx
  ┣ 📂contexts
+ ┃ ┣ 📜QuoteProgressContext.tsx
  ┃ ┗ 📜queryClientProvider.tsx
  ┣ 📂hooks
- ┃ ┗ 📜useResize.tsx
+ ┃ ┣ 📜useAuth.ts
+ ┃ ┣ 📜useInfiniteScroll.ts
+ ┃ ┗ 📜useResize.ts
  ┣ 📂mocks
  ┃ ┣ 📂data
  ┃ ┃ ┣ 📜mover.ts
@@ -606,6 +640,11 @@
  ┃ ┃ ┗ 📜quotes.ts
  ┃ ┣ 📜browser.ts
  ┃ ┗ 📜server.ts
+ ┣ 📂store
+ ┃ ┣ 📜signupStore.ts
+ ┃ ┣ 📜useNavigationStore.ts
+ ┃ ┣ 📜useToastStore.ts
+ ┃ ┗ 📜userStore.ts
  ┣ 📂stories
  ┃ ┣ 📂assets
  ┃ ┃ ┣ 📜accessibility.png
@@ -636,10 +675,13 @@
  ┃ ┗ 📜page.css
  ┣ 📂types
  ┃ ┣ 📜api.ts
+ ┃ ┣ 📜auth.ts
  ┃ ┣ 📜mover.ts
  ┃ ┣ 📜movingRequest.ts
- ┃ ┗ 📜quote.ts
+ ┃ ┣ 📜quote.ts
+ ┃ ┗ 📜review.ts
  ┣ 📂utils
+ ┃ ┣ 📜auth.ts
  ┃ ┣ 📜authValidation.ts
  ┃ ┣ 📜canUseDom.ts
  ┃ ┣ 📜env.ts
@@ -650,11 +692,17 @@
  ┣ 📂variables
  ┃ ┣ 📜dropdown.ts
  ┃ ┣ 📜images.js
+ ┃ ┣ 📜mover.ts
+ ┃ ┣ 📜movingRequest.ts
+ ┃ ┣ 📜notification.ts
+ ┃ ┣ 📜quote.ts
  ┃ ┣ 📜regions.ts
  ┃ ┣ 📜screen.ts
  ┃ ┣ 📜service.ts
  ┃ ┗ 📜services.ts
- ┗ 📜.DS_Store
+ ┣ 📜.DS_Store
+ ┣ 📜instrumentation.ts
+ ┗ 📜middleware.ts
 
 ```
 
