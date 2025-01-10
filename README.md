@@ -10,12 +10,11 @@
 1. [서비스 소개](#app)
 2. [프론트엔드 팀 소개](#team)
 3. [기술 및 개발 환경](#dev)
-4. [역할 분담](#roles)
-5. [구현 기능](#feature)
-6. [컨벤션](#convention)
-7. [프로젝트 구조](#tree)
-8. [협업 문화](#culture)
-9. [프로젝트 회고록](#retrospective)
+4. [구현 기능](#feature)
+5. [컨벤션](#convention)
+6. [프로젝트 구조](#tree)
+7. [협업 문화](#culture)
+8. [프로젝트 회고록](#retrospective)
 
 <br><br>
 
@@ -42,7 +41,7 @@
 
 <br><br>
 
-## <span id="dev">📝 3. 기술 및 개발 환경</span>
+## <span id="dev">📝 3. 기술 및 개발 환경</span>
 
 #### FRONT-END
 
@@ -110,7 +109,7 @@
 
 <br><br>
 
-## <span id="role">📝 5. 역할분담</span>
+## <span id="feature">📝 4. 구현 기능</span>
 
 ### **김현우**
 
@@ -301,7 +300,7 @@
 
 <br><br>
 
-## <span id="convention">🖌️ 6. 컨벤션</span>
+## <span id="convention">🖌️ 5. 컨벤션</span>
 
 ### Git 컨벤션
 
@@ -335,7 +334,7 @@
 
 <br/>
 
-## <span id="tree"> 🗂️ 7. SRC 파일 구조 </span>
+## <span id="tree"> 🗂️ 6. SRC 파일 구조 </span>
 
 ```
 
@@ -660,7 +659,7 @@
 
 <br><br>
 
-## <span id="culture"> 8. 협업 문화 </span>
+## <span id="culture"> 7. 협업 문화 </span>
 
 - 매일 아침 9시 프론트, 백 모여 전체 미팅
 - PR 2명 이상 리뷰 후 머지
@@ -668,6 +667,6 @@
 
 <br><br>
 
-## <span id="retrospective">✍️ 9. 프로젝트 회고록 </span>
+## <span id="retrospective">✍️ 8. 프로젝트 회고록 </span>
 
 (제작한 발표자료 링크 혹은 첨부파일 첨부)
