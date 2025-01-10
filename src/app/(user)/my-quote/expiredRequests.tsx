@@ -16,6 +16,8 @@ import {
   DropdownImage,
   DropdownFilter,
 } from "@/components/common/Dropdown";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface MovingRequest {
   id: number;
@@ -291,6 +293,7 @@ const QuoteFilterDropdown = ({
 };
 
 const ExpiredRequests = () => {
+  const router = useRouter();
   const [expiredRequests, setExpiredRequests] = useState<MovingRequest[]>([]);
   const [quoteDetails, setQuoteDetails] = useState<QuoteDetail[]>([]);
   const [openSection, setOpenSection] = useState<number | null>(null);
@@ -418,6 +421,10 @@ const ExpiredRequests = () => {
     introduction: quote.mover.introduction,
   });
 
+  const handleQuoteClick = (moverId: number) => {
+    router.push(`/find-mover/${moverId}`);
+  };
+
   if (error) {
     return (
       <div className="flex justify-center items-center h-screen text-red-500">
@@ -492,10 +499,12 @@ const ExpiredRequests = () => {
                     </div>
                   ) : (
                     getQuotesForSection(request.id).map((quote) => (
-                      <ReceivedQuoteCard
-                        key={quote.id}
-                        data={mapQuoteToCardData(quote)}
-                      />
+                      <Link href={`/my-quote/${quote.mover.id}`} key={quote.id}>
+                        <ReceivedQuoteCard
+                          key={quote.id}
+                          data={mapQuoteToCardData(quote)}
+                        />
+                      </Link>
                     ))
                   )}
                 </div>
