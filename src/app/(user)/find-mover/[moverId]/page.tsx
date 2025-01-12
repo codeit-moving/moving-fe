@@ -18,8 +18,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     );
     const data = await response.json();
 
-    console.log(data);
-
     const regions = data.regions
       .slice(0, 3)
       .map(

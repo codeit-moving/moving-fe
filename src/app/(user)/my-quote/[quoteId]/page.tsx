@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 
 import QuoteDetail from "./QuoteDetail";
 import { getQuote } from "@/api/quote";
-import { GetQuoteApiResponseData } from "@/types/api";
 import EmptyList from "@/components/EmptyList";
 import { AxiosError } from "axios";
 import { Metadata, ResolvingMetadata } from "next";
@@ -26,8 +25,6 @@ export async function generateMetadata(
 
     const title = `${data.mover.nickname} 기사님의 이사 견적서 - ${moveDate}`;
     const description = `${data.mover.introduction}`;
-
-    console.log(data);
 
     return {
       title,
