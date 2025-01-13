@@ -89,6 +89,11 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
         : userInfo.user.customer
         ? "USER"
         : null;
+      const userProfileImage = userInfo.user.mover
+        ? userInfo.user.mover.imageUrl
+        : userInfo.user.customer
+        ? userInfo.user.customer.imageUrl
+        : null;
 
       useUserStore.getState().setUserData({
         email: userInfo.user.email,
@@ -96,6 +101,7 @@ export default function SignUpComponent({ isUser }: SignUpComponentProps) {
         phoneNumber: userInfo.user.phoneNumber,
         role: userRole,
         isOAuth: userInfo.user.isOAuth,
+        profileImage: userProfileImage,
       });
       reset();
       isUser ? router.push("/find-mover") : router.push("/mover/request");

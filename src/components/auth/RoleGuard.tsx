@@ -81,6 +81,11 @@ export default function RoleGuard({
           phoneNumber: userInfo.user.phoneNumber,
           role: userRole,
           isOAuth: userInfo.user.isOAuth,
+          profileImage: userInfo.user.mover
+            ? userInfo.user.mover.imageUrl
+            : userInfo.user.customer
+            ? userInfo.user.customer.imageUrl
+            : null,
         });
 
         const hasPermission = userRole && allowedRoles?.includes(userRole);

@@ -6,12 +6,14 @@ interface UserState {
   userPhone: string;
   userRole: "MOVER" | "USER" | null;
   isOAuth: boolean;
+  userProfileImage: string | null;
   setUserData: (data: {
     email: string;
     name: string;
     phoneNumber: string;
     role: "MOVER" | "USER" | null;
     isOAuth: boolean;
+    profileImage: string | null;
   }) => void;
 }
 
@@ -21,6 +23,7 @@ export const useUserStore = create<UserState>((set) => ({
   userPhone: "",
   userRole: null,
   isOAuth: false,
+  userProfileImage: null,
   setUserData: (data) =>
     set({
       userEmail: data.email,
@@ -28,5 +31,6 @@ export const useUserStore = create<UserState>((set) => ({
       userPhone: data.phoneNumber,
       userRole: data.role,
       isOAuth: data.isOAuth,
+      userProfileImage: data.profileImage,
     }),
 }));
