@@ -256,8 +256,6 @@ export default function MoverListWithFilters({
       newService = null;
     }
 
-    console.log("newService : ", newService);
-
     setFormState((prev) => ({
       ...prev,
       currentServiceFilter: newService,
