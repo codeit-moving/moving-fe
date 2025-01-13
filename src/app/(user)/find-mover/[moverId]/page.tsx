@@ -3,22 +3,21 @@ import ClientMoverDetailPage from "./ClientPage";
 import { SERVICE_TEXTS } from "@/variables/service";
 import { REGION_TEXTS } from "@/variables/regions";
 
-type Props = {
-  params: { moverId: string };
-};
+interface Props {
+  params: Promise<{ moverId: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const moverId = params.moverId;
+  const { moverId } = await params;
 
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/movers/${moverId}`
     );
     const data = await response.json();
-
-    console.log(data);
 
     const regions = data.regions
       .slice(0, 3)
@@ -78,6 +77,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function MoverDetailPage() {
+export default async function MoverDetailPage({ params, searchParams }: Props) {
+  const { moverId } = await params;
   return <ClientMoverDetailPage />;
 }

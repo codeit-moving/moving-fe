@@ -23,13 +23,11 @@ type Story = StoryObj<typeof MovingRequestProgressInfo>;
 export const sample1: Story = {
   args: {
     maxValue: 4,
-    currentValue: 1,
   },
 };
 
 export const sample2: Story = {
   args: {
     maxValue: 4,
-    currentValue: 4,
   },
 };

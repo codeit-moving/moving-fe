@@ -4,12 +4,10 @@ import ProgressBarMovingRequest from "./common/progress-bar/ProgressBarMovingReq
 
 interface MovingRequestProgressInfoProps {
   maxValue: number;
-  currentValue: number;
 }
 
 export default function MovingRequestProgressInfo({
   maxValue,
-  currentValue,
 }: MovingRequestProgressInfoProps) {
   const MovingRequestProgressInfoClass = clsx(
     "flex flex-col justify-center items-center gap-4",
@@ -25,10 +23,7 @@ export default function MovingRequestProgressInfo({
   return (
     <div className={MovingRequestProgressInfoClass}>
       <div className={ProgressInfoTextClass}>견적요청</div>
-      <ProgressBarMovingRequest
-        maxValue={maxValue}
-        currentValue={currentValue}
-      />
+      <ProgressBarMovingRequest maxValue={maxValue} />
     </div>
   );
 }
