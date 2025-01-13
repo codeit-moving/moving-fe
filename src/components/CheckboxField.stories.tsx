@@ -21,7 +21,7 @@ export default meta;
 type Story = StoryObj<typeof CheckboxField>;
 
 function printCheckboxState(state: boolean): void {
-  //console.log("체크 박스 필드 상태 변경", state);
+  console.log("체크 박스 필드 상태 변경", state);
 }
 
 export const stateTrue: Story = {
