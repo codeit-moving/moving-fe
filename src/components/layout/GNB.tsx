@@ -78,11 +78,11 @@ const GNB = () => {
         </div>
 
         <div className="flex flex-row items-center gap-6">
-          {userRole ? (
+          {userName ? (
             <>
               <DropdownNotification
                 onSelect={(id: number) => {
-                  console.log(id); // 임시. 테스트용
+                  // console.log(id); // 임시. 테스트용
                 }}
               />
               <DropdownProfile
@@ -127,7 +127,7 @@ const GNB = () => {
           >
             <Image src={assets.icons.x} alt="close" width={24} height={24} />
           </button>
-          {userRole ? (
+          {userName ? (
             <div className="flex items-center gap-2 mt-8 mb-6">
               <div className="relative w-[36px] h-[36px] rounded-full overflow-hidden">
                 <Image
