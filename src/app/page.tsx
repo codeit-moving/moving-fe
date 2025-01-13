@@ -1,90 +1,80 @@
 import Image from "next/image";
 import assets from "@/variables/images";
+import Link from "next/link";
 import AuthSection from "@/components/home/AuthSection";
+import MainSection from "@/components/LandingSection";
 
 export default function Home() {
   return (
-    <main className="container mx-auto px-4 py-16 lg:py-20 max-w-sm lg:max-w-7xl">
-      <h1 className="text-2xl md:text-2xl lg:text-3xl text-center font-semibold mb-11">
-        원하는 이사 서비스를 요청하고 <br /> 견적을 받아보세요
-      </h1>
+    <>
+      <header className="relative h-[max(355px,30vh)] tablet:h-[max(50vh,435px)] overflow-hidden">
+        {/* 배경 레이어 */}
+        <div className="absolute inset-0">
+          {/* 모바일: 단색 배경 */}
+          <div className="absolute inset-0 bg-pr-blue-50 tablet:bg-white"></div>
+          {/* 태블릿 이상: 대각선 배경 */}
+          <div
+            className="absolute inset-0 bg-pr-blue-50 hidden tablet:block pc:hidden"
+            style={{
+              clipPath: "polygon(0 0, 55% 0, 25% 100%, 0 100%)",
+            }}
+          ></div>
+          <div
+            className="absolute inset-0 bg-pr-blue-50 hidden pc:block"
+            style={{
+              clipPath: "polygon(0 0, 55% 0, 45% 100%, 0 100%)",
+            }}
+          ></div>
+        </div>
 
-      {/* Desktop layout (1024px+) */}
-      <div className="hidden lg:block">
-        <div className="flex gap-6 mb-8 justify-center">
-          <div className="flex-3">
-            <Image
-              src={assets.images.landingMd01}
-              alt="가정이사"
-              width={450}
-              height={600}
-              priority
-              sizes="(min-width: 1024px) 450px, 100vw"
-              className="object-cover"
-            />
-          </div>
-
-          <div className="flex-8 grid grid-rows-2 gap-6">
-            <div>
+        {/* 컨텐츠 레이어 */}
+        <div className="relative z-10 h-full flex justify-center tablet:justify-between items-center p-12 pc:p-16">
+          <div className="h-full gap-6 tablet:gap-0 flex flex-col justify-between items-center tablet:items-start">
+            <h1 className="pl-0 flex flex-col items-center tablet:items-end font-bold transition-all duration-300">
+              <span className="text-gray-800 text-ms tablet:text-xl pc:text-3xl font-semibold transition-all duration-300">
+                이사 소비자와 이사 전문가 매칭 서비스
+              </span>
               <Image
-                src={assets.images.landingMd02}
-                alt="가정이사"
-                width={900}
-                height={290}
-                sizes="(min-width: 1024px) 900px, 100vw"
-                className="object-cover"
+                src={assets.images.logoWordmark}
+                height={100}
+                width={200}
+                alt="랜딩 1"
+                className="w-[100px] tablet:w-[150px] pc:w-[200px] transition-all duration-300"
               />
-            </div>
-            <div>
-              <Image
-                src={assets.images.landingMd03}
-                alt="기업, 사무실 이사"
-                width={900}
-                height={290}
-                sizes="(min-width: 1024px) 900px, 100vw"
-                className="object-cover"
-              />
+            </h1>
+            <div className="w-full tablet:w-[160px] pc:w-full transition-all duration-300">
+              <AuthSection />
             </div>
           </div>
+
+          <Image
+            src={assets.images.landingTruck}
+            height={500}
+            width={600}
+            alt="랜딩 1"
+            className="hidden tablet:block absolute bottom-2 right-2 flex-2 w-[300px] tablet:w-[500px] pc:w-[700px] transition-all duration-300"
+          />
         </div>
-      </div>
-      {/* Tablet/Mobile layout (<1024px) */}
-      <div className="block lg:hidden">
-        <div className="flex flex-col gap-6 mb-8">
-          <div>
-            <Image
-              src={assets.images.landingSm01}
-              alt="가정이사"
-              width={374}
-              height={200}
-              priority
-              sizes="(max-width: 1023px) 100vw, 374px"
-              className="object-cover"
-            />
-          </div>
-          <div>
-            <Image
-              src={assets.images.landingSm02}
-              alt="가정이사"
-              width={374}
-              height={200}
-              sizes="(max-width: 1023px) 100vw, 374px"
-              className="object-cover"
-            />
-          </div>
-          <div>
-            <Image
-              src={assets.images.landingSm03}
-              alt="기업, 사무실 이사"
-              width={374}
-              height={200}
-              sizes="(max-width: 1023px) 100vw, 374px"
-              className="object-cover"
-            />
-          </div>
+      </header>
+
+      <div className="flex flex-col gap-3 pc:gap-6 h-[max(150px,5vh)] tablet:h-[max(10vh,200px)] overflow-hidden justify-center items-center p-8 pc:p-12 relative bg-blue-100">
+        <div className="flex flex-col items-center justify-center">
+          <span className="text-gray-700 font-semibold text-xl pc:text-2xl">
+            맘에 쏙 드는 기사님을 찾아보세요 !
+          </span>
+          <span className="text-gray-500 font-medium text-md pc:text-xl">
+            내 지역에 위치한, 신뢰가능한 기사님
+          </span>
         </div>
+        <Link
+          className="bg-none border-solid border-[1px] border-gray-500 text-gray-500 font-medium rounded-xl text-lg px-4 py-2 hover:bg-gray-100 hover:bg-opacity-20"
+          href="/find-mover"
+        >
+          <div>기사님 찾기</div>
+        </Link>
       </div>
-      <AuthSection />
-    </main>
+
+      <MainSection />
+    </>
   );
 }

@@ -1,28 +1,28 @@
 import { cookies } from "next/headers";
-
 import QuoteDetail from "./QuoteDetail";
 import { getQuote } from "@/api/quote";
+import { GetQuoteApiResponseData } from "@/types/api";
 import EmptyList from "@/components/EmptyList";
 import { AxiosError } from "axios";
 import { Metadata, ResolvingMetadata } from "next";
 import { formatDateWithDay } from "@/utils/utilFunctions";
-type Props = {
-  params: { quoteId: string };
-};
+
+interface GenerateMetadataProps {
+  params: Promise<{ quoteId: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
 export async function generateMetadata(
-  { params }: Props,
+  { params }: GenerateMetadataProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const { quoteId } = params;
+  const { quoteId } = await params;
   const cookieStore = await cookies();
   const cookie = `accessToken=${cookieStore.get("accessToken")?.value}`;
 
   try {
     const data = await getQuote({ cookie, quoteId: Number(quoteId) });
-
     const moveDate = formatDateWithDay(data.movingRequest.movingDate);
-
     const title = `${data.mover.nickname} 기사님의 이사 견적서 - ${moveDate}`;
     const description = `${data.mover.introduction}`;
 
@@ -51,17 +51,13 @@ export async function generateMetadata(
   }
 }
 
-export interface MyQuotesDetailPageProps {
-  params: Promise<{
-    quoteId: string;
-  }>;
+interface PageProps {
+  params: Promise<{ quoteId: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function MyQuotesDetailPage({
-  params,
-}: MyQuotesDetailPageProps) {
+export default async function MyQuotesDetailPage({ params }: PageProps) {
   const { quoteId } = await params;
-
   const cookieStore = await cookies();
   const cookie = `accessToken=${cookieStore.get("accessToken")?.value}`;
 
@@ -103,7 +99,7 @@ export default async function MyQuotesDetailPage({
         <div className={styles.topBar}>
           <div className={styles.barItem}>견적 상세</div>
         </div>
-        <EmptyList text="견적 상세 조회에 실패했습니다." />
+        <EmptyList text={text} />
       </div>
     );
   }
