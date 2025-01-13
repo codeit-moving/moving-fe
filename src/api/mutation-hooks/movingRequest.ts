@@ -26,7 +26,7 @@ export function useDesignatedMoverMutation() {
       return apiFunction(moverId);
     },
     onError: (error: any) => {
-      console.log("지정 견적 요청하기 에러 : ", error);
+      console.error("지정 견적 요청하기 에러 : ", error);
     },
     onSuccess: (response: DesignatedResponse, { moverId }) => {
       queryClient.invalidateQueries({ queryKey: moverKey.detail(moverId) });

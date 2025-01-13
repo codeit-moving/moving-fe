@@ -13,7 +13,7 @@ interface QueryParams {
 
 export const moverHandlers = [
   http.get("/mock/movers/my-profile", () => {
-    console.log("Intercepted my-profile request");
+    // console.log("Intercepted my-profile request");
     return HttpResponse.json(MOVER_MY_PAGE);
   }),
   http.get("/mock/movers/:id", ({ params }) => {
