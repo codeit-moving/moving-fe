@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 import QuoteDetail from "./QuoteDetail";
 import { getQuote } from "@/api/quote";
-import { GetQuoteApiResponseData } from "@/types/api";
 import EmptyList from "@/components/EmptyList";
 import { AxiosError } from "axios";
 import { Metadata, ResolvingMetadata } from "next";
