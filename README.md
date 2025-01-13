@@ -15,7 +15,6 @@
 5. [컨벤션](#convention)
 6. [프로젝트 구조](#tree)
 7. [협업 문화](#culture)
-8. [프로젝트 회고록](#retrospective)
 
 <br><br>
 
@@ -408,6 +407,7 @@
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┣ 📂find-mover
  ┃ ┃ ┃ ┣ 📂[moverId]
+ ┃ ┃ ┃ ┃ ┣ 📜ClientPage.tsx
  ┃ ┃ ┃ ┃ ┗ 📜page.tsx
  ┃ ┃ ┃ ┣ 📂components
  ┃ ┃ ┃ ┃ ┗ 📜DropdownList.tsx
@@ -439,6 +439,7 @@
  ┃ ┃ ┣ 📜PretendardVariable.woff2
  ┃ ┃ ┗ 📜pretendard.css
  ┃ ┣ 📜error.tsx
+ ┃ ┣ 📜global-error.tsx
  ┃ ┣ 📜globals.css
  ┃ ┣ 📜layout.tsx
  ┃ ┣ 📜loading.tsx
@@ -600,6 +601,8 @@
  ┃ ┣ 📜CheckboxField.stories.tsx
  ┃ ┣ 📜CheckboxField.tsx
  ┃ ┣ 📜EmptyList.tsx
+ ┃ ┣ 📜LandingSection.tsx
+ ┃ ┣ 📜LandingSwipe.tsx
  ┃ ┣ 📜LoadingDots.tsx
  ┃ ┣ 📜MovingRequestProgressInfo.stories.tsx
  ┃ ┣ 📜MovingRequestProgressInfo.tsx
@@ -708,14 +711,9 @@
 
 <br><br>
 
-## <span id="culture"> 7. 협업 문화 </span>
+## <span id="culture"> 🤝7. 협업 문화 </span>
 
 - 매일 아침 9시 프론트, 백 모여 전체 미팅
 - PR 2명 이상 리뷰 후 머지
 - 문제 3시간 이상 안풀리면 공론화 및 도움 요청
 
-<br><br>
-
-## <span id="retrospective">✍️ 8. 프로젝트 회고록 </span>
-
-(제작한 발표자료 링크 혹은 첨부파일 첨부)
