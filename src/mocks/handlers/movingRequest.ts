@@ -87,7 +87,7 @@ export const movingRequestHandlers = [
     const filteredQuotes = MOVING_REQUESTS_WITH_STATUS.list.filter(
       (quote) => quote.movingRequest.status === "PENDING"
     );
-    // console.log("filteredQuotes", filteredQuotes);
+
     return HttpResponse.json({
       totalCount: filteredQuotes.length,
       list: filteredQuotes,
