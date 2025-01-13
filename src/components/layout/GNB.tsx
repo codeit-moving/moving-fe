@@ -30,7 +30,7 @@ const GNB = () => {
     }
   });
 
-  const { userName, userRole } = useUserStore();
+  const { userName, userRole, userProfileImage } = useUserStore();
 
   const renderTabs = () => {
     switch (userRole) {
@@ -78,14 +78,18 @@ const GNB = () => {
         </div>
 
         <div className="flex flex-row items-center gap-6">
-          {userName ? (
+          {userRole ? (
             <>
               <DropdownNotification
                 onSelect={(id: number) => {
-                  // console.log(id); // 임시. 테스트용
+                  console.log(id); // 임시. 테스트용
                 }}
               />
-              <DropdownProfile name={userName} isMover={userRole === "MOVER"} />
+              <DropdownProfile
+                name={userName}
+                isMover={userRole === "MOVER"}
+                profileImageUrl={userProfileImage || undefined}
+              />
             </>
           ) : (
             <Link
@@ -123,14 +127,16 @@ const GNB = () => {
           >
             <Image src={assets.icons.x} alt="close" width={24} height={24} />
           </button>
-          {userName ? (
+          {userRole ? (
             <div className="flex items-center gap-2 mt-8 mb-6">
-              <Image
-                src={assets.icons.userProfile}
-                alt="user"
-                width={36}
-                height={36}
-              />
+              <div className="relative w-[36px] h-[36px] rounded-full overflow-hidden">
+                <Image
+                  src={userProfileImage || assets.icons.userProfile}
+                  alt="user"
+                  fill
+                  className="object-cover"
+                />
+              </div>
               <span className="text-2lg font-medium text-black-400">
                 {userName}
               </span>

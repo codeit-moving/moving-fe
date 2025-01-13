@@ -141,7 +141,7 @@ export default function DropdownProfile({
     <Dropdown
       trigger={
         <div className={dropdownTriggerClass}>
-          <ProfileImage imageUrl={profileImageUrl} />
+          <ProfileImage imageUrl={profileImageUrl || undefined} />
           <DropdownUserName name={name} />
         </div>
       }

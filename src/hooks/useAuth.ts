@@ -18,6 +18,11 @@ export const useAuth = () => {
           : userInfo.data.user.customer
           ? "USER"
           : null;
+        const userProfileImage = userInfo.data.user.mover
+          ? userInfo.data.user.mover.imageUrl
+          : userInfo.data.user.customer
+          ? userInfo.data.user.customer.imageUrl
+          : null;
 
         setUserData({
           email: userInfo.data.user.email,
@@ -25,6 +30,7 @@ export const useAuth = () => {
           phoneNumber: userInfo.data.user.phoneNumber,
           role: userRole,
           isOAuth: userInfo.data.user.isOAuth,
+          profileImage: userProfileImage,
         });
       } catch (error: any) {
         if (
