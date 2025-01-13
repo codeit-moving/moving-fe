@@ -43,8 +43,7 @@ const ShareButtons = ({ variant, moverInfo, quoteInfo }: ShareButtonsProps) => {
   const searchParams = useSearchParams();
   const fullUrl = useMemo(() => {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const query = searchParams.toString();
-    return `${origin}${pathname}${query ? `?${query}` : ""}`;
+    return `${origin}${pathname}`;
   }, [pathname, searchParams]);
 
   const heading =
@@ -97,6 +96,7 @@ const ShareButtons = ({ variant, moverInfo, quoteInfo }: ShareButtonsProps) => {
             review: String(moverInfo?.reviewCount),
             description: moverInfo?.description || "",
             name: moverInfo?.nickname || "아무개",
+            PATH: pathname,
             REGI_WEB_DOMAIN: fullUrl,
           }
         : {
@@ -106,6 +106,7 @@ const ShareButtons = ({ variant, moverInfo, quoteInfo }: ShareButtonsProps) => {
               ? formatDateWithDay(quoteInfo.movingDate)
               : "",
             pickup: quoteInfo?.pickupAddress || "",
+            PATH: pathname,
             REGI_WEB_DOMAIN: fullUrl,
           };
 

@@ -332,21 +332,11 @@ export default function MoverListWithFilters({
               <div className={styles.moverList.dropdownContainer}>
                 <DropdownRegion
                   value={formState.currentRegionFilter}
-                  onChange={(value) =>
-                    setFormState((prev) => ({
-                      ...prev,
-                      currentRegionFilter: value,
-                    }))
-                  }
+                  onChange={(value) => handleRegionFilterChange(value)}
                 />
                 <DropdownService
                   value={formState.currentServiceFilter}
-                  onChange={(value) =>
-                    setFormState((prev) => ({
-                      ...prev,
-                      currentServiceFilter: value,
-                    }))
-                  }
+                  onChange={(value) => handleServiceFilterChange(value)}
                 />
               </div>
               <DropdownSortMovingRequest onSelect={handleSortChange} />
