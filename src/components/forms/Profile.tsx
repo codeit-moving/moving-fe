@@ -4,7 +4,7 @@ import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useEffect } from "react";
 import { profileSchema, ProfileFormData } from "@/utils/authValidation";
 import { useRouter } from "next/navigation";
 import Textarea from "@/components/common/Textarea";
@@ -22,6 +22,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { moverKey } from "@/api/queryKeys";
 import { customerProfile } from "@/api/customer";
 import { moverProfile } from "@/api/mover";
+import { useToastStore } from "@/store/useToastStore";
+import { useSearchParams } from "next/navigation";
 
 interface ProfileProps {
   isOAuth: boolean;
@@ -119,6 +121,18 @@ export default function Profile({
         regions: userData?.user?.mover?.regions ?? [],
         imageUrl: userData?.user?.mover?.imageUrl ?? "",
       };
+
+  const searchParams = useSearchParams();
+  const showToast = useToastStore((state) => state.showToast);
+
+  useEffect(() => {
+    const toastType = searchParams.get("toastType");
+    const toastMessage = searchParams.get("toastMessage");
+
+    if (toastType && toastMessage) {
+      showToast(toastMessage, toastType as any);
+    }
+  }, [searchParams, showToast]);
 
   const {
     register,
