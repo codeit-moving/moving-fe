@@ -29,7 +29,7 @@ function MainSection() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   return (
-    <main className="flex flex-col tablet:flex-row h-[max(400px,30vh)] tablet:h-[max(40vh,400px)] overflow-hidden items-center p-6 tablet:px-12 pc:px-16 relative">
+    <main className="flex flex-col tablet:flex-row h-[max(400px,40vh)] tablet:h-[max(40vh,400px)] overflow-hidden items-center p-6 tablet:px-12 pc:px-16 relative">
       <div className="absolute bottom-0 flex-1 flex justify-center items-end gap-2 tablet:gap-4">
         {slideContents.map((content, index) => (
           <div

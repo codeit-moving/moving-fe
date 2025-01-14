@@ -6,7 +6,7 @@ import MainSection from "@/components/LandingSection";
 
 export default function Home() {
   return (
-    <>
+    <main className="min-h-screen flex flex-col">
       <header className="relative h-[max(355px,30vh)] tablet:h-[max(50vh,435px)] overflow-hidden">
         {/* 배경 레이어 */}
         <div className="absolute inset-0">
@@ -57,17 +57,17 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex flex-col gap-3 pc:gap-6 h-[max(150px,5vh)] tablet:h-[max(10vh,200px)] overflow-hidden justify-center items-center p-8 pc:p-12 relative bg-blue-100">
+      <div className="mb-20 flex flex-col gap-3 pc:gap-6 h-[max(170px,5vh)] tablet:h-[max(10vh,200px)] overflow-hidden justify-center items-center p-8 pc:p-12 relative bg-blue-300">
         <div className="flex flex-col items-center justify-center">
-          <span className="text-gray-700 font-semibold text-xl pc:text-2xl">
+          <span className="text-white font-semibold text-xl pc:text-2xl">
             맘에 쏙 드는 기사님을 찾아보세요 !
           </span>
-          <span className="text-gray-500 font-medium text-md pc:text-xl">
+          <span className="text-gray-100 font-medium text-md pc:text-xl">
             내 지역에 위치한, 신뢰가능한 기사님
           </span>
         </div>
         <Link
-          className="bg-none border-solid border-[1px] border-gray-500 text-gray-500 font-medium rounded-xl text-lg px-4 py-2 hover:bg-gray-100 hover:bg-opacity-20"
+          className="bg-none border-solid border-[1px] border-gray-100 text-gray-100 font-medium rounded-xl text-lg px-4 py-2 hover:bg-gray-100 hover:bg-opacity-20"
           href="/find-mover"
         >
           <div>기사님 찾기</div>
@@ -75,6 +75,13 @@ export default function Home() {
       </div>
 
       <MainSection />
-    </>
+      <footer className="flex h-[max(80px,2vh)] tablet:h-[max(10vh,150px)] overflow-hidden justify-between items-center px-[24px] pc:px-[88px] tablet:px-[72px] relative bg-blue-100">
+        <div className="max-w-[1400px] mx-auto w-full flex justify-between items-center">
+          <span className="font-semibold text-gray-500">©Codeit</span>
+
+          <span className="font-semibold text-gray-500">FS01-TEAM1</span>
+        </div>
+      </footer>
+    </main>
   );
 }
